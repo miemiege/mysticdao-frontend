@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
+import type { JSX } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   X,
@@ -167,11 +168,9 @@ export function FengshuiCamera({
 }): JSX.Element {
   const {
     videoRef,
-    streamRef: _streamRef,
-    isActive: _isActive,
     error,
-    startCamera,
-    stopCamera,
+    start,
+    stop,
   } = useCamera();
   const { heading, isSupported, calibrate } = useCompass();
 
@@ -182,9 +181,9 @@ export function FengshuiCamera({
 
   // Lifecycle: start/stop camera
   useEffect(() => {
-    void startCamera();
+    void start();
     return () => {
-      stopCamera();
+      stop();
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -285,7 +284,7 @@ export function FengshuiCamera({
     <div className="fixed top-0 left-0 right-0 z-[60] flex items-center justify-between px-4 pt-[env(safe-area-inset-top,16px)] pb-3 bg-black/60 backdrop-blur-sm">
       <button
         onClick={() => {
-          stopCamera();
+          stop();
           onClose();
         }}
         className="flex items-center justify-center w-11 h-11 rounded-full bg-black/40 text-white active:scale-95 transition-transform"
@@ -350,7 +349,7 @@ export function FengshuiCamera({
               </p>
               <p className="text-[#c8a45c] text-sm">{error}</p>
               <button
-                onClick={() => void startCamera()}
+                onClick={() => void start()}
                 className="mt-4 px-5 py-2 rounded-full bg-[#c8a45c] text-black font-semibold text-sm active:scale-95 transition-transform"
               >
                 Retry
@@ -363,7 +362,7 @@ export function FengshuiCamera({
       <div className="fixed bottom-0 left-0 right-0 z-[60] flex items-center justify-between px-6 pb-[env(safe-area-inset-bottom,24px)] pt-4 h-[120px]">
         <button
           onClick={() => {
-            stopCamera();
+            stop();
             onClose();
           }}
           className="flex items-center justify-center w-12 h-12 rounded-full bg-black/50 text-white active:scale-95 transition-transform"

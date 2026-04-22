@@ -1,6 +1,6 @@
 import { useState, useCallback, useEffect } from 'react';
-import { motion } from 'framer-motion';
-import { Compass as CompassIcon, Sparkles, ChevronDown } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Compass as CompassIcon, Sparkles, ChevronDown, Camera } from 'lucide-react';
 import { fetchAIInterpretation } from '@/services/api';
 import { BaguaIcon } from '@/components/SacredIcons';
 import Compass from '@/components/fengshui/Compass';
@@ -8,6 +8,8 @@ import DirectionPanel from '@/components/fengshui/DirectionPanel';
 import BaguaMap from '@/components/fengshui/BaguaMap';
 import { directionData } from '@/components/fengshui/fengshuiData';
 import type { DirectionInfo } from '@/components/fengshui/fengshuiData';
+import { FengshuiCamera } from '@/components/fengshui-camera/FengshuiCamera';
+import WebCompass from '@/components/compass/WebCompass';
 
 /* Animation variants */
 const staggerContainer = {
@@ -32,6 +34,8 @@ export default function FengShui() {
   const [dirInfo, setDirInfo] = useState<DirectionInfo | null>(null);
   const [selectedRoom, setSelectedRoom] = useState('Living Room');
   const [dailyGuidance, setDailyGuidance] = useState('');
+  const [showCamera, setShowCamera] = useState(false);
+  const [showCompass, setShowCompass] = useState(false);
 
   useEffect(() => {
     // Fetch daily fengshui guidance
@@ -295,7 +299,80 @@ export default function FengShui() {
         </div>
       </section>
 
-      {/* ===== Section 4: CTA ===== */}
+      {/* ===== Section 4: Digital Tools ===== */}
+      <section className="relative bg-bg-primary py-16 md:py-24 border-t border-[#c8a45c]/5">
+        <div className="max-w-[1000px] mx-auto px-6">
+          {/* Section header */}
+          <motion.div
+            className="text-center mb-12 md:mb-16"
+            initial={{ opacity: 0, y: 40 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: '-100px' }}
+            transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] as [number, number, number, number] }}
+          >
+            <p className="font-sans text-xs font-medium uppercase tracking-[0.12em] text-[#c8a45c]/70 mb-3">
+              INTERACTIVE TOOLS · 互动工具
+            </p>
+            <h2 className="font-sans text-[28px] md:text-[36px] font-medium text-text-primary mb-3">
+              Align With Your Environment
+            </h2>
+            <p className="font-sans text-sm md:text-base text-text-secondary max-w-[520px] mx-auto">
+              Use your device's sensors to analyze your real-world space with AR overlays and real-time direction sensing.
+            </p>
+          </motion.div>
+
+          {/* Tool Cards */}
+          <div className="grid md:grid-cols-2 gap-6">
+            {/* Feng Shui Lens */}
+            <motion.button
+              onClick={() => setShowCamera(true)}
+              className="group relative overflow-hidden rounded-xl border border-[#c8a45c]/10 bg-[#c8a45c]/[0.02] p-8 text-left transition-all duration-300 hover:border-[#c8a45c]/30 hover:bg-[#c8a45c]/[0.04]"
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, delay: 0.1 }}
+              whileHover={{ y: -4 }}
+            >
+              <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-lg border border-[#c8a45c]/20 bg-[#c8a45c]/5">
+                <Camera size={24} className="text-[#c8a45c]" />
+              </div>
+              <h3 className="mb-2 font-sans text-lg font-medium text-text-primary">Feng Shui Lens</h3>
+              <p className="font-sans text-sm text-text-secondary leading-relaxed">
+                Activate your camera with a real-time Bagua overlay. Capture photos with directional energy readings.
+              </p>
+              <div className="mt-4 flex items-center gap-2 font-sans text-xs text-[#c8a45c]/70 uppercase tracking-wider">
+                <span>Launch Lens</span>
+                <ChevronDown size={12} className="-rotate-90" />
+              </div>
+            </motion.button>
+
+            {/* Digital Compass */}
+            <motion.button
+              onClick={() => setShowCompass(true)}
+              className="group relative overflow-hidden rounded-xl border border-[#c8a45c]/10 bg-[#c8a45c]/[0.02] p-8 text-left transition-all duration-300 hover:border-[#c8a45c]/30 hover:bg-[#c8a45c]/[0.04]"
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, delay: 0.2 }}
+              whileHover={{ y: -4 }}
+            >
+              <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-lg border border-[#c8a45c]/20 bg-[#c8a45c]/5">
+                <CompassIcon size={24} className="text-[#c8a45c]" />
+              </div>
+              <h3 className="mb-2 font-sans text-lg font-medium text-text-primary">Digital Compass</h3>
+              <p className="font-sans text-sm text-text-secondary leading-relaxed">
+                Real-time direction sensing with device orientation. Tap sectors to reveal Feng Shui energy details.
+              </p>
+              <div className="mt-4 flex items-center gap-2 font-sans text-xs text-[#c8a45c]/70 uppercase tracking-wider">
+                <span>Launch Compass</span>
+                <ChevronDown size={12} className="-rotate-90" />
+              </div>
+            </motion.button>
+          </div>
+        </div>
+      </section>
+
+      {/* ===== Section 5: CTA ===== */}
       <section className="relative py-16 md:py-24" style={{ background: 'linear-gradient(180deg, #0a0a0f 0%, #f5efe6 100%)' }}>
         <div className="max-w-[640px] mx-auto px-6 text-center">
           <motion.div
@@ -332,6 +409,15 @@ export default function FengShui() {
         </div>
       </section>
 
+      {/* Overlays */}
+      <AnimatePresence>
+        {showCamera && (
+          <FengshuiCamera onClose={() => setShowCamera(false)} />
+        )}
+        {showCompass && (
+          <WebCompass onClose={() => setShowCompass(false)} />
+        )}
+      </AnimatePresence>
     </div>
   );
 }
