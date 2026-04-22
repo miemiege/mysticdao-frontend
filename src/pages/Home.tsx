@@ -233,7 +233,7 @@ function HeroSection() {
           className="flex flex-col sm:flex-row items-center justify-center gap-4"
         >
           <a
-            href="/#/bazi"
+            href="./#/bazi"
             className="inline-flex items-center px-8 py-3 rounded-full bg-gold text-black text-xs font-medium uppercase tracking-widest hover:bg-gold-light hover:scale-[1.03] hover:shadow-[0_0_24px_rgba(200,164,92,0.3)] transition-all duration-300"
           >
             Get Your Free Reading
@@ -696,7 +696,7 @@ function CTASection() {
         </p>
 
         <a
-          href="/#/bazi"
+          href="./#/bazi"
           className="inline-flex items-center px-10 py-4 rounded-full bg-gold text-black text-sm font-medium uppercase tracking-widest hover:bg-gold-light hover:scale-[1.03] animate-glow-pulse transition-all duration-300"
         >
           Get Your Free Reading
@@ -704,7 +704,7 @@ function CTASection() {
 
         <div className="mt-6">
           <a
-            href="/#/pricing"
+            href="./#/pricing"
             className="text-sm text-gold hover:underline transition-all duration-200"
           >
             View Pricing Plans

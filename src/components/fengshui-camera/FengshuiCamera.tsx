@@ -83,7 +83,7 @@ function downloadDataUrl(dataUrl: string, filename: string): void {
 
 // ─── SVG BaGua Compass ────────────────────────────────────────────────
 
-function BaguaOverlay(): JSX.Element {
+function BaguaOverlay({ heading = 0 }: { heading?: number }): JSX.Element {
   const directions = [
     { label: '北', angle: 0 },
     { label: '东北', angle: 45 },
@@ -99,7 +99,7 @@ function BaguaOverlay(): JSX.Element {
     <svg
       viewBox="0 0 300 300"
       className="absolute inset-0 m-auto w-[70vmin] h-[70vmin] pointer-events-none"
-      style={{ opacity: 0.3 }}
+      style={{ opacity: 0.3, transform: `rotate(${-heading}deg)` }}
     >
       <circle
         cx="150"
@@ -333,7 +333,7 @@ export function FengshuiCamera({
         autoPlay
       />
 
-      <BaguaOverlay />
+      <BaguaOverlay heading={heading} />
 
       <AnimatePresence>
         {error && (

@@ -162,7 +162,7 @@ export default function FengShui() {
             transition={{ duration: 0.5, delay: 1.5 }}
           >
             <motion.a
-              href="/#/pricing"
+              href="./#/pricing"
               className="inline-flex items-center gap-2 px-8 py-3.5 rounded-md font-sans text-sm font-semibold uppercase tracking-[0.04em] transition-all duration-300 hover:scale-[1.02] hover:brightness-110"
               style={{
                 background: 'linear-gradient(135deg, #c8a45c 0%, #e8d5a3 40%, #f0d878 60%, #c8a45c 100%)',
@@ -175,7 +175,7 @@ export default function FengShui() {
               Get Full Analysis
             </motion.a>
             <a
-              href="/#/bazi"
+              href="./#/bazi"
               className="inline-flex items-center px-8 py-3.5 rounded-md font-sans text-sm font-medium border transition-all duration-300 hover:bg-[#c8a45c]/8 border-[#c8a45c]/30 text-[#c8a45c]"
             >
               Try Bazi Destiny
@@ -389,7 +389,7 @@ export default function FengShui() {
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
               <a
-                href="/#/pricing"
+                href="./#/pricing"
                 className="inline-flex items-center gap-2 px-8 py-3.5 rounded-md font-sans text-sm font-semibold uppercase tracking-[0.04em] transition-all duration-300 hover:scale-[1.02] hover:brightness-110"
                 style={{
                   background: 'linear-gradient(135deg, #c8a45c 0%, #e8d5a3 40%, #f0d878 60%, #c8a45c 100%)',
@@ -399,7 +399,7 @@ export default function FengShui() {
                 Get Full Analysis
               </a>
               <a
-                href="/#/bazi"
+                href="./#/bazi"
                 className="inline-flex items-center px-8 py-3.5 rounded-md font-sans text-sm font-medium border transition-all duration-300 hover:bg-[#c8a45c]/8 border-[#c8a45c]/30 text-[#c8a45c]"
               >
                 Try Bazi Destiny

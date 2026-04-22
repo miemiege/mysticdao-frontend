@@ -21,6 +21,7 @@ import {
   MOCK_FORTUNE_PERIODS,
 } from '../components/bazi/data';
 import type { Element } from '../components/bazi/data';
+import { getCityLongitude, DEFAULT_CITY } from '@/data/cities';
 
 interface FormData {
   name: string;
@@ -29,6 +30,7 @@ interface FormData {
   birthMonth: number;
   birthDay: number;
   birthHour: number;
+  birthCity: string;
 }
 
 // Steps: 1 = form, 2 = pillars, 3 = reading
@@ -41,6 +43,7 @@ export default function Bazi() {
     birthMonth: 1,
     birthDay: 1,
     birthHour: -1,
+    birthCity: DEFAULT_CITY,
   });
   const [pillars, setPillars] = useState<FourPillarsData | null>(null);
   const [aiReading, setAiReading] = useState<string | null>(null);
@@ -61,6 +64,7 @@ export default function Bazi() {
           birthMonth: Number(storedForm.birthMonth) || 1,
           birthDay: Number(storedForm.birthDay) || 1,
           birthHour: storedForm.birthHour !== undefined ? Number(storedForm.birthHour) : -1,
+          birthCity: (storedForm.birthCity as string) || DEFAULT_CITY,
         });
 
         if (stored.pillars && stored.pillars.length === 4) {
@@ -110,6 +114,7 @@ export default function Bazi() {
           birthMonth: String(formData.birthMonth),
           birthDay: String(formData.birthDay),
           birthHour: String(formData.birthHour),
+          birthCity: formData.birthCity,
         },
         pillars: [
           pillars.year,
@@ -155,6 +160,7 @@ export default function Bazi() {
     abortControllerRef.current = controller;
 
     try {
+      const longitude = getCityLongitude(formData.birthCity);
       const response = await fetchAIInterpretation(
         {
           type: 'bazi',
@@ -165,6 +171,7 @@ export default function Bazi() {
             birthMonth: formData.birthMonth,
             birthDay: formData.birthDay,
             birthHour: formData.birthHour,
+            longitude,
             pillars,
           },
         },
@@ -188,6 +195,7 @@ export default function Bazi() {
           birthMonth: formData.birthMonth,
           birthDay: formData.birthDay,
           birthHour: formData.birthHour,
+          birthCity: formData.birthCity,
           pillars,
           reading: response.text,
         },

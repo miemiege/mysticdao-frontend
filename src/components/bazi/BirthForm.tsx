@@ -1,6 +1,7 @@
 import { useState, useCallback, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { TIME_PERIODS } from './data';
+import { ALL_CITIES, DEFAULT_CITY } from '@/data/cities';
 
 interface BirthFormData {
   name: string;
@@ -9,6 +10,7 @@ interface BirthFormData {
   birthMonth: number;
   birthDay: number;
   birthHour: number;
+  birthCity: string;
 }
 
 interface BirthFormProps {
@@ -44,6 +46,7 @@ export default function BirthForm({ initialData, onSubmit, isLoading = false }: 
   const [birthMonth, setBirthMonth] = useState(initialData?.birthMonth || 1);
   const [birthDay, setBirthDay] = useState(initialData?.birthDay || 1);
   const [birthHour, setBirthHour] = useState(initialData?.birthHour ?? -1);
+  const [birthCity, setBirthCity] = useState(initialData?.birthCity || DEFAULT_CITY);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [shakeField, setShakeField] = useState<string | null>(null);
 
@@ -103,10 +106,11 @@ export default function BirthForm({ initialData, onSubmit, isLoading = false }: 
           birthMonth,
           birthDay,
           birthHour,
+          birthCity,
         } as BirthFormData);
       }
     },
-    [isLoading, validate, onSubmit, name, gender, birthYear, birthMonth, birthDay, birthHour]
+    [isLoading, validate, onSubmit, name, gender, birthYear, birthMonth, birthDay, birthHour, birthCity]
   );
 
   const maxDay = getMaxDay(birthYear, birthMonth);
@@ -262,6 +266,32 @@ export default function BirthForm({ initialData, onSubmit, isLoading = false }: 
               <option key={tp.hour} value={tp.hour}>{tp.label}</option>
             ))}
           </select>
+        </motion.div>
+
+        {/* Field 5: Birth City */}
+        <motion.div
+          custom={4}
+          variants={fieldVariants}
+          initial="hidden"
+          animate="visible"
+        >
+          <label className="block text-sm text-text-secondary mb-2">
+            出生地（用于真太阳时校正）
+          </label>
+          <select
+            value={birthCity}
+            onChange={(e) => setBirthCity(e.target.value)}
+            aria-label="出生地"
+            className="w-full bg-bg-card border border-[rgba(255,255,255,0.12)] rounded-lg px-3 py-3.5 text-text-primary text-base appearance-none focus:outline-none focus:border-border-glow focus:shadow-[0_0_0_3px_rgba(255,255,255,0.05)] transition-all duration-200 cursor-pointer"
+            style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23555555' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E")`, backgroundRepeat: 'no-repeat', backgroundPosition: 'right 12px center' }}
+          >
+            {ALL_CITIES.map((city) => (
+              <option key={city.name} value={city.name}>{city.name}（东经{city.longitude}°）</option>
+            ))}
+          </select>
+          <p className="text-xs text-text-muted mt-1.5">
+            选择出生城市可校正真太阳时，提高排盘精度
+          </p>
         </motion.div>
 
         {/* Submit Button */}

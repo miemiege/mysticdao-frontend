@@ -3,12 +3,12 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Menu, X } from 'lucide-react';
 
 const navLinks = [
-  { label: 'Home', href: '/#/' },
-  { label: 'Bazi', href: '/#/bazi' },
-  { label: 'Feng Shui', href: '/#/fengshui' },
-  { label: 'Daily', href: '/#/daily' },
-  { label: 'Compass', href: '/#/compass' },
-  { label: 'Pricing', href: '/#/pricing' },
+  { label: 'Home', href: '#/' },
+  { label: 'Bazi', href: '#/bazi' },
+  { label: 'Feng Shui', href: '#/fengshui' },
+  { label: 'Daily', href: '#/daily' },
+  { label: 'Compass', href: '#/compass' },
+  { label: 'Pricing', href: '#/pricing' },
 ];
 
 function YinYangIcon({ className }: { className?: string }) {
@@ -52,7 +52,7 @@ export default function Navbar() {
       <nav className="fixed top-0 left-0 right-0 z-50 h-[72px] backdrop-blur-xl bg-black/70 border-b border-white/[0.06]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-full flex items-center justify-between">
           {/* Brand */}
-          <a href="/#/" className="flex items-center gap-2 text-gold">
+          <a href="./#/" className="flex items-center gap-2 text-gold">
             <YinYangIcon className="w-6 h-6" />
             <span className="font-heading text-xl font-bold tracking-tight">MysticDao</span>
           </a>
@@ -84,7 +84,7 @@ export default function Navbar() {
           {/* CTA + Hamburger */}
           <div className="flex items-center gap-4">
             <a
-              href="/#/bazi"
+              href="./#/bazi"
               className="hidden md:inline-flex items-center px-6 py-2.5 rounded-full bg-gold text-black text-xs font-medium uppercase tracking-widest hover:bg-gold-light hover:scale-[1.03] hover:shadow-[0_0_24px_rgba(200,164,92,0.3)] transition-all duration-300"
             >
               Begin Your Journey
@@ -150,7 +150,7 @@ export default function Navbar() {
               </div>
               <div className="mt-auto p-6">
                 <a
-                  href="/#/bazi"
+                  href="./#/bazi"
                   onClick={() => setMobileOpen(false)}
                   className="block text-center px-6 py-3 rounded-full bg-gold text-black text-xs font-medium uppercase tracking-widest"
                 >

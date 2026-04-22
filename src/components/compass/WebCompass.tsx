@@ -29,9 +29,14 @@ const isMobileDevice = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
 // ─── Inline useCompass (sensor-driven) ───────────────────────────
 function useCompass() {
   const [heading, setHeading] = useState<number>(0);
+  const [rawHeading, setRawHeading] = useState<number>(0);
   const [accuracy, setAccuracy] = useState<number | null>(null);
   const [isCalibrating, setIsCalibrating] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [permissionGranted, setPermissionGranted] = useState<boolean>(
+    typeof (DeviceOrientationEvent as any).requestPermission !== 'function'
+  );
+  const offsetRef = useRef<number>(0);
 
   const handleOrientation = useCallback((event: DeviceOrientationEvent) => {
     let h: number;
@@ -43,7 +48,9 @@ function useCompass() {
     } else {
       return;
     }
-    setHeading(((h % 360) + 360) % 360);
+    const normalized = ((h % 360) + 360) % 360;
+    setRawHeading(normalized);
+    setHeading(((normalized - offsetRef.current) % 360 + 360) % 360);
     if ('webkitCompassAccuracy' in event) {
       setAccuracy(anyEvent.webkitCompassAccuracy);
     }
@@ -60,19 +67,26 @@ function useCompass() {
     if (typeof (DeviceOrientationEvent as any).requestPermission === 'function') {
       try {
         const response = await (DeviceOrientationEvent as any).requestPermission();
-        if (response !== 'granted') setError('传感器权限被拒绝');
+        if (response === 'granted') {
+          setPermissionGranted(true);
+        } else {
+          setError('传感器权限被拒绝');
+        }
       } catch {
         setError('请求传感器权限失败');
       }
+    } else {
+      setPermissionGranted(true);
     }
   }, []);
 
   const startCalibration = useCallback(() => {
+    offsetRef.current = rawHeading;
     setIsCalibrating(true);
     setTimeout(() => setIsCalibrating(false), 5000);
-  }, []);
+  }, [rawHeading]);
 
-  return { heading, accuracy, isCalibrating, error, requestPermission, startCalibration };
+  return { heading, accuracy, isCalibrating, error, permissionGranted, requestPermission, startCalibration };
 }
 
 // ─── Inline useCompassPC (mouse/touch drag) ──────────────────────
@@ -287,6 +301,36 @@ export default function WebCompass({ onClose }: WebCompassProps) {
               <div className="text-sm text-white/60">
                 请将设备在空中画 8 字以校准指南针
               </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* iOS Permission Request */}
+      <AnimatePresence>
+        {isSensorMode && !compassMobile.permissionGranted && (
+          <motion.div
+            className="absolute inset-0 z-40 flex flex-col items-center justify-center"
+            style={{ backgroundColor: 'rgba(0,0,0,0.85)' }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+          >
+            <Smartphone size={48} style={{ color: GOLD }} className="mb-4" />
+            <div className="text-white text-center px-8 max-w-xs">
+              <div className="text-lg font-medium mb-2" style={{ color: GOLD }}>
+                启用方向传感器
+              </div>
+              <div className="text-sm text-white/60 mb-6">
+                需要访问设备方向传感器以使用数字罗盘功能
+              </div>
+              <button
+                onClick={() => compassMobile.requestPermission()}
+                className="px-6 py-2.5 rounded-full text-sm font-medium"
+                style={{ backgroundColor: GOLD, color: '#0a0a0f' }}
+              >
+                允许访问
+              </button>
             </div>
           </motion.div>
         )}
