@@ -194,3 +194,14 @@ export const elementIcons: Record<string, string> = {
   Fire: '🔥',
   Metal: '⚪',
 };
+
+/**
+ * Convert a compass angle (0-360) to a direction key.
+ * 0° = North, 90° = East, 180° = South, 270° = West.
+ */
+export function getDirectionFromAngle(angle: number): string {
+  const normalized = ((angle % 360) + 360) % 360;
+  const dirs = ['north', 'northeast', 'east', 'southeast', 'south', 'southwest', 'west', 'northwest'];
+  const idx = Math.round(normalized / 45) % 8;
+  return dirs[idx];
+}
