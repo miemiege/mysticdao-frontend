@@ -1,6 +1,8 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { getBaziState, saveBaziState } from '../lib/storage';
+import { Heart, Share2 } from 'lucide-react';
+import { toast } from 'sonner';
+import { getBaziState, saveBaziState, addHistory, addFavorite, isFavorite, generateShareId } from '../lib/storage';
 import { fetchAIInterpretation } from '../services/api';
 import BirthForm from '../components/bazi/BirthForm';
 import FourPillars from '../components/bazi/FourPillars';
@@ -170,6 +172,26 @@ export default function Bazi() {
       );
 
       setAiReading(response.text);
+
+      // Save to history
+      const historyId = `bazi_${Date.now()}`;
+      const titleStr = `${formData.name || '命主'} · ${formatBirthDate(formData.birthYear, formData.birthMonth, formData.birthDay, formData.birthHour)}`;
+      addHistory({
+        id: historyId,
+        type: 'bazi',
+        title: titleStr,
+        date: new Date().toISOString(),
+        data: {
+          name: formData.name,
+          gender: formData.gender,
+          birthYear: formData.birthYear,
+          birthMonth: formData.birthMonth,
+          birthDay: formData.birthDay,
+          birthHour: formData.birthHour,
+          pillars,
+          reading: response.text,
+        },
+      });
     } catch (err) {
       if (err instanceof DOMException && err.name === 'AbortError') {
         return;
@@ -427,6 +449,71 @@ export default function Bazi() {
                     {birthDateStr}
                   </p>
                 </motion.div>
+
+                {/* Action Buttons */}
+                {aiReading && !isLoading && !error && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.3, duration: 0.4 }}
+                    className="flex items-center justify-center gap-3 mb-8"
+                  >
+                    <button
+                      onClick={() => {
+                        const id = `bazi_${formData.name || '命主'}_${formData.birthYear}${formData.birthMonth}${formData.birthDay}`;
+                        if (isFavorite(id)) {
+                          toast.info('已在收藏中');
+                          return;
+                        }
+                        addFavorite({
+                          id,
+                          type: 'bazi',
+                          title: `${formData.name || '命主'} · ${formatBirthDate(formData.birthYear, formData.birthMonth, formData.birthDay, formData.birthHour)}`,
+                          date: new Date().toISOString(),
+                          data: {
+                            name: formData.name,
+                            gender: formData.gender,
+                            birthYear: formData.birthYear,
+                            birthMonth: formData.birthMonth,
+                            birthDay: formData.birthDay,
+                            birthHour: formData.birthHour,
+                            pillars,
+                            reading: aiReading,
+                          },
+                        });
+                        toast.success('已收藏到用户中心');
+                      }}
+                      className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full border border-border-subtle text-sm text-text-secondary hover:text-gold hover:border-gold/30 hover:bg-gold/5 transition-all duration-200"
+                    >
+                      <Heart className="w-4 h-4" />
+                      收藏
+                    </button>
+                    <button
+                      onClick={() => {
+                        const shareId = generateShareId('bazi', {
+                          name: formData.name,
+                          gender: formData.gender,
+                          birthYear: formData.birthYear,
+                          birthMonth: formData.birthMonth,
+                          birthDay: formData.birthDay,
+                          birthHour: formData.birthHour,
+                          pillars,
+                          reading: aiReading,
+                        });
+                        const url = `${window.location.origin}/#/?share=${shareId}`;
+                        navigator.clipboard.writeText(url).then(() => {
+                          toast.success('分享链接已复制');
+                        }).catch(() => {
+                          toast.error('复制失败');
+                        });
+                      }}
+                      className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full border border-border-subtle text-sm text-text-secondary hover:text-gold hover:border-gold/30 hover:bg-gold/5 transition-all duration-200"
+                    >
+                      <Share2 className="w-4 h-4" />
+                      分享
+                    </button>
+                  </motion.div>
+                )}
 
                 {/* Reading Result */}
                 <ReadingResult

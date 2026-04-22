@@ -1,5 +1,5 @@
 import { useState, useCallback, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { Compass as CompassIcon, Sparkles, ChevronDown } from 'lucide-react';
 import { fetchAIInterpretation } from '@/services/api';
 import { BaguaIcon } from '@/components/SacredIcons';

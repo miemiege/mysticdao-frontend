@@ -1,13 +1,14 @@
 import React, { useState, useCallback, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Sparkles, RotateCcw } from 'lucide-react';
+import { Sparkles, RotateCcw, Heart, Share2 } from 'lucide-react';
 import FortuneCard from '@/components/daily/FortuneCard';
 import ScoreRing from '@/components/daily/ScoreRing';
 import LuckyInfo from '@/components/daily/LuckyInfo';
 import TaijiLoader from '@/components/TaijiLoader';
 import TypewriterText from '@/components/TypewriterText';
 import { fetchAIInterpretation } from '@/services/api';
-import { getDailyState, saveDailyState } from '@/lib/storage';
+import { getDailyState, saveDailyState, addHistory, addFavorite, isFavorite, generateShareId } from '@/lib/storage';
+import { toast } from 'sonner';
 
 type Step = 'idle' | 'drawing' | 'loading' | 'result';
 
@@ -118,6 +119,14 @@ const Daily: React.FC = () => {
             cardId: result.card.name,
             fortune: result,
             reading: response.text,
+          });
+          // Save to history
+          addHistory({
+            id: `daily_${today}_${Date.now()}`,
+            type: 'daily',
+            title: `${today} · ${result.card.name} · 综合运势 ${result.overallScore}`,
+            date: new Date().toISOString(),
+            data: { fortune: result, reading: response.text },
           });
         })
         .catch((err) => {
@@ -329,6 +338,54 @@ const Daily: React.FC = () => {
                     direction={fortune.luckyDirection}
                   />
                 </motion.div>
+
+                {/* Action Buttons */}
+                {reading && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.5, duration: 0.4 }}
+                    className="flex items-center justify-center gap-3 mb-6"
+                  >
+                    <button
+                      onClick={() => {
+                        const today = new Date().toISOString().split('T')[0];
+                        const id = `daily_${today}`;
+                        if (isFavorite(id)) {
+                          toast.info('已在收藏中');
+                          return;
+                        }
+                        addFavorite({
+                          id,
+                          type: 'daily',
+                          title: `${today} · ${fortune.card.name} · 综合运势 ${fortune.overallScore}`,
+                          date: new Date().toISOString(),
+                          data: { fortune, reading },
+                        });
+                        toast.success('已收藏到用户中心');
+                      }}
+                      className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full border border-border-subtle text-sm text-text-secondary hover:text-gold hover:border-gold/30 hover:bg-gold/5 transition-all duration-200"
+                    >
+                      <Heart className="w-4 h-4" />
+                      收藏
+                    </button>
+                    <button
+                      onClick={() => {
+                        const shareId = generateShareId('daily', { fortune, reading });
+                        const url = `${window.location.origin}/#/?share=${shareId}`;
+                        navigator.clipboard.writeText(url).then(() => {
+                          toast.success('分享链接已复制');
+                        }).catch(() => {
+                          toast.error('复制失败');
+                        });
+                      }}
+                      className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full border border-border-subtle text-sm text-text-secondary hover:text-gold hover:border-gold/30 hover:bg-gold/5 transition-all duration-200"
+                    >
+                      <Share2 className="w-4 h-4" />
+                      分享
+                    </button>
+                  </motion.div>
+                )}
 
                 {/* AI Reading */}
                 {reading && (
