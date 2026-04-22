@@ -7,7 +7,6 @@ const navLinks = [
   { label: 'Bazi', href: '/#/bazi' },
   { label: 'Feng Shui', href: '/#/fengshui' },
   { label: 'Daily', href: '/#/daily' },
-  { label: 'Compass', href: '/#/compass' },
   { label: 'Pricing', href: '/#/pricing' },
 ];
 

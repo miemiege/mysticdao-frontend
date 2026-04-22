@@ -1,0 +1,9 @@
+node_modules/
+dist/
+*.log
+.env
+.env.local
+agent_beta_package/
+agent_beta_3package/
+*.tar.gz
+src.today_backup/

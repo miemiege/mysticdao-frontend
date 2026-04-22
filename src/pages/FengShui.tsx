@@ -1,6 +1,6 @@
 import { useState, useCallback, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Compass as CompassIcon, Sparkles, ChevronDown, Camera, Navigation } from 'lucide-react';
+import { Compass as CompassIcon, Sparkles, ChevronDown } from 'lucide-react';
 import { fetchAIInterpretation } from '@/services/api';
 import { BaguaIcon } from '@/components/SacredIcons';
 import Compass from '@/components/fengshui/Compass';
@@ -8,8 +8,6 @@ import DirectionPanel from '@/components/fengshui/DirectionPanel';
 import BaguaMap from '@/components/fengshui/BaguaMap';
 import { directionData } from '@/components/fengshui/fengshuiData';
 import type { DirectionInfo } from '@/components/fengshui/fengshuiData';
-import FengshuiCamera from '@/components/fengshui-camera/FengshuiCamera';
-import WebCompass from '@/components/compass/WebCompass';
 
 /* Animation variants */
 const staggerContainer = {
@@ -34,8 +32,6 @@ export default function FengShui() {
   const [dirInfo, setDirInfo] = useState<DirectionInfo | null>(null);
   const [selectedRoom, setSelectedRoom] = useState('Living Room');
   const [dailyGuidance, setDailyGuidance] = useState('');
-  const [showCamera, setShowCamera] = useState(false);
-  const [showCompass, setShowCompass] = useState(false);
 
   useEffect(() => {
     // Fetch daily fengshui guidance
@@ -162,7 +158,7 @@ export default function FengShui() {
             transition={{ duration: 0.5, delay: 1.5 }}
           >
             <motion.a
-              href="#compass"
+              href="/#/pricing"
               className="inline-flex items-center gap-2 px-8 py-3.5 rounded-md font-sans text-sm font-semibold uppercase tracking-[0.04em] transition-all duration-300 hover:scale-[1.02] hover:brightness-110"
               style={{
                 background: 'linear-gradient(135deg, #c8a45c 0%, #e8d5a3 40%, #f0d878 60%, #c8a45c 100%)',
@@ -172,22 +168,14 @@ export default function FengShui() {
               whileHover={{ boxShadow: '0 0 30px rgba(200,164,92,0.3)' }}
             >
               <CompassIcon size={16} />
-              Explore the Compass
+              Get Full Analysis
             </motion.a>
-            <button
-              onClick={() => setShowCamera(true)}
-              className="inline-flex items-center gap-2 px-6 py-3 rounded-md font-sans text-sm font-medium border border-[#c8a45c]/40 text-[#c8a45c] transition-all duration-300 hover:bg-[#c8a45c]/10 hover:border-[#c8a45c]/60"
+            <a
+              href="/#/bazi"
+              className="inline-flex items-center px-8 py-3.5 rounded-md font-sans text-sm font-medium border transition-all duration-300 hover:bg-[#c8a45c]/8 border-[#c8a45c]/30 text-[#c8a45c]"
             >
-              <Camera size={16} />
-              Feng Shui Lens
-            </button>
-            <button
-              onClick={() => setShowCompass(true)}
-              className="inline-flex items-center gap-2 px-6 py-3 rounded-md font-sans text-sm font-medium border border-white/20 text-white/70 transition-all duration-300 hover:bg-white/5 hover:border-white/40"
-            >
-              <Navigation size={16} />
-              Digital Compass
-            </button>
+              Try Bazi Destiny
+            </a>
           </motion.div>
 
           {/* Scroll indicator */}
@@ -307,74 +295,7 @@ export default function FengShui() {
         </div>
       </section>
 
-      {/* ===== Section 4: Camera & Compass Tools ===== */}
-      <section className="relative py-16 md:py-24 border-t border-[#c8a45c]/5">
-        <div className="max-w-[1000px] mx-auto px-6">
-          <motion.div
-            className="text-center mb-12"
-            initial={{ opacity: 0, y: 40 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: '-100px' }}
-            transition={{ duration: 0.8 }}
-          >
-            <p className="font-sans text-xs font-medium uppercase tracking-[0.12em] text-[#c8a45c]/70 mb-3">
-              DIGITAL TOOLS · 数字工具
-            </p>
-            <h2 className="font-sans text-[28px] md:text-[36px] font-medium text-text-primary mb-3">
-              Modern Meets Ancient
-            </h2>
-            <p className="font-sans text-sm md:text-base text-text-secondary max-w-[520px] mx-auto">
-              Harness the power of your device sensors to bring Feng Shui wisdom into the physical world.
-            </p>
-          </motion.div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {/* Feng Shui Lens Card */}
-            <motion.button
-              onClick={() => setShowCamera(true)}
-              className="group relative bg-bg-card border border-border-subtle rounded-2xl p-8 text-left transition-all duration-300 hover:border-[#c8a45c]/30 hover:bg-[#c8a45c]/[0.02]"
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6, delay: 0.1 }}
-            >
-              <div className="w-12 h-12 rounded-xl bg-[#c8a45c]/10 flex items-center justify-center mb-4 group-hover:bg-[#c8a45c]/20 transition-colors">
-                <Camera size={24} className="text-[#c8a45c]" />
-              </div>
-              <h3 className="font-sans text-xl font-medium text-text-primary mb-2">Feng Shui Lens</h3>
-              <p className="font-sans text-sm text-text-secondary leading-relaxed mb-4">
-                Point your camera at any room. The Bagua compass overlays in real-time, capturing the exact facing direction and generating a personalized Feng Shui analysis.
-              </p>
-              <span className="inline-flex items-center gap-1 text-xs text-[#c8a45c] font-medium">
-                Open Camera <ChevronDown size={12} className="-rotate-90" />
-              </span>
-            </motion.button>
-
-            {/* Digital Compass Card */}
-            <motion.button
-              onClick={() => setShowCompass(true)}
-              className="group relative bg-bg-card border border-border-subtle rounded-2xl p-8 text-left transition-all duration-300 hover:border-[#c8a45c]/30 hover:bg-[#c8a45c]/[0.02]"
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6, delay: 0.2 }}
-            >
-              <div className="w-12 h-12 rounded-xl bg-[#c8a45c]/10 flex items-center justify-center mb-4 group-hover:bg-[#c8a45c]/20 transition-colors">
-                <Navigation size={24} className="text-[#c8a45c]" />
-              </div>
-              <h3 className="font-sans text-xl font-medium text-text-primary mb-2">Digital Compass</h3>
-              <p className="font-sans text-sm text-text-secondary leading-relaxed mb-4">
-                Your phone becomes a Luopan. Sensor-driven on mobile, mouse-driven on desktop. Tap any direction to reveal its energy meaning.
-              </p>
-              <span className="inline-flex items-center gap-1 text-xs text-[#c8a45c] font-medium">
-                Open Compass <ChevronDown size={12} className="-rotate-90" />
-              </span>
-            </motion.button>
-          </div>
-        </div>
-      </section>
-
-      {/* ===== Section 5: CTA ===== */}
+      {/* ===== Section 4: CTA ===== */}
       <section className="relative py-16 md:py-24" style={{ background: 'linear-gradient(180deg, #0a0a0f 0%, #f5efe6 100%)' }}>
         <div className="max-w-[640px] mx-auto px-6 text-center">
           <motion.div
@@ -411,13 +332,6 @@ export default function FengShui() {
         </div>
       </section>
 
-      {/* Overlays */}
-      <AnimatePresence>
-        {showCamera && <FengshuiCamera onClose={() => setShowCamera(false)} />}
-      </AnimatePresence>
-      <AnimatePresence>
-        {showCompass && <WebCompass onClose={() => setShowCompass(false)} />}
-      </AnimatePresence>
     </div>
   );
 }
