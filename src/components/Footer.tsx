@@ -77,9 +77,16 @@ export default function Footer() {
           </div>
         </div>
 
+        {/* Refined Divider */}
+        <div className="mt-12 flex items-center gap-4">
+          <div className="flex-1 h-px bg-gradient-to-r from-transparent via-gold/20 to-transparent" />
+          <div className="w-1.5 h-1.5 rounded-full bg-gold/30" />
+          <div className="flex-1 h-px bg-gradient-to-r from-transparent via-gold/20 to-transparent" />
+        </div>
+
         {/* Copyright Bar */}
-        <div className="mt-12 pt-6 border-t border-white/[0.06] text-center">
-          <p className="text-xs text-white/35">
+        <div className="mt-6 text-center">
+          <p className="text-xs text-white/35 tracking-wide">
             &copy; {new Date().getFullYear()} MysticDao. All rights reserved. Ancient wisdom for the modern soul.
           </p>
         </div>

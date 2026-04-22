@@ -326,7 +326,7 @@ export default function FengShui() {
             {/* Feng Shui Lens */}
             <motion.button
               onClick={() => setShowCamera(true)}
-              className="group relative overflow-hidden rounded-xl border border-[#c8a45c]/10 bg-[#c8a45c]/[0.02] p-8 text-left transition-all duration-300 hover:border-[#c8a45c]/30 hover:bg-[#c8a45c]/[0.04]"
+              className="group relative overflow-hidden rounded-xl border border-[#c8a45c]/10 bg-white/5 backdrop-blur-sm p-8 text-left transition-all duration-300 hover:border-[#c8a45c]/40 hover:bg-white/[0.08] hover:shadow-[0_8px_32px_rgba(200,164,92,0.08)]"
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
@@ -349,7 +349,7 @@ export default function FengShui() {
             {/* Digital Compass */}
             <motion.button
               onClick={() => setShowCompass(true)}
-              className="group relative overflow-hidden rounded-xl border border-[#c8a45c]/10 bg-[#c8a45c]/[0.02] p-8 text-left transition-all duration-300 hover:border-[#c8a45c]/30 hover:bg-[#c8a45c]/[0.04]"
+              className="group relative overflow-hidden rounded-xl border border-[#c8a45c]/10 bg-white/5 backdrop-blur-sm p-8 text-left transition-all duration-300 hover:border-[#c8a45c]/40 hover:bg-white/[0.08] hover:shadow-[0_8px_32px_rgba(200,164,92,0.08)]"
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}

@@ -136,7 +136,7 @@ export default function BirthForm({ initialData, onSubmit, isLoading = false }: 
             value={name}
             onChange={(e) => setName(e.target.value)}
             placeholder="你的名字"
-            className="w-full bg-bg-card border border-[rgba(255,255,255,0.12)] rounded-lg px-4 py-3.5 text-text-primary text-base placeholder-text-muted focus:outline-none focus:border-border-glow focus:shadow-[0_0_0_3px_rgba(255,255,255,0.05)] transition-all duration-200"
+            className="w-full bg-bg-card border border-[rgba(255,255,255,0.12)] rounded-lg px-4 py-3.5 text-text-primary text-base placeholder-text-muted focus:outline-none focus:border-[#c8a45c]/50 focus:shadow-[0_0_0_3px_rgba(200,164,92,0.08),0_0_12px_rgba(200,164,92,0.1)] transition-all duration-200"
           />
         </motion.div>
 
@@ -208,7 +208,7 @@ export default function BirthForm({ initialData, onSubmit, isLoading = false }: 
                 value={birthYear}
                 onChange={(e) => setBirthYear(Number(e.target.value))}
                 aria-label="年"
-                className="w-full bg-bg-card border border-[rgba(255,255,255,0.12)] rounded-lg px-3 py-3.5 text-text-primary text-base appearance-none focus:outline-none focus:border-border-glow focus:shadow-[0_0_0_3px_rgba(255,255,255,0.05)] transition-all duration-200 cursor-pointer"
+                className="w-full bg-bg-card border border-[rgba(255,255,255,0.12)] rounded-lg px-3 py-3.5 text-text-primary text-base appearance-none focus:outline-none focus:border-[#c8a45c]/50 focus:shadow-[0_0_0_3px_rgba(200,164,92,0.08),0_0_12px_rgba(200,164,92,0.1)] transition-all duration-200 cursor-pointer"
                 style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23555555' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E")`, backgroundRepeat: 'no-repeat', backgroundPosition: 'right 12px center' }}
               >
                 {YEAR_OPTIONS.map((y) => (
@@ -221,7 +221,7 @@ export default function BirthForm({ initialData, onSubmit, isLoading = false }: 
                 value={birthMonth}
                 onChange={(e) => setBirthMonth(Number(e.target.value))}
                 aria-label="月"
-                className="w-full bg-bg-card border border-[rgba(255,255,255,0.12)] rounded-lg px-3 py-3.5 text-text-primary text-base appearance-none focus:outline-none focus:border-border-glow focus:shadow-[0_0_0_3px_rgba(255,255,255,0.05)] transition-all duration-200 cursor-pointer"
+                className="w-full bg-bg-card border border-[rgba(255,255,255,0.12)] rounded-lg px-3 py-3.5 text-text-primary text-base appearance-none focus:outline-none focus:border-[#c8a45c]/50 focus:shadow-[0_0_0_3px_rgba(200,164,92,0.08),0_0_12px_rgba(200,164,92,0.1)] transition-all duration-200 cursor-pointer"
                 style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23555555' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E")`, backgroundRepeat: 'no-repeat', backgroundPosition: 'right 12px center' }}
               >
                 {MONTH_OPTIONS.map((m) => (
@@ -234,7 +234,7 @@ export default function BirthForm({ initialData, onSubmit, isLoading = false }: 
                 value={birthDay}
                 onChange={(e) => setBirthDay(Number(e.target.value))}
                 aria-label="日"
-                className="w-full bg-bg-card border border-[rgba(255,255,255,0.12)] rounded-lg px-3 py-3.5 text-text-primary text-base appearance-none focus:outline-none focus:border-border-glow focus:shadow-[0_0_0_3px_rgba(255,255,255,0.05)] transition-all duration-200 cursor-pointer"
+                className="w-full bg-bg-card border border-[rgba(255,255,255,0.12)] rounded-lg px-3 py-3.5 text-text-primary text-base appearance-none focus:outline-none focus:border-[#c8a45c]/50 focus:shadow-[0_0_0_3px_rgba(200,164,92,0.08),0_0_12px_rgba(200,164,92,0.1)] transition-all duration-200 cursor-pointer"
                 style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23555555' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E")`, backgroundRepeat: 'no-repeat', backgroundPosition: 'right 12px center' }}
               >
                 {DAY_OPTIONS.map((d) => (
@@ -259,7 +259,7 @@ export default function BirthForm({ initialData, onSubmit, isLoading = false }: 
             value={birthHour}
             onChange={(e) => setBirthHour(Number(e.target.value))}
             aria-label="出生时辰"
-            className="w-full bg-bg-card border border-[rgba(255,255,255,0.12)] rounded-lg px-3 py-3.5 text-text-primary text-base appearance-none focus:outline-none focus:border-border-glow focus:shadow-[0_0_0_3px_rgba(255,255,255,0.05)] transition-all duration-200 cursor-pointer"
+            className="w-full bg-bg-card border border-[rgba(255,255,255,0.12)] rounded-lg px-3 py-3.5 text-text-primary text-base appearance-none focus:outline-none focus:border-[#c8a45c]/50 focus:shadow-[0_0_0_3px_rgba(200,164,92,0.08),0_0_12px_rgba(200,164,92,0.1)] transition-all duration-200 cursor-pointer"
             style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23555555' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E")`, backgroundRepeat: 'no-repeat', backgroundPosition: 'right 12px center' }}
           >
             {TIME_PERIODS.map((tp) => (
@@ -282,7 +282,7 @@ export default function BirthForm({ initialData, onSubmit, isLoading = false }: 
             value={birthCity}
             onChange={(e) => setBirthCity(e.target.value)}
             aria-label="出生地"
-            className="w-full bg-bg-card border border-[rgba(255,255,255,0.12)] rounded-lg px-3 py-3.5 text-text-primary text-base appearance-none focus:outline-none focus:border-border-glow focus:shadow-[0_0_0_3px_rgba(255,255,255,0.05)] transition-all duration-200 cursor-pointer"
+            className="w-full bg-bg-card border border-[rgba(255,255,255,0.12)] rounded-lg px-3 py-3.5 text-text-primary text-base appearance-none focus:outline-none focus:border-[#c8a45c]/50 focus:shadow-[0_0_0_3px_rgba(200,164,92,0.08),0_0_12px_rgba(200,164,92,0.1)] transition-all duration-200 cursor-pointer"
             style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23555555' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E")`, backgroundRepeat: 'no-repeat', backgroundPosition: 'right 12px center' }}
           >
             {ALL_CITIES.map((city) => (

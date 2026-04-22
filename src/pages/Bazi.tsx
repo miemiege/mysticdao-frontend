@@ -344,7 +344,7 @@ export default function Bazi() {
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 1.4, duration: 0.5 }}
-                        className="mt-10 bg-bg-card border border-border-subtle rounded-2xl p-6 sm:p-8"
+                        className="mt-10 bg-bg-card border border-border-subtle border-l-[3px] border-l-gold/40 rounded-2xl p-6 sm:p-8"
                       >
                         <div className="flex items-center gap-3 mb-4">
                           <div className="w-2 h-2 rounded-full" style={{ backgroundColor: ELEMENT_COLORS[dayMasterElement] }} />
@@ -373,7 +373,7 @@ export default function Bazi() {
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 1.8, duration: 0.5 }}
-                        className="mt-6 bg-bg-card border border-border-subtle rounded-2xl p-6 sm:p-8"
+                        className="mt-6 bg-bg-card border border-border-subtle border-l-[3px] border-l-gold/40 rounded-2xl p-6 sm:p-8"
                       >
                         <h2 className="text-lg font-semibold text-text-primary mb-4">五行解析</h2>
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -394,7 +394,7 @@ export default function Bazi() {
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 2.0, duration: 0.5 }}
-                        className="mt-6 bg-bg-card border border-border-subtle rounded-2xl p-6 sm:p-8"
+                        className="mt-6 bg-bg-card border border-border-subtle border-l-[3px] border-l-gold/40 rounded-2xl p-6 sm:p-8"
                       >
                         <h2 className="text-lg font-semibold text-text-primary mb-6">大运流年</h2>
                         <div className="relative">

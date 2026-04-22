@@ -49,7 +49,7 @@ export default function Navbar() {
 
   return (
     <>
-      <nav className="fixed top-0 left-0 right-0 z-50 h-[72px] backdrop-blur-xl bg-black/70 border-b border-white/[0.06]">
+      <nav className="fixed top-0 left-0 right-0 z-50 h-[72px] backdrop-blur-xl bg-black/70 border-b border-[#c8a45c]/20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-full flex items-center justify-between">
           {/* Brand */}
           <a href="./#/" className="flex items-center gap-2 text-gold">
@@ -72,8 +72,9 @@ export default function Navbar() {
                 {link.label}
                 {isActive(link.href) && (
                   <motion.span
-                    layoutId="nav-underline"
-                    className="absolute -bottom-1 left-0 right-0 h-[2px] bg-gold"
+                    layoutId="nav-indicator"
+                    className="absolute -bottom-1.5 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full bg-gold"
+                    style={{ boxShadow: '0 0 6px rgba(200,164,92,0.6)' }}
                     transition={{ duration: 0.3 }}
                   />
                 )}

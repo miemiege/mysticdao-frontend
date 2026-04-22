@@ -185,7 +185,7 @@ function HeroSection() {
 
         {/* Headline */}
         <h1 className="font-heading text-[40px] lg:text-[64px] font-bold text-white leading-[1.1] tracking-[-0.02em] mb-6"
-          style={{ textShadow: '0 0 60px rgba(200,164,92,0.15)' }}
+          style={{ textShadow: '0 0 40px rgba(200,164,92,0.3)' }}
         >
           <span className="block overflow-hidden">
             {words1.map((word, i) => (
@@ -234,13 +234,13 @@ function HeroSection() {
         >
           <a
             href="./#/bazi"
-            className="inline-flex items-center px-8 py-3 rounded-full bg-gold text-black text-xs font-medium uppercase tracking-widest hover:bg-gold-light hover:scale-[1.03] hover:shadow-[0_0_24px_rgba(200,164,92,0.3)] transition-all duration-300"
+            className="inline-flex items-center px-8 py-3 rounded-full bg-gold text-black text-xs font-medium uppercase tracking-widest hover:bg-gold-light hover:scale-[1.03] hover:shadow-[0_0_30px_rgba(200,164,92,0.4)] transition-all duration-300"
           >
             Get Your Free Reading
           </a>
           <a
             href="#features"
-            className="inline-flex items-center px-8 py-3 rounded-full border border-gold/40 text-gold text-xs font-medium uppercase tracking-widest hover:bg-gold/[0.08] hover:border-gold/70 transition-all duration-300"
+            className="inline-flex items-center px-8 py-3 rounded-full border border-gold/40 text-gold text-xs font-medium uppercase tracking-widest hover:bg-gold/[0.08] hover:border-gold/70 hover:shadow-[0_0_20px_rgba(200,164,92,0.15)] transition-all duration-300"
           >
             Explore Services
           </a>
@@ -329,7 +329,7 @@ function FeatureSection() {
           {features.map((f) => (
             <motion.div key={f.title} variants={staggerItem}>
               <a href={f.href} className="block group h-full">
-                <div className="h-full bg-white/[0.04] border border-white/[0.08] rounded-2xl p-8 transition-all duration-400 hover:border-gold/30 hover:bg-white/[0.07] hover:-translate-y-1 hover:shadow-[0_12px_40px_rgba(200,164,92,0.08)]">
+                <div className="h-full bg-white/[0.04] border border-white/[0.08] rounded-2xl p-8 transition-all duration-400 hover:border-gold/50 hover:bg-white/[0.07] hover:-translate-y-[4px] hover:shadow-[0_12px_40px_rgba(200,164,92,0.15)]">
                   <div className="w-12 h-12 rounded-xl bg-gold/[0.08] flex items-center justify-center mb-5 transition-colors duration-300 group-hover:bg-gold/[0.15]">
                     <f.icon className="w-6 h-6 text-gold" />
                   </div>
@@ -364,6 +364,12 @@ function BrandStorySection() {
 
   return (
     <section ref={ref} className="py-20 lg:py-28">
+      <motion.div
+        initial={{ opacity: 0, y: 40 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, amount: 0.15 }}
+        transition={{ duration: 0.8, ease: easeOutExpo }}
+      >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 lg:grid-cols-[55%_45%] gap-12 lg:gap-16 items-center">
           {/* Left Column — Text */}
@@ -423,6 +429,7 @@ function BrandStorySection() {
           </motion.div>
         </div>
       </div>
+      </motion.div>
     </section>
   );
 }
@@ -476,6 +483,12 @@ function StatsSection() {
 
   return (
     <section ref={ref} className="py-20 lg:py-28">
+      <motion.div
+        initial={{ opacity: 0, y: 40 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, amount: 0.15 }}
+        transition={{ duration: 0.8, ease: easeOutExpo }}
+      >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
         <motion.div
@@ -567,6 +580,7 @@ function StatsSection() {
           ))}
         </motion.div>
       </div>
+      </motion.div>
     </section>
   );
 }
@@ -599,6 +613,12 @@ function HowItWorksSection() {
 
   return (
     <section ref={ref} className="py-20 lg:py-28">
+      <motion.div
+        initial={{ opacity: 0, y: 40 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, amount: 0.15 }}
+        transition={{ duration: 0.8, ease: easeOutExpo }}
+      >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
         <motion.div
@@ -658,6 +678,7 @@ function HowItWorksSection() {
           </motion.div>
         </div>
       </div>
+      </motion.div>
     </section>
   );
 }
@@ -669,6 +690,13 @@ function CTASection() {
 
   return (
     <section ref={ref} className="relative py-24 lg:py-32 overflow-hidden">
+      <motion.div
+        initial={{ opacity: 0, y: 40 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, amount: 0.15 }}
+        transition={{ duration: 0.8, ease: easeOutExpo }}
+        className="contents"
+      >
       {/* Background */}
       <div className="absolute inset-0 bg-black" />
       <div
@@ -710,6 +738,7 @@ function CTASection() {
             View Pricing Plans
           </a>
         </div>
+      </motion.div>
       </motion.div>
     </section>
   );
