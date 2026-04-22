@@ -152,6 +152,12 @@ export default function WebCompass({ onClose }: WebCompassProps) {
     return () => clearTimeout(t);
   }, [showCalibrate]);
 
+  // Auto-show/update detail panel based on current heading
+  useEffect(() => {
+    if (!currentKey) return;
+    setSelectedKey(currentKey);
+  }, [currentKey]);
+
   const diskSize = typeof window !== 'undefined' && window.innerWidth < 768 ? 320 : 400;
   const radius = diskSize / 2 - 20;
 
@@ -450,6 +456,7 @@ export default function WebCompass({ onClose }: WebCompassProps) {
       <AnimatePresence>
         {selectedKey && directionData[selectedKey] && (
           <motion.div
+            key={selectedKey}
             className="absolute bottom-0 left-0 right-0 z-30"
             initial={{ y: '100%' }}
             animate={{ y: 0 }}
