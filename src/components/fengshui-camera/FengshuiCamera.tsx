@@ -16,6 +16,7 @@ import {
   directionData,
   getDirectionFromAngle,
 } from '../fengshui/fengshuiData';
+import BaguaScene3D from './BaguaScene3D';
 
 // ─── Types ───────────────────────────────────────────────────────────
 
@@ -81,84 +82,6 @@ function downloadDataUrl(dataUrl: string, filename: string): void {
   document.body.removeChild(link);
 }
 
-// ─── SVG BaGua Compass ────────────────────────────────────────────────
-
-function BaguaOverlay(): JSX.Element {
-  const directions = [
-    { label: '北', angle: 0 },
-    { label: '东北', angle: 45 },
-    { label: '东', angle: 90 },
-    { label: '东南', angle: 135 },
-    { label: '南', angle: 180 },
-    { label: '西南', angle: 225 },
-    { label: '西', angle: 270 },
-    { label: '西北', angle: 315 },
-  ];
-
-  return (
-    <svg
-      viewBox="0 0 300 300"
-      className="absolute inset-0 m-auto w-[70vmin] h-[70vmin] pointer-events-none"
-      style={{ opacity: 0.3 }}
-    >
-      <circle
-        cx="150"
-        cy="150"
-        r="145"
-        fill="none"
-        stroke="#c8a45c"
-        strokeWidth="1.5"
-      />
-      <circle
-        cx="150"
-        cy="150"
-        r="70"
-        fill="none"
-        stroke="#c8a45c"
-        strokeWidth="1"
-      />
-      <circle cx="150" cy="150" r="3" fill="#c8a45c" />
-      {directions.map((d) => {
-        const rad = ((d.angle - 90) * Math.PI) / 180;
-        const x1 = 150 + 70 * Math.cos(rad);
-        const y1 = 150 + 70 * Math.sin(rad);
-        const x2 = 150 + 145 * Math.cos(rad);
-        const y2 = 150 + 145 * Math.sin(rad);
-        return (
-          <line
-            key={d.label}
-            x1={x1}
-            y1={y1}
-            x2={x2}
-            y2={y2}
-            stroke="#c8a45c"
-            strokeWidth="1"
-          />
-        );
-      })}
-      {directions.map((d) => {
-        const rad = ((d.angle - 90) * Math.PI) / 180;
-        const tx = 150 + 110 * Math.cos(rad);
-        const ty = 150 + 110 * Math.sin(rad);
-        return (
-          <text
-            key={`t-${d.label}`}
-            x={tx}
-            y={ty}
-            textAnchor="middle"
-            dominantBaseline="central"
-            fill="#c8a45c"
-            fontSize="14"
-            fontWeight="600"
-          >
-            {d.label}
-          </text>
-        );
-      })}
-    </svg>
-  );
-}
-
 // ─── Main Component ────────────────────────────────────────────────────
 
 export function FengshuiCamera({
@@ -178,6 +101,7 @@ export function FengshuiCamera({
   const [lastPhoto, setLastPhoto] = useState<PhotoItem | null>(null);
   const [photos, setPhotos] = useState<PhotoItem[]>(loadPhotos);
   const [selectedPhotoId, setSelectedPhotoId] = useState<string | null>(null);
+  const [isCapturing, setIsCapturing] = useState<boolean>(false);
 
   // Lifecycle: start/stop camera
   useEffect(() => {
@@ -198,13 +122,18 @@ export function FengshuiCamera({
     const video = videoRef.current;
     if (!video || !video.videoWidth || !video.videoHeight) return;
 
+    setIsCapturing(true);
+
     const canvas = document.createElement('canvas');
     const w = video.videoWidth;
     const h = video.videoHeight;
     canvas.width = w;
     canvas.height = h;
     const ctx = canvas.getContext('2d');
-    if (!ctx) return;
+    if (!ctx) {
+      setIsCapturing(false);
+      return;
+    }
 
     // Draw video frame
     ctx.drawImage(video, 0, 0, w, h);
@@ -260,6 +189,7 @@ export function FengshuiCamera({
       savePhotos(next);
       return next;
     });
+    setIsCapturing(false);
     setMode('preview');
   }, [videoRef, heading, dirInfo, directionKey]);
 
@@ -333,7 +263,7 @@ export function FengshuiCamera({
         autoPlay
       />
 
-      <BaguaOverlay />
+      <BaguaScene3D heading={heading} isCapturing={isCapturing} />
 
       <AnimatePresence>
         {error && (
