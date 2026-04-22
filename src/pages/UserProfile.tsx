@@ -15,6 +15,7 @@ import {
   Clock,
   Calendar,
   BarChart3,
+  type LucideIcon,
 } from 'lucide-react';
 import { toast } from 'sonner';
 import {
@@ -48,7 +49,7 @@ function formatDate(dateStr: string): string {
   });
 }
 
-function EmptyState({ icon: Icon, title, subtitle }: { icon: React.ComponentType<{ className?: string }>; title: string; subtitle: string }) {
+function EmptyState({ icon: Icon, title, subtitle }: { icon: LucideIcon; title: string; subtitle: string }) {
   return (
     <motion.div
       initial={{ opacity: 0, y: 10 }}
@@ -142,7 +143,7 @@ export default function UserProfile() {
   const baziCount = history.filter((h) => h.type === 'bazi').length;
   const dailyCount = history.filter((h) => h.type === 'daily').length;
 
-  const tabs: { value: TabValue; label: string; icon: React.ComponentType<{ className?: string }> }[] = [
+  const tabs: { value: TabValue; label: string; icon: LucideIcon }[] = [
     { value: 'history', label: '历史记录', icon: History },
     { value: 'favorites', label: '我的收藏', icon: Heart },
     { value: 'shares', label: '分享管理', icon: Share2 },
