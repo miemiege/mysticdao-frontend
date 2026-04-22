@@ -1,65 +1,76 @@
-// src/hooks/useCamera.ts
-// Agent A completed — READ-ONLY for Agent B
+import { useCallback, useRef, useState } from "react"
 
-import { useRef, useCallback, useState, useEffect } from 'react';
-
-export interface UseCameraReturn {
-  videoRef: React.RefObject<HTMLVideoElement | null>;
-  streamRef: React.RefObject<MediaStream | null>;
-  isActive: boolean;
-  error: string | null;
-  startCamera: () => Promise<void>;
-  stopCamera: () => void;
+interface UseCameraReturn {
+  videoRef: React.RefObject<HTMLVideoElement | null>
+  isActive: boolean
+  error: string | null
+  start: () => Promise<void>
+  stop: () => void
+  takePhoto: () => string | null
 }
 
 export function useCamera(): UseCameraReturn {
-  const videoRef = useRef<HTMLVideoElement | null>(null);
-  const streamRef = useRef<MediaStream | null>(null);
-  const [isActive, setIsActive] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const videoRef = useRef<HTMLVideoElement | null>(null)
+  const streamRef = useRef<MediaStream | null>(null)
+  const [isActive, setIsActive] = useState<boolean>(false)
+  const [error, setError] = useState<string | null>(null)
 
-  const startCamera = useCallback(async () => {
+  const start = useCallback(async (): Promise<void> => {
+    setError(null)
     try {
-      setError(null);
       const stream = await navigator.mediaDevices.getUserMedia({
-        video: { facingMode: 'environment' },
-        audio: false,
-      });
-      streamRef.current = stream;
+        video: { facingMode: "environment" },
+      })
+      streamRef.current = stream
       if (videoRef.current) {
-        videoRef.current.srcObject = stream;
-        await videoRef.current.play();
+        videoRef.current.srcObject = stream
+        await videoRef.current.play()
       }
-      setIsActive(true);
+      setIsActive(true)
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Camera failed to start');
-      setIsActive(false);
+      const message = err instanceof Error ? err.message : "Failed to access camera"
+      setError(message)
+      setIsActive(false)
     }
-  }, []);
+  }, [])
 
-  const stopCamera = useCallback(() => {
-    if (streamRef.current) {
-      streamRef.current.getTracks().forEach((track) => track.stop());
-      streamRef.current = null;
+  const stop = useCallback((): void => {
+    const stream = streamRef.current
+    if (stream) {
+      stream.getTracks().forEach((track) => track.stop())
+      streamRef.current = null
     }
     if (videoRef.current) {
-      videoRef.current.srcObject = null;
+      videoRef.current.srcObject = null
     }
-    setIsActive(false);
-  }, []);
+    setIsActive(false)
+  }, [])
 
-  useEffect(() => {
-    return () => {
-      stopCamera();
-    };
-  }, [stopCamera]);
+  const takePhoto = useCallback((): string | null => {
+    const video = videoRef.current
+    if (!video || !video.videoWidth || !video.videoHeight) {
+      return null
+    }
+
+    const canvas = document.createElement("canvas")
+    canvas.width = video.videoWidth
+    canvas.height = video.videoHeight
+
+    const ctx = canvas.getContext("2d")
+    if (!ctx) {
+      return null
+    }
+
+    ctx.drawImage(video, 0, 0, canvas.width, canvas.height)
+    return canvas.toDataURL("image/png")
+  }, [])
 
   return {
     videoRef,
-    streamRef,
     isActive,
     error,
-    startCamera,
-    stopCamera,
-  };
+    start,
+    stop,
+    takePhoto,
+  }
 }
