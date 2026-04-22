@@ -81,13 +81,8 @@ export function ParticleRing({
       posArr[idx] = nx;
       posArr[idx + 2] = nz;
 
-      /* 上下浮动 */
-      const baseY = Math.sin(time * 0.4 + ph) * 0.08;
-      posArr[idx + 1] += Math.cos(time * 0.7 + ph) * 0.00015;
-
-      /* 限制 y 范围 */
-      if (posArr[idx + 1] > baseY + 0.2) posArr[idx + 1] = baseY + 0.2;
-      if (posArr[idx + 1] < baseY - 0.2) posArr[idx + 1] = baseY - 0.2;
+      /* 上下浮动：基于 sin 的绝对位置，而非累积 */
+      posArr[idx + 1] = Math.sin(time * 0.5 + ph) * 0.15;
     }
     posAttr.needsUpdate = true;
 
