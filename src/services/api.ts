@@ -43,12 +43,45 @@ export async function fetchAIInterpretation(
     if (error instanceof DOMException && error.name === 'AbortError') {
       throw error;
     }
-    // Fallback: return mock response for demo purposes
+    // Fallback: try JSON data first, then mock
+    const text = await fetchFromJSON(request);
     return {
-      text: generateMockResponse(request),
+      text,
       status: 'success',
     };
   }
+}
+
+async function fetchFromJSON(request: AIInterpretRequest): Promise<string> {
+  try {
+    if (request.type === 'daily') {
+      const res = await fetch('./data/content.json');
+      const data = await res.json();
+      const items = data.filter(
+        (d: any) => d.content_type === 'daily-energy' && d.language === 'zh' && !d.body.includes('API错误')
+      );
+      if (items.length > 0) {
+        return items[Math.floor(Math.random() * items.length)].body;
+      }
+    } else if (request.type === 'bazi') {
+      const res = await fetch('./data/bazi.json');
+      const data = await res.json();
+      if (data.length > 0) {
+        const item = data[Math.floor(Math.random() * data.length)];
+        return item.ai_interpretation || generateMockResponse(request);
+      }
+    } else if (request.type === 'fengshui') {
+      const res = await fetch('./data/fengshui.json');
+      const data = await res.json();
+      if (data.length > 0) {
+        const item = data[Math.floor(Math.random() * data.length)];
+        return item.ai_interpretation || generateMockResponse(request);
+      }
+    }
+  } catch {
+    // ignore and fallback to mock
+  }
+  return generateMockResponse(request);
 }
 
 function generateMockResponse(request: AIInterpretRequest): string {
