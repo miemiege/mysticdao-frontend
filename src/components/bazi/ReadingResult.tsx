@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import TypewriterText from '../TypewriterText';
+import BreathingTypewriter from '../BreathingTypewriter';
 import BaguaLoader from '../BaguaLoader';
 
 const LOADING_MESSAGES = [
@@ -126,12 +126,11 @@ export default function ReadingResult({ reading, isLoading, error, onRetry, onRe
             transition={{ duration: 0.5 }}
             className="flex flex-col gap-8"
           >
-            {/* Reading text card */}
-            <div className="bg-bg-card border border-border-subtle rounded-2xl p-6 sm:p-10">
-              <div className="prose-invert max-w-none">
-                <div className="font-mono text-text-primary leading-relaxed whitespace-pre-wrap text-[15px]">
-                  <TypewriterText text={reading} speed={30} showCursor />
-                </div>
+            {/* Reading text card with glow sweep */}
+            <div className="bg-bg-card border border-border-subtle rounded-2xl p-6 sm:p-10 relative overflow-hidden glow-sweep-container">
+              <div className="glow-sweep" />
+              <div className="prose-invert max-w-none relative z-10">
+                <BreathingTypewriter text={reading} baseSpeed={30} highlightSpeed={100} />
               </div>
             </div>
 
