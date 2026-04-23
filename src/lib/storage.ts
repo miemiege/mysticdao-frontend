@@ -3,6 +3,8 @@ const USER_PROFILE_KEY = 'mysticdao_user_profile';
 const HISTORY_KEY = 'mysticdao_history';
 const FAVORITES_KEY = 'mysticdao_favorites';
 const SHARE_KEY = 'mysticdao_share';
+const CARDS_KEY = 'mysticdao_cards';
+const STREAK_KEY = 'mysticdao_streak';
 const EXPIRY_HOURS = 24;
 
 interface StorageState {
@@ -43,6 +45,24 @@ export interface FavoriteItem {
   title: string;
   date: string;
   data: unknown;
+}
+
+export interface CollectedCard {
+  hexagramNumber: number;
+  hexagramName: string;
+  rarity: 'N' | 'R' | 'SR' | 'SSR';
+  isLimited: boolean;
+  obtainedAt: string;
+  changingLines: number[];
+  dailyScore: number;
+  shareCount: number;
+}
+
+export interface StreakData {
+  currentStreak: number;
+  longestStreak: number;
+  lastCheckIn: string | null;
+  rewards: string[];
 }
 
 export function getStoredState(): StorageState | null {
@@ -261,5 +281,117 @@ export function getAllShareIds(): string[] {
     return Object.keys(existing);
   } catch {
     return [];
+  }
+}
+
+// ─── Card Album ───
+
+export function getCards(): CollectedCard[] {
+  try {
+    const raw = localStorage.getItem(CARDS_KEY);
+    if (!raw) return [];
+    return JSON.parse(raw) as CollectedCard[];
+  } catch {
+    return [];
+  }
+}
+
+export function addCard(card: CollectedCard): void {
+  try {
+    const existing = getCards();
+    const idx = existing.findIndex((c) => c.hexagramNumber === card.hexagramNumber);
+    if (idx >= 0) {
+      const old = existing[idx];
+      const rarityOrder = { N: 0, R: 1, SR: 2, SSR: 3 };
+      if (rarityOrder[card.rarity] > rarityOrder[old.rarity]) {
+        existing[idx] = { ...card, shareCount: old.shareCount };
+      }
+      localStorage.setItem(CARDS_KEY, JSON.stringify(existing));
+      return;
+    }
+    localStorage.setItem(CARDS_KEY, JSON.stringify([card, ...existing]));
+  } catch {
+    // silently fail
+  }
+}
+
+export function updateCardShareCount(hexagramNumber: number): void {
+  try {
+    const existing = getCards();
+    const idx = existing.findIndex((c) => c.hexagramNumber === hexagramNumber);
+    if (idx >= 0) {
+      existing[idx].shareCount += 1;
+      localStorage.setItem(CARDS_KEY, JSON.stringify(existing));
+    }
+  } catch {
+    // silently fail
+  }
+}
+
+// ─── Streak ───
+
+export function getStreak(): StreakData {
+  try {
+    const raw = localStorage.getItem(STREAK_KEY);
+    if (!raw) return { currentStreak: 0, longestStreak: 0, lastCheckIn: null, rewards: [] };
+    return JSON.parse(raw) as StreakData;
+  } catch {
+    return { currentStreak: 0, longestStreak: 0, lastCheckIn: null, rewards: [] };
+  }
+}
+
+export function saveStreak(streak: StreakData): void {
+  try {
+    localStorage.setItem(STREAK_KEY, JSON.stringify(streak));
+  } catch {
+    // silently fail
+  }
+}
+
+// ─── AI Talisman Cache ───
+
+const AI_TALISMAN_CACHE_KEY = 'mysticdao_ai_talisman_cache';
+const AI_CACHE_MAX_AGE = 7 * 24 * 60 * 60 * 1000; // 7天
+
+interface AICacheEntry {
+  url: string;
+  timestamp: number;
+}
+
+/** 获取AI缓存的符咒图URL */
+export function getAICachedUrl(key: string): string | null {
+  try {
+    const raw = localStorage.getItem(AI_TALISMAN_CACHE_KEY);
+    if (!raw) return null;
+    const cache: Record<string, AICacheEntry> = JSON.parse(raw);
+    const entry = cache[key];
+    if (!entry) return null;
+    // 检查过期
+    if (Date.now() - entry.timestamp > AI_CACHE_MAX_AGE) {
+      delete cache[key];
+      localStorage.setItem(AI_TALISMAN_CACHE_KEY, JSON.stringify(cache));
+      return null;
+    }
+    return entry.url;
+  } catch {
+    return null;
+  }
+}
+
+/** 设置AI缓存 */
+export function setAICachedUrl(key: string, url: string): void {
+  try {
+    const raw = localStorage.getItem(AI_TALISMAN_CACHE_KEY);
+    const cache: Record<string, AICacheEntry> = raw ? JSON.parse(raw) : {};
+    cache[key] = { url, timestamp: Date.now() };
+    // 限制缓存数量，防止localStorage溢出
+    const keys = Object.keys(cache);
+    if (keys.length > 20) {
+      const oldest = keys.sort((a, b) => cache[a].timestamp - cache[b].timestamp)[0];
+      delete cache[oldest];
+    }
+    localStorage.setItem(AI_TALISMAN_CACHE_KEY, JSON.stringify(cache));
+  } catch {
+    // silently fail
   }
 }

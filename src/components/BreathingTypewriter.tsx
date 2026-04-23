@@ -9,6 +9,8 @@ interface BreathingTypewriterProps {
   paragraphPause?: number;
   onComplete?: () => void;
   className?: string;
+  /** Called when every sentence has finished typing */
+  onAllComplete?: () => void;
 }
 
 interface Sentence {
@@ -121,6 +123,7 @@ const BreathingTypewriter: React.FC<BreathingTypewriterProps> = ({
   sentencePause = 300,
   paragraphPause = 500,
   onComplete,
+  onAllComplete,
   className = '',
 }) => {
   const paragraphs = useMemo(() => splitIntoParagraphs(text), [text]);
@@ -213,6 +216,12 @@ const BreathingTypewriter: React.FC<BreathingTypewriterProps> = ({
       abortRef.current = true;
     };
   }, [text]);
+
+  useEffect(() => {
+    if (isComplete) {
+      onAllComplete?.();
+    }
+  }, [isComplete, onAllComplete]);
 
   return (
     <div className={`font-sans leading-relaxed whitespace-pre-wrap text-[15px] ${className}`}>

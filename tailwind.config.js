@@ -5,6 +5,7 @@ module.exports = {
   theme: {
     extend: {
       colors: {
+        /* ─── Legacy Tokens (backward compatible) ─── */
         'bg-primary': '#000000',
         'bg-card': '#0A0A0A',
         'bg-elevated': '#111111',
@@ -21,10 +22,31 @@ module.exports = {
         'element-water': '#60A5FA',
         'glow-white': 'rgba(255,255,255,0.15)',
         'glow-amber': 'rgba(245, 158, 11, 0.3)',
+
+        /* ─── NEW: Surface System (4 levels) ─── */
+        surface: {
+          page: '#000000',
+          card: '#0A0A0F',
+          elevated: '#12121A',
+          overlay: 'rgba(0,0,0,0.8)',
+        },
+
+        /* ─── NEW: Gold Semantic System (4 levels) ─── */
         gold: {
           DEFAULT: '#c8a45c',
           light: '#e8d5a3',
           dim: 'rgba(200, 164, 92, 0.15)',
+          primary: '#C8A45C',
+          muted: '#8B7340',
+          subtle: 'rgba(200,164,92,0.15)',
+          ghost: 'rgba(200,164,92,0.06)',
+        },
+
+        /* ─── NEW: Seal Red (for Talisman Cards) ─── */
+        seal: {
+          DEFAULT: '#8B0000',
+          light: '#C41E3A',
+          subtle: 'rgba(139,0,0,0.15)',
         },
         wood: '#4ADE80',
         fire: '#F87171',
@@ -77,6 +99,30 @@ module.exports = {
         sm: "calc(var(--radius) - 4px)",
         xs: "calc(var(--radius) - 6px)",
         pill: '9999px',
+        /* ─── NEW: Radius Scale ─── */
+        'radius-sm': '6px',
+        'radius-md': '10px',
+        'radius-lg': '16px',
+        'radius-xl': '24px',
+      },
+      spacing: {
+        /* ─── NEW: Spacing Scale (8px grid) ─── */
+        'space-xs': '4px',
+        'space-sm': '8px',
+        'space-md': '16px',
+        'space-lg': '24px',
+        'space-xl': '32px',
+        'space-2xl': '48px',
+        'space-3xl': '64px',
+        'space-4xl': '96px',
+      },
+      boxShadow: {
+        /* ─── NEW: Shadow System ─── */
+        'shadow-sm': '0 1px 2px rgba(0,0,0,0.3)',
+        'shadow-md': '0 4px 12px rgba(0,0,0,0.4)',
+        'shadow-lg': '0 8px 32px rgba(0,0,0,0.5)',
+        'glow-gold': '0 0 20px rgba(200,164,92,0.15)',
+        'glow-gold-lg': '0 0 40px rgba(200,164,92,0.25)',
       },
       keyframes: {
         "accordion-down": {

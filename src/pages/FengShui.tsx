@@ -8,7 +8,7 @@ import DirectionPanel from '@/components/fengshui/DirectionPanel';
 import BaguaMap from '@/components/fengshui/BaguaMap';
 import { directionData } from '@/components/fengshui/fengshuiData';
 import type { DirectionInfo } from '@/components/fengshui/fengshuiData';
-import { FengshuiCamera } from '@/components/fengshui-camera/FengshuiCamera';
+import { FengshuiCameraTeaser } from '@/components/fengshui-camera/FengshuiCameraTeaser';
 import WebCompass from '@/components/compass/WebCompass';
 
 /* Animation variants */
@@ -412,7 +412,7 @@ export default function FengShui() {
       {/* Overlays */}
       <AnimatePresence>
         {showCamera && (
-          <FengshuiCamera onClose={() => setShowCamera(false)} />
+          <FengshuiCameraTeaser onClose={() => setShowCamera(false)} />
         )}
         {showCompass && (
           <WebCompass onClose={() => setShowCompass(false)} />
