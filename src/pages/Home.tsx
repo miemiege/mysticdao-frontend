@@ -144,7 +144,7 @@ function HeroSection() {
 
       {/* Layer 2: Particle field */}
       <div className="absolute inset-0 z-[1]">
-        <ParticleField count={150} />
+        <TaijiParticles count={80} />
       </div>
 
       {/* Layer 3: Mandala */}
@@ -712,7 +712,7 @@ function CTASection() {
         style={{ background: 'radial-gradient(ellipse at 50% 50%, rgba(200,164,92,0.06) 0%, transparent 60%)' }}
       />
       <div className="absolute inset-0 z-[1]">
-        <ParticleField count={50} />
+        <TaijiParticles count={40} />
       </div>
 
       <motion.div
