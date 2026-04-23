@@ -353,6 +353,8 @@ export function FengshuiCamera({
           src={lastPhoto.dataUrl}
           alt="Feng Shui capture"
           className="max-h-[80vh] max-w-full object-contain"
+          loading="lazy"
+          decoding="async"
         />
       </div>
 
@@ -497,6 +499,8 @@ export function FengshuiCamera({
                 src={photo.dataUrl}
                 alt={photo.directionName}
                 className="max-h-[80vh] max-w-full object-contain rounded-lg"
+                loading="lazy"
+                decoding="async"
               />
             </div>
 
