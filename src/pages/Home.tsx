@@ -29,7 +29,7 @@ const RotatingMandala = memo(function RotatingMandala() {
   return (
     <div className="absolute inset-0 flex items-center justify-center pointer-events-none select-none">
       <img
-        src="/hero-mandala-bg.png"
+        src="./hero-mandala-bg.png"
         alt=""
         className="w-[800px] h-[800px] lg:w-[1000px] lg:h-[1000px] object-contain opacity-[0.15] animate-spin-slow"
         aria-hidden="true"
@@ -156,7 +156,7 @@ function HeroSection() {
         className="absolute inset-0 z-[3] pointer-events-none"
       >
         <img
-          src="/hero-fog-layer.png"
+          src="./hero-fog-layer.png"
           alt=""
           className="w-full h-full object-cover opacity-[0.08]"
           aria-hidden="true"
