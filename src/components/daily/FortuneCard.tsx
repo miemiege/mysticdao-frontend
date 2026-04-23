@@ -20,6 +20,17 @@ const getHexagramSymbol = (name: string): string => {
 const FortuneCard: React.FC<FortuneCardProps> = ({ name, keyword, aspect, color, index = 0 }) => {
   const symbol = getHexagramSymbol(name);
 
+  const particles = React.useMemo(() => {
+    return Array.from({ length: 10 }).map((_, i) => {
+      const angle = (i / 10) * Math.PI * 2;
+      const distance = 40 + Math.random() * 40;
+      const tx = Math.cos(angle) * distance;
+      const ty = Math.sin(angle) * distance;
+      const delay = Math.random() * 0.2;
+      return { tx, ty, delay, key: i };
+    });
+  }, []);
+
   return (
     <motion.div
       initial={{ opacity: 0, rotateY: 90, scale: 0.8 }}
@@ -50,7 +61,24 @@ const FortuneCard: React.FC<FortuneCardProps> = ({ name, keyword, aspect, color,
         <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-medium tracking-wider uppercase mb-4" style={{ background: `${color}12`, color: `${color}cc`, border: `1px solid ${color}20` }}>
           <span className="w-1 h-1 rounded-full" style={{ background: color }} />{aspect}
         </div>
-        <motion.h4 initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 + index * 0.15, duration: 0.5 }} className="text-3xl font-bold text-white mb-3 tracking-tight" style={{ textShadow: `0 0 30px ${color}20` }}>{name}</motion.h4>
+        <motion.h4 initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 + index * 0.15, duration: 0.5 }} className="text-3xl font-bold text-white mb-3 tracking-tight relative" style={{ textShadow: `0 0 30px ${color}20` }}>
+          {name}
+          <div className="particle-burst" aria-hidden="true">
+            {particles.map((p) => (
+              <div
+                key={p.key}
+                className="particle"
+                style={{
+                  left: '50%',
+                  top: '50%',
+                  '--tx': `${p.tx}px`,
+                  '--ty': `${p.ty}px`,
+                  animationDelay: `${0.4 + index * 0.15 + p.delay}s`,
+                } as React.CSSProperties}
+              />
+            ))}
+          </div>
+        </motion.h4>
         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.5 + index * 0.15 }} className="inline-block px-4 py-1.5 rounded-full text-sm font-medium" style={{ background: `${color}10`, color, border: `1px solid ${color}25`, boxShadow: `0 0 12px ${color}10` }}>{keyword}</motion.div>
       </div>
       <div className="absolute bottom-0 left-0 right-0 h-[1px]" style={{ background: `linear-gradient(90deg, transparent 0%, ${color}30 50%, transparent 100%)` }} />

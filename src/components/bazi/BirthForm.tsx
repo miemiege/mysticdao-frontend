@@ -1,5 +1,6 @@
 import { useState, useCallback, useEffect } from 'react';
 import { motion } from 'framer-motion';
+import { usePreload } from '@/hooks/usePreload';
 import { TIME_PERIODS } from './data';
 import { ALL_CITIES, DEFAULT_CITY } from '@/data/cities';
 
@@ -49,6 +50,9 @@ export default function BirthForm({ initialData, onSubmit, isLoading = false }: 
   const [birthCity, setBirthCity] = useState(initialData?.birthCity || DEFAULT_CITY);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [shakeField, setShakeField] = useState<string | null>(null);
+
+  // Preload bazi.json when user fills form (zero-latency optimization)
+  usePreload('bazi', [name, gender, birthYear, birthMonth, birthDay, birthHour, birthCity]);
 
   // Reset day if month/year changes and day is out of range
   useEffect(() => {
