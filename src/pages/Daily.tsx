@@ -459,405 +459,297 @@ const Daily: React.FC = () => {
             )}
 
             {step === 'result' && fortune && (
-              <motion.div key="result" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="pb-20">
-                {/* Already drawn hint */}
+              <motion.div key="result" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="pb-24">
+                {/* Already drawn */}
                 {alreadyDrawn && (
-                  <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="text-center mb-6">
-                    <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-xs font-medium border border-gold/20 bg-gold/[0.06] text-gold/70">
-                      <Star size={12} />
-                      Already drawn today · Scroll to review
+                  <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="text-center mb-4">
+                    <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-xs border border-gold/20 bg-gold/[0.05] text-gold/60">
+                      <Star size={12} /> Already drawn today
                     </span>
                   </motion.div>
                 )}
 
-                {/* ── SECTION 1: 主视觉 — 符咒大图 + 光晕 ── */}
+                {/* ═══════ 主卷轴容器 ═══════ */}
                 <motion.div
-                  initial={{ opacity: 0, scale: 0.85 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  transition={{ delay: 0.1, duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
-                  className="relative flex flex-col items-center mb-8"
+                  initial={{ opacity: 0, scaleY: 0.3 }}
+                  animate={{ opacity: 1, scaleY: 1 }}
+                  transition={{ delay: 0.1, duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
+                  className="relative max-w-[600px] mx-auto"
+                  style={{ transformOrigin: 'top center' }}
                 >
-                  {/* 金色光晕背景 */}
-                  <div
-                    className="absolute inset-0 -z-10 blur-3xl opacity-20 pointer-events-none"
-                    style={{
-                      background: `radial-gradient(circle at 50% 50%, ${fortune.card.color}40, transparent 70%)`,
-                    }}
-                  />
-                  {/* 缓慢浮动动画 */}
-                  <motion.div
-                    animate={{ y: [0, -8, 0] }}
-                    transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut' }}
-                    className="relative"
-                  >
-                    {/* 顶部卷轴装饰 */}
-                    <div className="absolute -top-3 left-1/2 -translate-x-1/2 w-32 h-1 rounded-full"
-                      style={{ background: `linear-gradient(90deg, transparent, ${fortune.card.color}60, transparent)` }} />
-                    <div className="absolute -top-1 left-1/2 -translate-x-1/2 w-2 h-2 rounded-full"
-                      style={{ background: fortune.card.color, boxShadow: `0 0 8px ${fortune.card.color}` }} />
-
-                    <TalismanRenderer
-                      hexagramName={fortune.card.name}
-                      blessingTheme={fortune.card.keyword}
-                      element={(() => { const gua = GUA64_LIST.find((g) => g.name === fortune.card.name); return gua?.element || '金'; })()}
-                      category={(() => { const t = getHexagramTalisman(fortune.card.name); return t.category; })()}
-                      seed={(() => { const gua = GUA64_LIST.find((g) => g.name === fortune.card.name); return gua?.number || 1; })()}
-                      score={fortune.overallScore}
-                      width={340}
-                      height={510}
-                    />
-
-                    {/* 底部卷轴装饰 */}
-                    <div className="absolute -bottom-3 left-1/2 -translate-x-1/2 w-32 h-1 rounded-full"
-                      style={{ background: `linear-gradient(90deg, transparent, ${fortune.card.color}60, transparent)` }} />
-                    <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-2 h-2 rounded-full"
-                      style={{ background: fortune.card.color, boxShadow: `0 0 8px ${fortune.card.color}` }} />
-                  </motion.div>
-
-                  {/* 卦象名 + 祈福主题 */}
-                  <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.5, duration: 0.6 }}
-                    className="mt-6 text-center"
-                  >
-                    <h2 className="text-3xl md:text-4xl font-bold tracking-wider"
-                      style={{
-                        color: fortune.card.color,
-                        textShadow: `0 0 30px ${fortune.card.color}40, 0 2px 4px rgba(0,0,0,0.5)`,
-                        fontFamily: "'Noto Serif SC', 'Georgia', serif",
-                      }}>
-                      {fortune.card.name}
-                    </h2>
-                    <div className="flex items-center justify-center gap-3 mt-2">
-                      <div className="h-px w-10" style={{ background: `linear-gradient(90deg, transparent, ${fortune.card.color}60)` }} />
-                      <span className="text-sm tracking-[0.15em] text-gold/70 uppercase">{fortune.card.keyword}</span>
-                      <div className="h-px w-10" style={{ background: `linear-gradient(90deg, ${fortune.card.color}60, transparent)` }} />
-                    </div>
-                  </motion.div>
-                </motion.div>
-
-                {/* ── SECTION 2: 分数 + 印章 ── */}
-                <motion.div
-                  initial={{ opacity: 0, y: 30 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.6, duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-                  className="flex items-center justify-center gap-6 mb-10"
-                >
-                  <div className="text-center">
-                    <div className="text-xs uppercase tracking-[0.2em] text-text-muted mb-1">Fortune</div>
-                    <motion.div
-                      className="text-6xl md:text-7xl font-bold tracking-tight font-heading"
-                      initial={{ scale: 0.3, opacity: 0 }}
-                      animate={{ scale: 1, opacity: 1 }}
-                      transition={{ delay: 0.7, type: 'spring', stiffness: 150, damping: 15 }}
-                    >
-                      <RollingNumber
-                        value={fortune.overallScore}
-                        delay={600}
-                        style={{
-                          color: fortune.card.color,
-                          textShadow: `0 0 40px ${fortune.card.color}50, 0 0 80px ${fortune.card.color}20`,
-                        }}
-                      />
-                    </motion.div>
-                    <div className="flex items-center justify-center gap-1 mt-1">
-                      <div className="h-px w-6" style={{ background: `linear-gradient(90deg, transparent, ${fortune.card.color}50)` }} />
-                      <span className="text-[10px] text-text-muted uppercase tracking-wider">/ 100</span>
-                      <div className="h-px w-6" style={{ background: `linear-gradient(90deg, ${fortune.card.color}50, transparent)` }} />
-                    </div>
+                  {/* 卷轴顶部轴头 */}
+                  <div className="relative h-6 mb-1">
+                    <div className="absolute inset-x-4 top-2 h-3 rounded-full"
+                      style={{ background: `linear-gradient(90deg, transparent, ${fortune.card.color}30, transparent)` }} />
+                    <div className="absolute left-2 top-0 w-4 h-6 rounded-full border border-gold/20"
+                      style={{ background: 'linear-gradient(180deg, #2a2218, #1a1510)' }} />
+                    <div className="absolute right-2 top-0 w-4 h-6 rounded-full border border-gold/20"
+                      style={{ background: 'linear-gradient(180deg, #2a2218, #1a1510)' }} />
                   </div>
 
-                  {/* 动态印章 */}
-                  <motion.div
-                    initial={{ scale: 2, opacity: 0, rotate: -15 }}
-                    animate={{ scale: 1, opacity: 1, rotate: 5 }}
-                    transition={{ delay: 1.0, type: 'spring', stiffness: 120, damping: 12 }}
-                    className="relative"
+                  {/* 卷轴纸张 */}
+                  <div
+                    className="relative border-x border-gold/10 px-6 md:px-10 py-8"
+                    style={{
+                      background: 'linear-gradient(180deg, rgba(200,164,92,0.02) 0%, rgba(0,0,0,0.2) 20%, rgba(0,0,0,0.2) 80%, rgba(200,164,92,0.02) 100%)',
+                    }}
                   >
+                    {/* 中央光晕 */}
                     <div
-                      className="w-16 h-16 rounded-lg border-2 flex items-center justify-center"
-                      style={{
-                        borderColor: `${fortune.card.color}80`,
-                        background: `${fortune.card.color}10`,
-                        boxShadow: `0 0 20px ${fortune.card.color}30, inset 0 0 10px ${fortune.card.color}10`,
-                      }}
+                      className="absolute top-20 left-1/2 -translate-x-1/2 w-[300px] h-[400px] rounded-full blur-3xl pointer-events-none opacity-30"
+                      style={{ background: `radial-gradient(circle, ${fortune.card.color}40, transparent 70%)` }}
+                    />
+
+                    {/* ── 符咒 ── */}
+                    <motion.div
+                      initial={{ opacity: 0, y: 30 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: 0.4, duration: 0.8 }}
+                      className="flex justify-center mb-8 relative z-10"
                     >
-                      <span className="text-xl font-bold" style={{ color: fortune.card.color }}>
-                        {(() => {
-                          const s = fortune.overallScore;
-                          if (s >= 90) return '上';
-                          if (s >= 75) return '吉';
-                          if (s >= 60) return '中';
-                          return '平';
-                        })()}
-                      </span>
-                    </div>
+                      <motion.div
+                        animate={{ y: [0, -6, 0] }}
+                        transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
+                      >
+                        <TalismanRenderer
+                          hexagramName={fortune.card.name}
+                          blessingTheme={fortune.card.keyword}
+                          element={(() => { const gua = GUA64_LIST.find((g) => g.name === fortune.card.name); return gua?.element || '金'; })()}
+                          category={(() => { const t = getHexagramTalisman(fortune.card.name); return t.category; })()}
+                          seed={(() => { const gua = GUA64_LIST.find((g) => g.name === fortune.card.name); return gua?.number || 1; })()}
+                          score={fortune.overallScore}
+                          width={300}
+                          height={450}
+                        />
+                      </motion.div>
+                    </motion.div>
+
+                    {/* ── 卦名 + 祈福主题 ── */}
                     <motion.div
                       initial={{ opacity: 0 }}
-                      animate={{ opacity: [0, 0.6, 0] }}
-                      transition={{ delay: 1.2, duration: 1.5 }}
-                      className="absolute inset-0 rounded-lg"
-                      style={{ background: `radial-gradient(circle, ${fortune.card.color}40, transparent)` }}
-                    />
-                  </motion.div>
-                </motion.div>
-
-                {/* ── SECTION 3: 六爻展示 ── */}
-                {lines && (
-                  <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.8, duration: 0.6 }}
-                    className="flex flex-col items-center mb-10"
-                  >
-                    <div className="flex items-center gap-2 mb-3">
-                      <div className="w-6 h-px" style={{ background: `linear-gradient(90deg, transparent, ${fortune.card.color}40)` }} />
-                      <span className="text-[10px] uppercase tracking-[0.25em] text-text-muted">Hexagram Lines</span>
-                      <div className="w-6 h-px" style={{ background: `linear-gradient(90deg, ${fortune.card.color}40, transparent)` }} />
-                    </div>
-                    <HexagramDraw
-                      lines={lines}
-                      strokeColor={fortune.card.color}
-                      onComplete={() => setHexagramDrawn(true)}
-                    />
-                    {hexagramDrawn && (
-                      <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="mt-2 flex gap-1.5">
-                        {lines.map((yao, i) => (
-                          <div
-                            key={i}
-                            className={`text-[9px] px-1.5 py-0.5 rounded ${yao.changing ? 'bg-gold/10 text-gold' : 'text-text-muted/50'}`}
-                          >
-                            {yao.changing ? '动' : yao.value === 1 ? '阳' : '阴'}
-                          </div>
-                        ))}
-                      </motion.div>
-                    )}
-                  </motion.div>
-                )}
-
-                {/* ── SECTION 4: 运势维度 ── */}
-                <motion.div
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ delay: 0.9 }}
-                  className="mb-10"
-                >
-                  <div className="flex items-center gap-2 mb-4 px-4">
-                    <div className="w-6 h-px" style={{ background: `linear-gradient(90deg, transparent, ${fortune.card.color}40)` }} />
-                    <span className="text-[10px] uppercase tracking-[0.25em] text-text-muted">Dimensions</span>
-                    <div className="w-6 h-px" style={{ background: `linear-gradient(90deg, ${fortune.card.color}40, transparent)` }} />
-                  </div>
-                  <div className="grid grid-cols-4 gap-3">
-                    {fortune.scores.map((s, i) => (
-                      <ScoreRing key={s.label} label={s.label} score={s.score} color={s.color} delay={i * 150 + 900} />
-                    ))}
-                  </div>
-                </motion.div>
-
-                {/* ── SECTION 5: 幸运信息 ── */}
-                <motion.div
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ delay: 1.1 }}
-                  className="mb-10"
-                >
-                  <LuckyInfo color={fortune.luckyColor} number={fortune.luckyNumber} direction={fortune.luckyDirection} />
-                </motion.div>
-
-                {/* ── SECTION 6: AI 解读（古卷样式） ── */}
-                {readingSegments.length > 0 && (
-                  <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 1.2 }}
-                    className="relative rounded-2xl border border-gold/10 overflow-hidden mb-10"
-                    style={{
-                      background: 'linear-gradient(180deg, rgba(200,164,92,0.04) 0%, rgba(0,0,0,0.4) 50%, rgba(200,164,92,0.02) 100%)',
-                      backdropFilter: 'blur(10px)',
-                    }}
-                  >
-                    {/* 卷轴顶部装饰 */}
-                    <div className="absolute top-0 left-0 right-0 h-8 overflow-hidden pointer-events-none">
-                      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-px" style={{ background: 'linear-gradient(90deg, transparent, rgba(200,164,92,0.3), transparent)' }} />
-                      <div className="absolute top-1 left-1/2 -translate-x-1/2 w-24 h-6 rounded-b-full border border-gold/20 bg-gold/[0.03]" />
-                    </div>
-
-                    {/* 金色边框光 */}
-                    <div className="absolute top-0 left-0 right-0 h-[1px]" style={{ background: 'linear-gradient(90deg, transparent, rgba(200,164,92,0.3), transparent)' }} />
-                    <div className="absolute bottom-0 left-0 right-0 h-[1px]" style={{ background: 'linear-gradient(90deg, transparent, rgba(200,164,92,0.15), transparent)' }} />
-
-                    <div className="p-6 md:p-8 pt-10">
-                      <div className="flex items-center gap-2 mb-6">
-                        <Sparkles size={14} className="text-gold/70" />
-                        <h3 className="text-xs font-semibold text-gold/70 tracking-[0.2em] uppercase">MysticDao AI Reading</h3>
+                      animate={{ opacity: 1 }}
+                      transition={{ delay: 0.6 }}
+                      className="text-center mb-8 relative z-10"
+                    >
+                      <h2 className="text-3xl md:text-4xl font-bold tracking-[0.1em] mb-2"
+                        style={{
+                          color: fortune.card.color,
+                          textShadow: `0 0 40px ${fortune.card.color}50, 0 2px 8px rgba(0,0,0,0.6)`,
+                          fontFamily: "'Noto Serif SC', Georgia, serif",
+                        }}>
+                        {fortune.card.name}
+                      </h2>
+                      <div className="flex items-center justify-center gap-3">
+                        <div className="h-px w-8" style={{ background: `linear-gradient(90deg, transparent, ${fortune.card.color}50)` }} />
+                        <span className="text-xs tracking-[0.2em] text-gold/60 uppercase">{fortune.card.keyword}</span>
+                        <div className="h-px w-8" style={{ background: `linear-gradient(90deg, ${fortune.card.color}50, transparent)` }} />
                       </div>
+                    </motion.div>
 
-                      <div className="space-y-4">
-                        {readingSegments.map((seg, i) => (
-                          <div key={i}>
-                            {i === 0 || expandedSegments.has(i) ? (
-                              <div className={i > 0 ? 'pt-3 border-t border-gold/[0.08]' : ''}>
-                                {i > 0 && (
-                                  <button
-                                    onClick={() => setExpandedSegments((prev) => { const next = new Set(prev); next.delete(i); return next; })}
-                                    className="flex items-center gap-1 text-[10px] text-gold/50 hover:text-gold mb-2 transition-colors"
-                                  >
-                                    <ChevronUp size={12} />
-                                    Collapse
-                                  </button>
-                                )}
-                                <BreathingTypewriter
-                                  text={seg}
-                                  baseSpeed={22}
-                                  highlightSpeed={80}
-                                  onAllComplete={() => handleSegmentComplete(`seg-${i}`)}
-                                />
-                              </div>
-                            ) : (
-                              <button
-                                onClick={() => setExpandedSegments((prev) => { const next = new Set(prev); next.add(i); return next; })}
-                                className="flex items-center gap-2 text-sm text-text-secondary hover:text-gold transition-colors py-2 w-full"
-                              >
-                                <ChevronDown size={14} className="text-gold/50" />
-                                <span className="text-xs tracking-wider">
-                                  {i === 1 ? '展开详细解读' : `展开第 ${i + 1} 段`}
-                                </span>
-                              </button>
-                            )}
-                          </div>
-                        ))}
+                    {/* ── 分数 + 印章 ── */}
+                    <motion.div
+                      initial={{ opacity: 0, scale: 0.8 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      transition={{ delay: 0.8, type: 'spring', stiffness: 100 }}
+                      className="flex items-center justify-center gap-8 mb-8 relative z-10"
+                    >
+                      <div className="text-center">
+                        <div className="text-6xl md:text-7xl font-bold font-heading"
+                          style={{
+                            color: fortune.card.color,
+                            textShadow: `0 0 50px ${fortune.card.color}40`,
+                          }}>
+                          <RollingNumber value={fortune.overallScore} delay={700} />
+                        </div>
+                        <div className="text-[10px] text-text-muted tracking-wider mt-1">FORTUNE SCORE</div>
+                      </div>
+                      <motion.div
+                        initial={{ scale: 3, opacity: 0, rotate: -20 }}
+                        animate={{ scale: 1, opacity: 1, rotate: 8 }}
+                        transition={{ delay: 1.1, type: 'spring', stiffness: 150, damping: 10 }}
+                        className="w-14 h-14 rounded-lg border-2 flex items-center justify-center"
+                        style={{
+                          borderColor: `${fortune.card.color}70`,
+                          background: `${fortune.card.color}08`,
+                          boxShadow: `0 0 20px ${fortune.card.color}20`,
+                        }}
+                      >
+                        <span className="text-lg font-bold" style={{ color: fortune.card.color }}>
+                          {fortune.overallScore >= 85 ? '上' : fortune.overallScore >= 70 ? '吉' : fortune.overallScore >= 55 ? '中' : '平'}
+                        </span>
+                      </motion.div>
+                    </motion.div>
 
-                        {/* Follow-up texts */}
-                        {followUpList.map((fu, i) => (
-                          <motion.div
-                            key={`fu-${i}`}
-                            initial={{ opacity: 0, y: 10 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ duration: 0.4 }}
-                            className="pt-3 border-t border-gold/[0.08]"
-                          >
-                            <div className="flex items-center gap-2 mb-2">
-                              <span className="text-[10px] px-2 py-0.5 rounded-full bg-gold/10 text-gold/70 tracking-wider">
-                                {fu.key === 'career' ? '💼 事业' : fu.key === 'love' ? '💕 感情' : '⚠️ 注意'}
+                    {/* ── 六爻 ── */}
+                    {lines && (
+                      <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ delay: 1.0 }}
+                        className="flex flex-col items-center mb-8 relative z-10"
+                      >
+                        <div className="flex items-center gap-2 mb-3">
+                          <div className="w-4 h-px bg-gold/20" />
+                          <span className="text-[10px] tracking-[0.2em] text-text-muted/60 uppercase">Hexagram</span>
+                          <div className="w-4 h-px bg-gold/20" />
+                        </div>
+                        <HexagramDraw lines={lines} strokeColor={fortune.card.color} onComplete={() => setHexagramDrawn(true)} />
+                        {hexagramDrawn && (
+                          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="mt-2 flex gap-1">
+                            {lines.map((yao, i) => (
+                              <span key={i} className={`text-[9px] px-1 py-0.5 rounded ${yao.changing ? 'bg-gold/10 text-gold' : 'text-text-muted/40'}`}>
+                                {yao.changing ? '动' : yao.value === 1 ? '阳' : '阴'}
                               </span>
-                            </div>
-                            <BreathingTypewriter
-                              text={fu.text}
-                              baseSpeed={22}
-                              highlightSpeed={80}
-                              onAllComplete={() => handleSegmentComplete(`fu-${i}`)}
-                            />
-                          </motion.div>
-                        ))}
-
-                        {/* Follow-up buttons */}
-                        <AnimatePresence>
-                          {showFollowUpButtons && followUpStage < 3 && (
-                            <motion.div
-                              initial={{ opacity: 0, y: 10 }}
-                              animate={{ opacity: 1, y: 0 }}
-                              exit={{ opacity: 0, y: 10 }}
-                              transition={{ duration: 0.3 }}
-                              className="pt-4 flex flex-wrap gap-2 justify-center"
-                            >
-                              {[
-                                { key: 'career' as const, label: '💼 事业运势' },
-                                { key: 'love' as const, label: '💕 感情姻缘' },
-                                { key: 'caution' as const, label: '⚠️ 需要注意' },
-                              ].map((btn) => (
-                                <button
-                                  key={btn.key}
-                                  onClick={() => handleFollowUp(btn.key)}
-                                  className="px-4 py-2 rounded-full border border-gold/15 bg-gold/[0.04] text-xs text-gold/70 hover:text-gold hover:bg-gold/10 hover:border-gold/30 transition-all tracking-wider"
-                                >
-                                  {btn.label}
-                                </button>
-                              ))}
-                            </motion.div>
-                          )}
-                        </AnimatePresence>
-
-                        {followUpStage >= 3 && (
-                          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-center text-gold/50 text-xs pt-4 tracking-wider">
-                            今日解读完毕 ☯
+                            ))}
                           </motion.div>
                         )}
+                      </motion.div>
+                    )}
+
+                    {/* ── 运势维度 ── */}
+                    <motion.div
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      transition={{ delay: 1.2 }}
+                      className="mb-8 relative z-10"
+                    >
+                      <div className="flex items-center gap-2 mb-3 px-2">
+                        <div className="w-4 h-px bg-gold/20" />
+                        <span className="text-[10px] tracking-[0.2em] text-text-muted/60 uppercase">Aspects</span>
+                        <div className="w-4 h-px bg-gold/20" />
                       </div>
-                    </div>
+                      <div className="grid grid-cols-4 gap-3">
+                        {fortune.scores.map((s, i) => (
+                          <ScoreRing key={s.label} label={s.label} score={s.score} color={s.color} delay={i * 120 + 1200} />
+                        ))}
+                      </div>
+                    </motion.div>
 
-                    {/* 卷轴底部装饰 */}
-                    <div className="absolute bottom-0 left-0 right-0 h-8 overflow-hidden pointer-events-none">
-                      <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-full h-px" style={{ background: 'linear-gradient(90deg, transparent, rgba(200,164,92,0.15), transparent)' }} />
-                      <div className="absolute bottom-1 left-1/2 -translate-x-1/2 w-20 h-5 rounded-t-full border border-gold/15 bg-gold/[0.02]" />
-                    </div>
-                  </motion.div>
-                )}
-
-                {/* ── SECTION 7: 分享海报 ── */}
-                {fortune && (
-                  <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 1.4 }}
-                    className="mb-10"
-                  >
-                    <SharePoster
-                      hexagramName={fortune.card.name}
-                      fortuneScore={fortune.overallScore}
-                      goldenQuote={getGoldenQuote(fortune.card.name)}
-                    />
-                  </motion.div>
-                )}
-
-                {/* ── SECTION 8: 操作按钮 ── */}
-                {reading && (
-                  <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 1.5 }}
-                    className="flex items-center justify-center gap-3 mb-8"
-                  >
-                    <button
-                      onClick={() => {
-                        const today = new Date().toISOString().split('T')[0];
-                        const id = `daily_${today}`;
-                        if (isFavorite(id)) { toast.info('Already in favorites'); return; }
-                        addFavorite({ id, type: 'daily', title: `${today} · ${fortune.card.name} · ${fortune.overallScore}`, date: new Date().toISOString(), data: { fortune, reading } });
-                        toast.success('Saved to favorites');
-                      }}
-                      className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full border border-gold/15 text-sm text-text-secondary hover:text-gold hover:border-gold/30 hover:bg-gold/5 transition-all duration-200"
+                    {/* ── 幸运信息 ── */}
+                    <motion.div
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      transition={{ delay: 1.4 }}
+                      className="mb-8 relative z-10"
                     >
-                      <Heart className="w-4 h-4" />
-                      Save
-                    </button>
-                    <button
-                      onClick={() => setShowShareCard(true)}
-                      className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full border border-gold/15 text-sm text-text-secondary hover:text-gold hover:border-gold/30 hover:bg-gold/5 transition-all duration-200"
-                    >
-                      <Share2 className="w-4 h-4" />
-                      Share
-                    </button>
-                  </motion.div>
-                )}
+                      <LuckyInfo color={fortune.luckyColor} number={fortune.luckyNumber} direction={fortune.luckyDirection} />
+                    </motion.div>
 
-                {/* ── 底部：再来一卦 ── */}
-                {!alreadyDrawn && (
-                  <motion.div
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ delay: 1.8 }}
-                    className="text-center"
-                  >
-                    <button
-                      onClick={handleReset}
-                      className="inline-flex items-center gap-2 px-6 py-3 border border-gold/15 rounded-pill text-sm text-text-secondary hover:text-gold hover:border-gold/30 hover:bg-gold/5 transition-all duration-200"
-                    >
-                      <RotateCcw size={16} />
-                      Draw Again
-                    </button>
-                  </motion.div>
-                )}
+                    {/* ── AI 解读 ── */}
+                    {readingSegments.length > 0 && (
+                      <motion.div
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 1.5 }}
+                        className="relative rounded-xl border border-gold/10 overflow-hidden mb-8"
+                        style={{ background: 'linear-gradient(180deg, rgba(200,164,92,0.03), rgba(0,0,0,0.3))' }}
+                      >
+                        <div className="absolute top-0 inset-x-0 h-px" style={{ background: 'linear-gradient(90deg, transparent, rgba(200,164,92,0.2), transparent)' }} />
+                        <div className="p-5 md:p-6">
+                          <div className="flex items-center gap-2 mb-4">
+                            <Sparkles size={13} className="text-gold/60" />
+                            <h3 className="text-[10px] font-semibold text-gold/60 tracking-[0.2em] uppercase">AI Reading</h3>
+                          </div>
+                          <div className="space-y-3">
+                            {readingSegments.map((seg, i) => (
+                              <div key={i}>
+                                {i === 0 || expandedSegments.has(i) ? (
+                                  <div className={i > 0 ? 'pt-2 border-t border-gold/[0.06]' : ''}>
+                                    {i > 0 && (
+                                      <button onClick={() => setExpandedSegments((prev) => { const next = new Set(prev); next.delete(i); return next; })}
+                                        className="flex items-center gap-1 text-[10px] text-gold/40 hover:text-gold/70 mb-1 transition-colors">
+                                        <ChevronUp size={11} /> Collapse
+                                      </button>
+                                    )}
+                                    <BreathingTypewriter text={seg} baseSpeed={22} highlightSpeed={80} onAllComplete={() => handleSegmentComplete(`seg-${i}`)} />
+                                  </div>
+                                ) : (
+                                  <button onClick={() => setExpandedSegments((prev) => { const next = new Set(prev); next.add(i); return next; })}
+                                    className="flex items-center gap-2 text-sm text-text-secondary hover:text-gold transition-colors py-1.5 w-full">
+                                    <ChevronDown size={14} className="text-gold/40" />
+                                    <span className="text-xs tracking-wider">{i === 1 ? '展开详细解读' : `展开第 ${i + 1} 段`}</span>
+                                  </button>
+                                )}
+                              </div>
+                            ))}
+                            {followUpList.map((fu, i) => (
+                              <motion.div key={`fu-${i}`} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3 }}
+                                className="pt-2 border-t border-gold/[0.06]">
+                                <span className="text-[10px] px-2 py-0.5 rounded-full bg-gold/8 text-gold/60">
+                                  {fu.key === 'career' ? '💼 事业' : fu.key === 'love' ? '💕 感情' : '⚠️ 注意'}
+                                </span>
+                                <div className="mt-2">
+                                  <BreathingTypewriter text={fu.text} baseSpeed={22} highlightSpeed={80} onAllComplete={() => handleSegmentComplete(`fu-${i}`)} />
+                                </div>
+                              </motion.div>
+                            ))}
+                            <AnimatePresence>
+                              {showFollowUpButtons && followUpStage < 3 && (
+                                <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 8 }} transition={{ duration: 0.3 }}
+                                  className="pt-3 flex flex-wrap gap-2 justify-center">
+                                  {[{k:'career',l:'💼 事业运势'},{k:'love',l:'💕 感情姻缘'},{k:'caution',l:'⚠️ 需要注意'}].map((b) => (
+                                    <button key={b.k} onClick={() => handleFollowUp(b.k)}
+                                      className="px-3 py-1.5 rounded-full border border-gold/12 bg-gold/[0.03] text-xs text-gold/60 hover:text-gold hover:bg-gold/8 hover:border-gold/25 transition-all">
+                                      {b.l}
+                                    </button>
+                                  ))}
+                                </motion.div>
+                              )}
+                            </AnimatePresence>
+                            {followUpStage >= 3 && (
+                              <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-center text-gold/40 text-xs pt-3">今日解读完毕 ☯</motion.div>
+                            )}
+                          </div>
+                        </div>
+                        <div className="absolute bottom-0 inset-x-0 h-px" style={{ background: 'linear-gradient(90deg, transparent, rgba(200,164,92,0.1), transparent)' }} />
+                      </motion.div>
+                    )}
+
+                    {/* ── 分享海报 ── */}
+                    {fortune && (
+                      <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1.7 }} className="mb-6 relative z-10">
+                        <SharePoster hexagramName={fortune.card.name} fortuneScore={fortune.overallScore} goldenQuote={getGoldenQuote(fortune.card.name)} />
+                      </motion.div>
+                    )}
+
+                    {/* ── 操作按钮 ── */}
+                    {reading && (
+                      <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1.8 }}
+                        className="flex items-center justify-center gap-3 mb-4 relative z-10">
+                        <button onClick={() => {
+                          const today = new Date().toISOString().split('T')[0];
+                          const id = `daily_${today}`;
+                          if (isFavorite(id)) { toast.info('Already in favorites'); return; }
+                          addFavorite({ id, type: 'daily', title: `${today} · ${fortune.card.name} · ${fortune.overallScore}`, date: new Date().toISOString(), data: { fortune, reading } });
+                          toast.success('Saved to favorites');
+                        }} className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-gold/12 text-xs text-text-secondary hover:text-gold hover:border-gold/25 hover:bg-gold/5 transition-all">
+                          <Heart size={14} /> Save
+                        </button>
+                        <button onClick={() => setShowShareCard(true)} className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-gold/12 text-xs text-text-secondary hover:text-gold hover:border-gold/25 hover:bg-gold/5 transition-all">
+                          <Share2 size={14} /> Share
+                        </button>
+                      </motion.div>
+                    )}
+
+                    {!alreadyDrawn && (
+                      <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 2.0 }} className="text-center relative z-10">
+                        <button onClick={handleReset} className="inline-flex items-center gap-2 px-5 py-2.5 border border-gold/12 rounded-pill text-xs text-text-secondary hover:text-gold hover:border-gold/25 hover:bg-gold/5 transition-all">
+                          <RotateCcw size={14} /> Draw Again
+                        </button>
+                      </motion.div>
+                    )}
+                  </div>
+
+                  {/* 卷轴底部轴头 */}
+                  <div className="relative h-6 mt-1">
+                    <div className="absolute inset-x-4 bottom-2 h-3 rounded-full"
+                      style={{ background: `linear-gradient(90deg, transparent, ${fortune.card.color}30, transparent)` }} />
+                    <div className="absolute left-2 bottom-0 w-4 h-6 rounded-full border border-gold/20"
+                      style={{ background: 'linear-gradient(180deg, #1a1510, #2a2218)' }} />
+                    <div className="absolute right-2 bottom-0 w-4 h-6 rounded-full border border-gold/20"
+                      style={{ background: 'linear-gradient(180deg, #1a1510, #2a2218)' }} />
+                  </div>
+                </motion.div>
 
                 {/* ShareCard Modal */}
                 <AnimatePresence>
