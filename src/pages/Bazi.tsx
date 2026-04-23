@@ -1,7 +1,9 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Heart, Share2 } from 'lucide-react';
+import { Heart, Share2, ScrollText, Globe } from 'lucide-react';
 import { toast } from 'sonner';
+import ChineseNaming from '../components/bazi/ChineseNaming';
+import ForeignerNaming from '../components/bazi/ForeignerNaming';
 import { getBaziState, saveBaziState, addHistory, addFavorite, isFavorite, generateShareId } from '../lib/storage';
 import { fetchAIInterpretation } from '../services/api';
 import BirthForm from '../components/bazi/BirthForm';
@@ -49,6 +51,8 @@ export default function Bazi() {
   const [aiReading, setAiReading] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [activeTab, setActiveTab] = useState<'chart' | 'naming'>('chart');
+  const [namingSubTab, setNamingSubTab] = useState<'chinese' | 'foreigner'>('chinese');
   const abortControllerRef = useRef<AbortController | null>(null);
 
   // Restore state from storage on mount
@@ -323,11 +327,57 @@ export default function Bazi() {
                   </p>
                 </motion.div>
 
-                {/* Four Pillars Chart */}
-                <FourPillars
-                  pillars={pillars}
-                  onRequestReading={handleRequestReading}
-                />
+                {/* Tab Switch: 命盘 | 起名 */}
+                <motion.div
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.3, duration: 0.4 }}
+                  className="flex justify-center mb-8"
+                >
+                  <div className="inline-flex bg-bg-elevated border border-border-subtle rounded-full p-1">
+                    <button
+                      onClick={() => setActiveTab('chart')}
+                      className={`flex items-center gap-2 px-5 py-2 rounded-full text-sm font-medium transition-all duration-200 ${
+                        activeTab === 'chart'
+                          ? 'bg-gold/15 text-gold'
+                          : 'text-text-secondary hover:text-text-primary'
+                      }`}
+                    >
+                      <ScrollText className="w-4 h-4" />
+                      命盘
+                    </button>
+                    <button
+                      onClick={() => setActiveTab('naming')}
+                      className={`flex items-center gap-2 px-5 py-2 rounded-full text-sm font-medium transition-all duration-200 ${
+                        activeTab === 'naming'
+                          ? 'bg-gold/15 text-gold'
+                          : 'text-text-secondary hover:text-text-primary'
+                      }`}
+                    >
+                      <Globe className="w-4 h-4" />
+                      起名
+                    </button>
+                  </div>
+                </motion.div>
+
+                {/* ═══════════════════════════════════════════════════ */}
+                {/*  Tab: 命盘                                        */}
+                {/* ═══════════════════════════════════════════════════ */}
+                <AnimatePresence mode="wait">
+                  {activeTab === 'chart' && (
+                    <motion.div
+                      key="chart-tab"
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      exit={{ opacity: 0 }}
+                      transition={{ duration: 0.3 }}
+                    >
+                      {/* Four Pillars Chart */}
+                      <FourPillars
+                        pillars={pillars}
+                        onRequestReading={handleRequestReading}
+                      />
+
 
                 {/* ═══════════════════════════════════════════════════ */}
                 {/*  Rich content from v1.0 — Day Master, Elements, Fortune */}
@@ -423,11 +473,80 @@ export default function Bazi() {
                     </>
                   );
                 })()}
-              </div>
-            </section>
-          </motion.div>
-        )}
-      </AnimatePresence>
+                      </motion.div>
+                    )}
+
+                    {/* ═══════════════════════════════════════════════════ */}
+                    {/*  Tab: 起名                                        */}
+                    {/* ═══════════════════════════════════════════════════ */}
+                    {activeTab === 'naming' && (
+                      <motion.div
+                        key="naming-tab"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ duration: 0.3 }}
+                      >
+                        {/* Naming Sub-Tabs */}
+                        <div className="flex justify-center mb-8">
+                          <div className="inline-flex bg-bg-elevated border border-border-subtle rounded-full p-1">
+                            <button
+                              onClick={() => setNamingSubTab('chinese')}
+                              className={`px-5 py-2 rounded-full text-sm font-medium transition-all duration-200 ${
+                                namingSubTab === 'chinese'
+                                  ? 'bg-gold/15 text-gold'
+                                  : 'text-text-secondary hover:text-text-primary'
+                              }`}
+                            >
+                              中文起名
+                            </button>
+                            <button
+                              onClick={() => setNamingSubTab('foreigner')}
+                              className={`px-5 py-2 rounded-full text-sm font-medium transition-all duration-200 ${
+                                namingSubTab === 'foreigner'
+                                  ? 'bg-gold/15 text-gold'
+                                  : 'text-text-secondary hover:text-text-primary'
+                              }`}
+                            >
+                              外国人中国名
+                            </button>
+                          </div>
+                        </div>
+
+                        <AnimatePresence mode="wait">
+                          {namingSubTab === 'chinese' && (
+                            <motion.div
+                              key="chinese-naming"
+                              initial={{ opacity: 0 }}
+                              animate={{ opacity: 1 }}
+                              exit={{ opacity: 0 }}
+                              transition={{ duration: 0.3 }}
+                            >
+                              <ChineseNaming
+                                pillars={pillars}
+                                gender={formData.gender}
+                              />
+                            </motion.div>
+                          )}
+                          {namingSubTab === 'foreigner' && (
+                            <motion.div
+                              key="foreigner-naming"
+                              initial={{ opacity: 0 }}
+                              animate={{ opacity: 1 }}
+                              exit={{ opacity: 0 }}
+                              transition={{ duration: 0.3 }}
+                            >
+                              <ForeignerNaming pillars={pillars} />
+                            </motion.div>
+                          )}
+                        </AnimatePresence>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
+              </section>
+            </motion.div>
+          )}
+        </AnimatePresence>
 
       {/* Step 3: AI Reading */}
       <AnimatePresence mode="wait">
