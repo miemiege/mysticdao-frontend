@@ -150,6 +150,29 @@ export default function BaguaScene3D({
           quality={quality}
         />
       </Canvas>
+
+      {/* North Pointer — fixed at top, does not rotate with compass */}
+      <div
+        className="absolute top-[12%] left-1/2 -translate-x-1/2 z-10 flex flex-col items-center"
+        style={{ pointerEvents: 'none' }}
+      >
+        <svg width="28" height="38" viewBox="0 0 28 38">
+          <polygon
+            points="14,0 28,28 14,24 0,28"
+            fill="#c8a45c"
+            opacity={0.9}
+          />
+          <text
+            x="14" y="36"
+            textAnchor="middle"
+            fill="#c8a45c"
+            fontSize="11"
+            fontWeight="bold"
+          >
+            N
+          </text>
+        </svg>
+      </div>
     </div>
   );
 }
