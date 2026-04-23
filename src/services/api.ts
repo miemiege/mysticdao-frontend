@@ -1,4 +1,4 @@
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || '';
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://mysticdao-backend.onrender.com';
 
 import { getPreloadedData } from '../hooks/usePreload';
 
