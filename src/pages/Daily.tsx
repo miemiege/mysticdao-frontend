@@ -1,10 +1,10 @@
 import React, { useState, useCallback, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Sparkles, RotateCcw, Heart, Share2 } from 'lucide-react';
+import { Sparkles, RotateCcw, Heart, Share2, Star } from 'lucide-react';
 import FortuneCard from '@/components/daily/FortuneCard';
 import ScoreRing from '@/components/daily/ScoreRing';
 import LuckyInfo from '@/components/daily/LuckyInfo';
-import TaijiLoader from '@/components/TaijiLoader';
+import RitualDrawing from '@/components/daily/RitualDrawing';
 import TypewriterText from '@/components/TypewriterText';
 import { fetchAIInterpretation } from '@/services/api';
 import { getDailyState, saveDailyState, addHistory, addFavorite, isFavorite, generateShareId } from '@/lib/storage';
@@ -13,20 +13,20 @@ import { toast } from 'sonner';
 type Step = 'idle' | 'drawing' | 'loading' | 'result';
 
 const loadingMessages = [
-  '正在连接灵枢AI...',
-  '正在测算今日运势...',
-  '正在生成专属解读...',
+  'Connecting to the sacred realm...',
+  'Calculating your cosmic alignment...',
+  'Channeling ancient wisdom...',
 ];
 
 const hexagrams = [
-  { name: '乾为天', keyword: '刚健', aspect: '事业', color: '#FBBF24' },
-  { name: '坤为地', keyword: '柔顺', aspect: '感情', color: '#8B5CF6' },
-  { name: '水雷屯', keyword: '起始', aspect: '财运', color: '#60A5FA' },
-  { name: '山水蒙', keyword: '启蒙', aspect: '健康', color: '#4ADE80' },
-  { name: '水天需', keyword: '等待', aspect: '人际', color: '#F87171' },
-  { name: '天水讼', keyword: '慎言', aspect: '事业', color: '#A78BFA' },
-  { name: '地水师', keyword: '出师', aspect: '财运', color: '#34D399' },
-  { name: '水地比', keyword: '亲比', aspect: '感情', color: '#FB923C' },
+  { name: '乾为天', keyword: 'Force', aspect: 'Career', color: '#FBBF24' },
+  { name: '坤为地', keyword: 'Yield', aspect: 'Love', color: '#8B5CF6' },
+  { name: '水雷屯', keyword: 'Sprout', aspect: 'Wealth', color: '#60A5FA' },
+  { name: '山水蒙', keyword: 'Ignite', aspect: 'Health', color: '#4ADE80' },
+  { name: '水天需', keyword: 'Hold', aspect: 'Relations', color: '#F87171' },
+  { name: '天水讼', keyword: 'Confront', aspect: 'Career', color: '#A78BFA' },
+  { name: '地水师', keyword: 'Guide', aspect: 'Wealth', color: '#34D399' },
+  { name: '水地比', keyword: 'Unite', aspect: 'Love', color: '#FB923C' },
 ];
 
 interface FortuneResult {
@@ -42,22 +42,35 @@ interface FortuneResult {
 function generateFortune(seed: number): FortuneResult {
   const card = hexagrams[seed % hexagrams.length];
   const overallScore = 40 + ((seed * 9301 + 49297) % 233280) / 233280 * 55;
-
   return {
     card,
     overallScore: Math.round(overallScore),
     scores: [
-      { label: '事业', score: Math.min(99, Math.round(overallScore + Math.sin(seed) * 15)), color: '#F87171' },
-      { label: '感情', score: Math.min(99, Math.round(overallScore + Math.cos(seed) * 12)), color: '#FBBF24' },
-      { label: '财运', score: Math.min(99, Math.round(overallScore + Math.sin(seed * 2) * 10)), color: '#4ADE80' },
-      { label: '健康', score: Math.min(99, Math.round(overallScore + Math.cos(seed * 3) * 14)), color: '#60A5FA' },
+      { label: 'Career', score: Math.min(99, Math.round(overallScore + Math.sin(seed) * 15)), color: '#F87171' },
+      { label: 'Love', score: Math.min(99, Math.round(overallScore + Math.cos(seed) * 12)), color: '#FBBF24' },
+      { label: 'Wealth', score: Math.min(99, Math.round(overallScore + Math.sin(seed * 2) * 10)), color: '#4ADE80' },
+      { label: 'Health', score: Math.min(99, Math.round(overallScore + Math.cos(seed * 3) * 14)), color: '#60A5FA' },
     ],
-    luckyColor: ['红色', '蓝色', '金色', '绿色', '紫色'][seed % 5],
+    luckyColor: ['Red', 'Blue', 'Gold', 'Green', 'Purple'][seed % 5],
     luckyNumber: String((seed % 9) + 1),
-    luckyDirection: ['东南', '西北', '正南', '东北', '西南'][seed % 5],
+    luckyDirection: ['Southeast', 'Northwest', 'South', 'Northeast', 'Southwest'][seed % 5],
     reading: '',
   };
 }
+
+const ParticleBackground = () => (
+  <div className="absolute inset-0 pointer-events-none overflow-hidden">
+    {Array.from({ length: 20 }).map((_, i) => (
+      <motion.div
+        key={i}
+        className="absolute w-0.5 h-0.5 rounded-full bg-gold"
+        style={{ left: `${Math.random() * 100}%`, top: `${Math.random() * 100}%` }}
+        animate={{ opacity: [0, 0.4, 0], y: [0, -30, -60], scale: [0, 1, 0.5] }}
+        transition={{ duration: 3 + Math.random() * 2, repeat: Infinity, delay: Math.random() * 3, ease: 'easeOut' }}
+      />
+    ))}
+  </div>
+);
 
 const Daily: React.FC = () => {
   const [step, setStep] = useState<Step>('idle');
@@ -68,7 +81,6 @@ const Daily: React.FC = () => {
   const [alreadyDrawn, setAlreadyDrawn] = useState(false);
   const abortRef = useRef<AbortController | null>(null);
 
-  // Restore state
   useEffect(() => {
     const saved = getDailyState();
     if (saved?.lastDrawDate) {
@@ -82,61 +94,36 @@ const Daily: React.FC = () => {
     }
   }, []);
 
-  // Loading message cycle
   useEffect(() => {
     if (step !== 'loading') return;
-    const interval = setInterval(() => {
-      setLoadingMsgIndex((prev) => (prev + 1) % loadingMessages.length);
-    }, 8000);
+    const interval = setInterval(() => setLoadingMsgIndex(p => (p + 1) % loadingMessages.length), 3000);
     return () => clearInterval(interval);
   }, [step]);
 
-  const handleDraw = useCallback(async () => {
+  const handleDraw = useCallback(() => {
     setError('');
     setStep('drawing');
-
-    const seed = Date.now();
-    const result = generateFortune(seed);
-
-    // Drawing animation delay
-    setTimeout(() => {
-      setFortune(result);
-      setStep('loading');
-      setLoadingMsgIndex(0);
-
-      abortRef.current = new AbortController();
-
-      fetchAIInterpretation(
-        { type: 'daily', data: { score: result.overallScore, card: result.card.name } },
-        abortRef.current.signal
-      )
-        .then((response) => {
-          setReading(response.text);
-          setStep('result');
-          const today = new Date().toISOString().split('T')[0];
-          saveDailyState({
-            lastDrawDate: today,
-            cardId: result.card.name,
-            fortune: result,
-            reading: response.text,
-          });
-          // Save to history
-          addHistory({
-            id: `daily_${today}_${Date.now()}`,
-            type: 'daily',
-            title: `${today} · ${result.card.name} · 综合运势 ${result.overallScore}`,
-            date: new Date().toISOString(),
-            data: { fortune: result, reading: response.text },
-          });
-        })
-        .catch((err) => {
-          if (err.name !== 'AbortError') {
-            setError('AI解读暂时不可用');
-            setStep('result');
-          }
-        });
-    }, 1500);
+    setFortune(generateFortune(Date.now()));
   }, []);
+
+  const handleRitualComplete = useCallback(() => {
+    setStep('loading');
+    setLoadingMsgIndex(0);
+    if (!fortune) return;
+    abortRef.current = new AbortController();
+    fetchAIInterpretation(
+      { type: 'daily', data: { score: fortune.overallScore, card: fortune.card.name } },
+      abortRef.current.signal
+    )
+      .then(r => {
+        setReading(r.text);
+        setStep('result');
+        const today = new Date().toISOString().split('T')[0];
+        saveDailyState({ lastDrawDate: today, cardId: fortune.card.name, fortune, reading: r.text });
+        addHistory({ id: `daily_${today}_${Date.now()}`, type: 'daily', title: `${today} · ${fortune.card.name} · ${fortune.overallScore}`, date: new Date().toISOString(), data: { fortune, reading: r.text } });
+      })
+      .catch(err => { if (err.name !== 'AbortError') { setError('AI interpretation temporarily unavailable'); setStep('result'); } });
+  }, [fortune]);
 
   const handleReset = useCallback(() => {
     abortRef.current?.abort();
@@ -148,277 +135,110 @@ const Daily: React.FC = () => {
   }, []);
 
   return (
-    <div className="min-h-[100dvh]">
-      {/* Hero */}
-      <section className="relative pt-32 pb-16 px-6">
+    <div className="min-h-[100dvh] bg-black relative">
+      <ParticleBackground />
+      <section className="relative pt-32 pb-8 px-6">
         <div className="max-w-[1200px] mx-auto text-center">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-          >
-            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-border-subtle text-sm text-text-secondary mb-6">
-              <Sparkles size={14} />
-              <span>每日一卦</span>
-            </div>
-            <h1 className="text-4xl md:text-5xl font-bold text-text-primary mb-4 tracking-tight">
-              今日运势
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}>
+            <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: 0.2 }} className="inline-flex items-center gap-2 px-5 py-2 rounded-full border border-gold/20 bg-gold/[0.04] mb-6">
+              <Sparkles size={14} className="text-gold" />
+              <span className="text-xs font-medium tracking-[0.15em] uppercase text-gold/80">Daily I Ching</span>
+            </motion.div>
+            <h1 className="text-4xl md:text-6xl font-bold text-white mb-4 tracking-tight font-heading" style={{ textShadow: '0 0 50px rgba(200,164,92,0.2)' }}>
+              <span className="text-gold">Daily</span> Fortune
             </h1>
-            <p className="text-text-secondary text-lg max-w-xl mx-auto">
-              每日抽取一次专属运势，AI 为你解读今日的机遇与挑战
-            </p>
+            <p className="text-text-secondary text-base md:text-lg max-w-lg mx-auto leading-relaxed">Draw your daily hexagram and receive AI-powered wisdom from the ancient I Ching</p>
           </motion.div>
         </div>
       </section>
 
-      {/* Main Content */}
-      <section className="pb-32 px-6">
+      <section className="pb-32 px-6 relative">
         <div className="max-w-[700px] mx-auto">
           <AnimatePresence mode="wait">
-            {/* Idle */}
             {step === 'idle' && (
-              <motion.div
-                key="idle"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                className="flex flex-col items-center py-16"
-              >
-                <motion.button
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  onClick={handleDraw}
-                  className="relative px-12 py-5 bg-white text-black font-semibold text-lg rounded-pill transition-all duration-200 hover:bg-[#E5E5E5] flex items-center gap-3"
-                  style={{
-                    boxShadow: '0 0 40px rgba(251, 191, 36, 0.15)',
-                  }}
-                >
-                  <Sparkles size={20} className="text-amber-500" />
-                  抽取今日运势
+              <motion.div key="idle" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0, scale: 0.95 }} transition={{ duration: 0.5 }} className="flex flex-col items-center py-12">
+                <motion.div initial={{ opacity: 0, scale: 0.5, rotate: -90 }} animate={{ opacity: 0.08, scale: 1, rotate: 0 }} transition={{ delay: 0.3, duration: 1.5 }} className="mb-8 text-gold text-[120px] font-heading leading-none" style={{ textShadow: '0 0 60px rgba(200,164,92,0.3)' }}>☯</motion.div>
+                <motion.button initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.5, duration: 0.6 }} whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} onClick={handleDraw}
+                  className="relative px-12 py-5 bg-gradient-to-r from-gold via-gold-light to-gold text-black font-semibold text-base rounded-pill transition-all duration-300 flex items-center gap-3 group"
+                  style={{ boxShadow: '0 0 40px rgba(200,164,92,0.2), 0 4px 20px rgba(0,0,0,0.3)' }}>
+                  <Sparkles size={20} className="group-hover:animate-spin" style={{ animationDuration: '3s' }} />
+                  <span className="tracking-wider uppercase text-sm">Draw Your Fortune</span>
                 </motion.button>
-                <p className="mt-4 text-sm text-text-muted">每日仅可抽取一次</p>
-
-                {error && (
-                  <p className="mt-4 text-sm text-red-400">{error}</p>
-                )}
+                <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.8 }} className="mt-5 text-sm text-text-muted tracking-wide">One draw per day · Connect with ancient wisdom</motion.p>
+                {error && <p className="mt-6 text-sm text-red-400">{error}</p>}
               </motion.div>
             )}
 
-            {/* Drawing */}
             {step === 'drawing' && (
-              <motion.div
-                key="drawing"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                className="flex flex-col items-center py-16"
-              >
-                <motion.div
-                  animate={{ rotate: 360 }}
-                  transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
-                  className="w-24 h-24 rounded-full border-2 border-dashed border-amber-400/30 flex items-center justify-center"
-                >
-                  <div className="w-16 h-16 rounded-full bg-amber-400/10 flex items-center justify-center">
-                    <Sparkles size={24} className="text-amber-400" />
+              <motion.div key="drawing" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0, scale: 1.1, filter: 'blur(10px)' }} transition={{ duration: 0.8 }}>
+                <RitualDrawing drawnCard={fortune?.card || null} onComplete={handleRitualComplete} />
+              </motion.div>
+            )}
+
+            {step === 'loading' && (
+              <motion.div key="loading" initial={{ opacity: 0, filter: 'blur(10px)' }} animate={{ opacity: 1, filter: 'blur(0px)' }} exit={{ opacity: 0 }} transition={{ duration: 0.5 }} className="flex flex-col items-center py-24">
+                <div className="relative mb-8">
+                  <motion.div animate={{ rotate: 360 }} transition={{ duration: 3, repeat: Infinity, ease: 'linear' }} className="w-20 h-20">
+                    <svg viewBox="0 0 80 80" className="w-full h-full">
+                      <circle cx="40" cy="40" r="38" fill="none" stroke="rgba(200,164,92,0.2)" strokeWidth="1" />
+                      <path d="M40 2C18.5 2 2 18.5 2 40s16.5 38 38 38V2z" fill="rgba(200,164,92,0.15)" />
+                      <circle cx="40" cy="22" r="8" fill="rgba(200,164,92,0.4)" />
+                      <circle cx="40" cy="58" r="8" fill="none" stroke="rgba(200,164,92,0.4)" strokeWidth="1.5" />
+                    </svg>
+                  </motion.div>
+                  <div className="absolute inset-0 rounded-full" style={{ boxShadow: '0 0 30px rgba(200,164,92,0.15), inset 0 0 20px rgba(200,164,92,0.05)' }} />
+                </div>
+                <motion.p key={loadingMsgIndex} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} transition={{ duration: 0.5 }} className="text-text-secondary text-sm tracking-wide">{loadingMessages[loadingMsgIndex]}</motion.p>
+                <div className="flex items-center gap-2 mt-4">
+                  {loadingMessages.map((_, i) => (
+                    <motion.div key={i} className="w-1.5 h-1.5 rounded-full" animate={{ backgroundColor: i === loadingMsgIndex ? 'rgba(200,164,92,0.8)' : 'rgba(200,164,92,0.2)', scale: i === loadingMsgIndex ? 1.3 : 1 }} transition={{ duration: 0.3 }} />
+                  ))}
+                </div>
+              </motion.div>
+            )}
+
+            {step === 'result' && fortune && (
+              <motion.div key="result" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+                {alreadyDrawn && (
+                  <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="text-center mb-8">
+                    <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-xs font-medium border border-gold/20 bg-gold/[0.06] text-gold/80"><Star size={12} />Already drawn today</span>
+                  </motion.div>
+                )}
+                <div className="mb-10"><FortuneCard name={fortune.card.name} keyword={fortune.card.keyword} aspect={fortune.card.aspect} color={fortune.card.color} /></div>
+                <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3, duration: 0.8, ease: [0.16, 1, 0.3, 1] }} className="text-center mb-10">
+                  <div className="text-xs uppercase tracking-[0.2em] text-text-muted mb-3">Overall Fortune</div>
+                  <motion.div className="text-7xl md:text-8xl font-bold tracking-tight font-heading" style={{ color: fortune.card.color, textShadow: `0 0 40px ${fortune.card.color}30` }} initial={{ scale: 0.3, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ delay: 0.4, type: 'spring', stiffness: 150, damping: 15 }}>{fortune.overallScore}</motion.div>
+                  <div className="flex items-center justify-center gap-2 mt-2">
+                    <div className="h-px w-8" style={{ background: `linear-gradient(90deg, transparent, ${fortune.card.color}40)` }} />
+                    <span className="text-xs text-text-muted uppercase tracking-wider">out of 100</span>
+                    <div className="h-px w-8" style={{ background: `linear-gradient(90deg, ${fortune.card.color}40, transparent)` }} />
                   </div>
                 </motion.div>
-                <p className="mt-6 text-text-secondary text-sm">正在抽取...</p>
-              </motion.div>
-            )}
-
-            {/* Loading */}
-            {step === 'loading' && (
-              <motion.div
-                key="loading"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                className="flex flex-col items-center py-16"
-              >
-                <TaijiLoader size={80} />
-                <motion.p
-                  key={loadingMsgIndex}
-                  initial={{ opacity: 0, y: 5 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -5 }}
-                  transition={{ duration: 0.5 }}
-                  className="mt-6 text-text-secondary text-sm"
-                >
-                  {loadingMessages[loadingMsgIndex]}
-                </motion.p>
-              </motion.div>
-            )}
-
-            {/* Result */}
-            {step === 'result' && fortune && (
-              <motion.div
-                key="result"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-              >
-                {/* Already drawn badge */}
-                {alreadyDrawn && (
-                  <motion.div
-                    initial={{ opacity: 0, y: -10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    className="text-center mb-6"
-                  >
-                    <span
-                      className="inline-block px-4 py-1.5 rounded-full text-xs font-medium"
-                      style={{
-                        background: 'rgba(251, 191, 36, 0.1)',
-                        color: '#FBBF24',
-                        border: '1px solid rgba(251, 191, 36, 0.2)',
-                      }}
-                    >
-                      今日已抽
-                    </span>
+                <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.5 }} className="grid grid-cols-4 gap-4 mb-10">
+                  {fortune.scores.map((s, i) => <ScoreRing key={s.label} label={s.label} score={s.score} color={s.color} delay={i * 150} />)}
+                </motion.div>
+                <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.7 }} className="mb-10">
+                  <LuckyInfo color={fortune.luckyColor} number={fortune.luckyNumber} direction={fortune.luckyDirection} />
+                </motion.div>
+                {reading && (
+                  <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.8, duration: 0.4 }} className="flex items-center justify-center gap-3 mb-6">
+                    <button onClick={() => { const today = new Date().toISOString().split('T')[0]; const id = `daily_${today}`; if (isFavorite(id)) { toast.info('Already in favorites'); return; } addFavorite({ id, type: 'daily', title: `${today} · ${fortune.card.name} · ${fortune.overallScore}`, date: new Date().toISOString(), data: { fortune, reading } }); toast.success('Saved to favorites'); }} className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full border border-border-subtle text-sm text-text-secondary hover:text-gold hover:border-gold/30 hover:bg-gold/5 transition-all duration-200"><Heart className="w-4 h-4" />Save</button>
+                    <button onClick={() => { const shareId = generateShareId('daily', { fortune, reading }); navigator.clipboard.writeText(`${window.location.origin}/#/?share=${shareId}`).then(() => toast.success('Share link copied')).catch(() => toast.error('Copy failed')); }} className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full border border-border-subtle text-sm text-text-secondary hover:text-gold hover:border-gold/30 hover:bg-gold/5 transition-all duration-200"><Share2 className="w-4 h-4" />Share</button>
                   </motion.div>
                 )}
-
-                {/* Fortune Card */}
-                <div className="mb-8">
-                  <FortuneCard
-                    name={fortune.card.name}
-                    keyword={fortune.card.keyword}
-                    aspect={fortune.card.aspect}
-                    color={fortune.card.color}
-                  />
-                </div>
-
-                {/* Overall Score */}
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.2 }}
-                  className="text-center mb-8"
-                >
-                  <div className="text-sm text-text-secondary mb-1">综合运势</div>
-                  <motion.div
-                    className="text-6xl font-bold tracking-tight"
-                    style={{ color: fortune.card.color }}
-                    initial={{ scale: 0.5 }}
-                    animate={{ scale: 1 }}
-                    transition={{ delay: 0.3, type: 'spring', stiffness: 200 }}
-                  >
-                    {fortune.overallScore}
-                  </motion.div>
-                  <div className="text-xs text-text-muted mt-1">满分 100</div>
-                </motion.div>
-
-                {/* Score Rings */}
-                <motion.div
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ delay: 0.3 }}
-                  className="grid grid-cols-4 gap-4 mb-8"
-                >
-                  {fortune.scores.map((s, i) => (
-                    <ScoreRing
-                      key={s.label}
-                      label={s.label}
-                      score={s.score}
-                      color={s.color}
-                      delay={i * 100}
-                    />
-                  ))}
-                </motion.div>
-
-                {/* Lucky Info */}
-                <motion.div
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ delay: 0.5 }}
-                  className="mb-8"
-                >
-                  <LuckyInfo
-                    color={fortune.luckyColor}
-                    number={fortune.luckyNumber}
-                    direction={fortune.luckyDirection}
-                  />
-                </motion.div>
-
-                {/* Action Buttons */}
                 {reading && (
-                  <motion.div
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.5, duration: 0.4 }}
-                    className="flex items-center justify-center gap-3 mb-6"
-                  >
-                    <button
-                      onClick={() => {
-                        const today = new Date().toISOString().split('T')[0];
-                        const id = `daily_${today}`;
-                        if (isFavorite(id)) {
-                          toast.info('已在收藏中');
-                          return;
-                        }
-                        addFavorite({
-                          id,
-                          type: 'daily',
-                          title: `${today} · ${fortune.card.name} · 综合运势 ${fortune.overallScore}`,
-                          date: new Date().toISOString(),
-                          data: { fortune, reading },
-                        });
-                        toast.success('已收藏到用户中心');
-                      }}
-                      className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full border border-border-subtle text-sm text-text-secondary hover:text-gold hover:border-gold/30 hover:bg-gold/5 transition-all duration-200"
-                    >
-                      <Heart className="w-4 h-4" />
-                      收藏
-                    </button>
-                    <button
-                      onClick={() => {
-                        const shareId = generateShareId('daily', { fortune, reading });
-                        const url = `${window.location.origin}/#/?share=${shareId}`;
-                        navigator.clipboard.writeText(url).then(() => {
-                          toast.success('分享链接已复制');
-                        }).catch(() => {
-                          toast.error('复制失败');
-                        });
-                      }}
-                      className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full border border-border-subtle text-sm text-text-secondary hover:text-gold hover:border-gold/30 hover:bg-gold/5 transition-all duration-200"
-                    >
-                      <Share2 className="w-4 h-4" />
-                      分享
-                    </button>
-                  </motion.div>
-                )}
-
-                {/* AI Reading */}
-                {reading && (
-                  <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.6 }}
-                    className="bg-bg-card border border-border-subtle rounded-xl p-6"
-                  >
-                    <h3 className="text-lg font-semibold text-text-primary mb-4">
-                      灵枢AI · 今日解读
-                    </h3>
-                    <div className="text-text-secondary leading-relaxed">
-                      <TypewriterText text={reading} speed={25} />
+                  <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.9 }} className="relative rounded-2xl border border-gold/10 overflow-hidden" style={{ background: 'linear-gradient(135deg, rgba(200,164,92,0.03) 0%, rgba(0,0,0,0.3) 100%)', backdropFilter: 'blur(10px)' }}>
+                    <div className="absolute top-0 left-0 right-0 h-[1px]" style={{ background: 'linear-gradient(90deg, transparent, rgba(200,164,92,0.2), transparent)' }} />
+                    <div className="p-6 md:p-8">
+                      <div className="flex items-center gap-2 mb-5"><Sparkles size={16} className="text-gold" /><h3 className="text-sm font-semibold text-gold/80 tracking-wider uppercase">MysticDao AI Reading</h3></div>
+                      <div className="text-text-secondary leading-relaxed text-[15px]"><TypewriterText text={reading} speed={20} /></div>
                     </div>
+                    <div className="absolute bottom-0 left-0 right-0 h-[1px]" style={{ background: 'linear-gradient(90deg, transparent, rgba(200,164,92,0.1), transparent)' }} />
                   </motion.div>
                 )}
-
-                {/* Reset */}
                 {!alreadyDrawn && (
-                  <motion.div
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ delay: 1 }}
-                    className="mt-8 text-center"
-                  >
-                    <button
-                      onClick={handleReset}
-                      className="inline-flex items-center gap-2 px-6 py-3 border border-border-subtle rounded-pill text-sm text-text-secondary hover:text-text-primary hover:border-border-hover transition-all duration-200 hover:scale-[1.03]"
-                    >
-                      <RotateCcw size={16} />
-                      重新抽取
-                    </button>
+                  <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1.2 }} className="mt-10 text-center">
+                    <button onClick={handleReset} className="inline-flex items-center gap-2 px-6 py-3 border border-border-subtle rounded-pill text-sm text-text-secondary hover:text-text-primary hover:border-gold/30 hover:bg-gold/5 transition-all duration-200"><RotateCcw size={16} />Draw Again</button>
                   </motion.div>
                 )}
               </motion.div>

@@ -25,13 +25,13 @@ const LuckyInfo: React.FC<LuckyInfoProps> = ({ color, number, direction }) => {
           transition={{ delay: 0.3 + index * 0.1, duration: 0.4 }}
           className="flex items-center gap-2 px-4 py-2 rounded-full border"
           style={{
-            background: 'rgba(251, 191, 36, 0.06)',
-            borderColor: 'rgba(251, 191, 36, 0.15)',
+            background: 'rgba(200, 164, 92, 0.05)',
+            borderColor: 'rgba(200, 164, 92, 0.15)',
           }}
         >
-          <span className="text-amber-400">{item.icon}</span>
+          <span className="text-gold/70">{item.icon}</span>
           <span className="text-xs text-text-muted">{item.label}</span>
-          <span className="text-sm font-medium text-amber-300">{item.value}</span>
+          <span className="text-sm font-medium text-gold">{item.value}</span>
         </motion.div>
       ))}
     </div>

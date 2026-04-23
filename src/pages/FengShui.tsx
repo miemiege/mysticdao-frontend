@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Compass as CompassIcon, Sparkles, ChevronDown, Camera } from 'lucide-react';
 import { fetchAIInterpretation } from '@/services/api';
 import { BaguaIcon } from '@/components/SacredIcons';
-import Compass from '@/components/fengshui/Compass';
+import Compass3D from '@/components/fengshui/Compass3D';
 import DirectionPanel from '@/components/fengshui/DirectionPanel';
 import BaguaMap from '@/components/fengshui/BaguaMap';
 import { directionData } from '@/components/fengshui/fengshuiData';
@@ -217,7 +217,7 @@ export default function FengShui() {
           </motion.div>
 
           {/* Compass */}
-          <Compass
+          <Compass3D
             onSelectDirection={handleSelectDirection}
             selectedDirection={selectedDir}
           />

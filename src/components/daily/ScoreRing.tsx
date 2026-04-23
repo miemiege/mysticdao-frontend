@@ -61,7 +61,7 @@ const ScoreRing: React.FC<ScoreRingProps> = ({ label, score, color, delay = 0 })
             animate={{ strokeDashoffset }}
             transition={{ duration: 1, ease: [0.25, 0.1, 0.25, 1], delay: delay / 1000 }}
             transform="rotate(-90 50 50)"
-            style={{ filter: `drop-shadow(0 0 6px ${color}40)` }}
+            style={{ filter: `drop-shadow(0 0 8px ${color}50) drop-shadow(0 0 16px ${color}20)` }}
           />
         </svg>
         <div className="absolute inset-0 flex flex-col items-center justify-center">
