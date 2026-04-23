@@ -120,7 +120,7 @@ export default function Navbar() {
               transition={{ type: 'tween', duration: 0.3, ease: [0.16, 1, 0.3, 1] as [number, number, number, number] }}
               className="fixed top-0 right-0 bottom-0 w-[280px] bg-black border-l border-white/[0.08] z-[101] flex flex-col"
             >
-              <div className="flex items-center justify-between p-6 border-b border-white/[0.06]">
+              <div className="flex items-center justify-between p-6 border-b border-[#c8a45c]/20">
                 <span className="font-heading text-lg font-bold text-gold">Menu</span>
                 <button
                   onClick={() => setMobileOpen(false)}
