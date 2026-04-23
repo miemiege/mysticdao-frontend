@@ -142,9 +142,19 @@ function HeroSection() {
       {/* Layer 1: Black base */}
       <div className="absolute inset-0 bg-black z-0" />
 
+      {/* Layer 1.5: Ink Wash Background */}
+      <div className="absolute inset-0 z-[0.5]">
+        <img
+          src="/hero-ink-wash-bg.jpg"
+          alt=""
+          className="w-full h-full object-cover opacity-[0.12]"
+          aria-hidden="true"
+        />
+      </div>
+
       {/* Layer 2: Particle field */}
       <div className="absolute inset-0 z-[1]">
-        <TaijiParticles count={80} />
+        <ParticleField count={80} />
       </div>
 
       {/* Layer 3: Mandala */}
@@ -167,6 +177,14 @@ function HeroSection() {
       <div
         className="absolute inset-0 z-[4] pointer-events-none"
         style={{ background: 'radial-gradient(ellipse at center, transparent 30%, #000000 85%)' }}
+      />
+
+      {/* Layer 5.5: Jade Glow */}
+      <div
+        className="absolute inset-0 z-[4.5] pointer-events-none"
+        style={{
+          background: 'radial-gradient(ellipse at 50% 50%, rgba(20,50,30,0.15) 0%, rgba(10,30,15,0.08) 40%, transparent 70%)'
+        }}
       />
 
       {/* Content */}
@@ -277,6 +295,7 @@ const features = [
     description: 'Uncover the blueprint of your life written in the stars at your birth. Your Four Pillars reveal personality, career path, relationships, and fortune cycles.',
     href: '/#/bazi',
     icon: ScrollText,
+    image: '/service-bazi.jpg',
   },
   {
     title: 'Feng Shui',
@@ -284,6 +303,7 @@ const features = [
     description: 'Harmonize your living and working spaces with the ancient art of energy flow. Discover how orientation, layout, and elements shape your daily fortune.',
     href: '/#/fengshui',
     icon: Compass,
+    image: '/service-fengshui.jpg',
   },
   {
     title: 'Daily I Ching',
@@ -291,6 +311,7 @@ const features = [
     description: 'Draw from the timeless I Ching for daily guidance and deep introspection. Each hexagram carries a message from the universe, waiting to be revealed.',
     href: '/#/daily',
     icon: Sparkles,
+    image: '/service-love.jpg',
   },
   {
     title: 'Premium Access',
@@ -298,6 +319,7 @@ const features = [
     description: 'Unlock deeper insights with AI-powered interpretations. Personalized readings, detailed analysis, and unlimited daily draws.',
     href: '/#/pricing',
     icon: Crown,
+    image: '/service-tarot.jpg',
   },
 ];
 
@@ -337,22 +359,37 @@ function FeatureSection() {
           {features.map((f) => (
             <motion.div key={f.title} variants={staggerItem}>
               <a href={f.href} className="block group h-full">
-                <div className="h-full bg-white/[0.04] border border-white/[0.08] rounded-2xl p-8 transition-all duration-400 hover:border-gold/50 hover:bg-white/[0.07] hover:-translate-y-[4px] hover:shadow-[0_12px_40px_rgba(200,164,92,0.15)]">
-                  <div className="w-12 h-12 rounded-xl bg-gold/[0.08] flex items-center justify-center mb-5 transition-colors duration-300 group-hover:bg-gold/[0.15]">
-                    <f.icon className="w-6 h-6 text-gold" />
+                <div className="h-full relative rounded-2xl overflow-hidden border border-white/[0.08] transition-all duration-400 hover:border-gold/50 hover:-translate-y-[4px] hover:shadow-[0_12px_40px_rgba(200,164,92,0.15)]">
+                  {/* Image background layer */}
+                  <div className="absolute inset-0">
+                    <img
+                      src={f.image}
+                      alt=""
+                      className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                      loading="lazy"
+                      aria-hidden="true"
+                    />
+                    {/* Black gradient overlay */}
+                    <div className="absolute inset-0 bg-gradient-to-t from-black via-black/60 to-transparent" />
                   </div>
-                  <h3 className="font-heading text-xl font-semibold text-white mb-1">
-                    {f.title}
-                  </h3>
-                  {f.chinese && (
-                    <span className="text-xs text-gold/60 block mb-3">{f.chinese}</span>
-                  )}
-                  <p className="text-sm text-white/60 leading-relaxed mb-6">
-                    {f.description}
-                  </p>
-                  <span className="inline-flex items-center gap-1 text-xs font-medium uppercase tracking-[0.1em] text-gold group-hover:underline">
-                    Explore <ArrowRight className="w-3.5 h-3.5" />
-                  </span>
+                  {/* Content layer (above overlay) */}
+                  <div className="relative h-full p-8 flex flex-col">
+                    <div className="w-12 h-12 rounded-xl bg-gold/[0.15] backdrop-blur-sm flex items-center justify-center mb-5 transition-colors duration-300 group-hover:bg-gold/[0.25]">
+                      <f.icon className="w-6 h-6 text-gold" />
+                    </div>
+                    <h3 className="font-heading text-xl font-semibold text-white mb-1">
+                      {f.title}
+                    </h3>
+                    {f.chinese && (
+                      <span className="text-xs text-gold/60 block mb-3">{f.chinese}</span>
+                    )}
+                    <p className="text-sm text-white/70 leading-relaxed mb-6 flex-1">
+                      {f.description}
+                    </p>
+                    <span className="inline-flex items-center gap-1 text-xs font-medium uppercase tracking-[0.1em] text-gold group-hover:underline">
+                      Explore <ArrowRight className="w-3.5 h-3.5" />
+                    </span>
+                  </div>
                 </div>
               </a>
             </motion.div>
@@ -712,7 +749,7 @@ function CTASection() {
         style={{ background: 'radial-gradient(ellipse at 50% 50%, rgba(200,164,92,0.06) 0%, transparent 60%)' }}
       />
       <div className="absolute inset-0 z-[1]">
-        <TaijiParticles count={40} />
+        <ParticleField count={40} />
       </div>
 
       <motion.div
@@ -747,6 +784,71 @@ function CTASection() {
           </a>
         </div>
       </motion.div>
+
+      {/* Zen Stone Decoration — Taiji stone arrangement */}
+      <div className="absolute bottom-0 left-0 right-0 h-20 pointer-events-none overflow-hidden">
+        {/* Yin stones (white/light) — left curve */}
+        {[...Array(8)].map((_, i) => {
+          const t = i / 7;
+          const x = 50 - 30 * Math.cos(t * Math.PI * 0.8);
+          const y = 85 - 60 * Math.sin(t * Math.PI * 0.8);
+          return (
+            <div
+              key={`yin-${i}`}
+              className="absolute rounded-full"
+              style={{
+                left: `${x}%`,
+                top: `${y}%`,
+                width: `${5 + Math.sin(i * 1.3) * 3}px`,
+                height: `${4 + Math.cos(i * 1.1) * 2.5}px`,
+                background: 'rgba(200, 180, 140, 0.35)',
+                transform: 'translate(-50%, -50%)',
+                boxShadow: '0 1px 3px rgba(0,0,0,0.3)',
+              }}
+            />
+          );
+        })}
+        {/* Yang stones (dark) — right curve */}
+        {[...Array(8)].map((_, i) => {
+          const t = i / 7;
+          const x = 50 + 30 * Math.cos(t * Math.PI * 0.8);
+          const y = 85 - 60 * Math.sin(t * Math.PI * 0.8);
+          return (
+            <div
+              key={`yang-${i}`}
+              className="absolute rounded-full"
+              style={{
+                left: `${x}%`,
+                top: `${y}%`,
+                width: `${5 + Math.cos(i * 1.2) * 3}px`,
+                height: `${4 + Math.sin(i * 1.0) * 2.5}px`,
+                background: 'rgba(140, 120, 80, 0.3)',
+                transform: 'translate(-50%, -50%)',
+                boxShadow: '0 1px 3px rgba(0,0,0,0.3)',
+              }}
+            />
+          );
+        })}
+        {/* Center taiji eye stones */}
+        <div
+          className="absolute rounded-full"
+          style={{
+            left: '38%', top: '35%',
+            width: '4px', height: '3px',
+            background: 'rgba(140, 120, 80, 0.4)',
+            transform: 'translate(-50%, -50%)',
+          }}
+        />
+        <div
+          className="absolute rounded-full"
+          style={{
+            left: '62%', top: '35%',
+            width: '4px', height: '3px',
+            background: 'rgba(200, 180, 140, 0.45)',
+            transform: 'translate(-50%, -50%)',
+          }}
+        />
+      </div>
       </motion.div>
     </section>
   );
@@ -758,6 +860,23 @@ export default function Home() {
     <div className="bg-black">
       <HeroSection />
       <FeatureSection />
+
+      {/* Ink Brush Divider */}
+      <div className="py-10 flex justify-center overflow-hidden">
+        <svg width="320" height="40" viewBox="0 0 320 40" className="opacity-[0.18]">
+          {/* Main ink brush stroke — flowing S-curve like ink on paper */}
+          <path d="M10,20 C40,8 80,32 120,18 C160,4 200,36 240,16 C270,2 300,24 310,20" stroke="#C8A45C" strokeWidth="1.8" fill="none" strokeLinecap="round" opacity="0.7" />
+          {/* Secondary lighter stroke */}
+          <path d="M0,24 C50,12 90,30 140,20 C180,10 220,34 260,18 C290,6 315,22 320,20" stroke="#C8A45C" strokeWidth="1" fill="none" strokeLinecap="round" opacity="0.35" />
+          {/* Ink splatter dots */}
+          <circle cx="85" cy="14" r="1.5" fill="#C8A45C" opacity="0.25" />
+          <circle cx="195" cy="28" r="1" fill="#C8A45C" opacity="0.2" />
+          <circle cx="265" cy="12" r="1.2" fill="#C8A45C" opacity="0.18" />
+          {/* Faint third stroke for depth */}
+          <path d="M20,28 C60,18 100,26 160,22 C210,18 260,30 300,22" stroke="#C8A45C" strokeWidth="0.6" fill="none" strokeLinecap="round" opacity="0.2" />
+        </svg>
+      </div>
+
       <BrandStorySection />
       <StatsSection />
       <HowItWorksSection />

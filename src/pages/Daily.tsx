@@ -1,7 +1,6 @@
 import React, { useState, useCallback, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Sparkles, RotateCcw, Heart, Share2, Star, ChevronDown, ChevronUp } from 'lucide-react';
-import FortuneCard from '@/components/daily/FortuneCard';
 import ScoreRing from '@/components/daily/ScoreRing';
 import LuckyInfo from '@/components/daily/LuckyInfo';
 import RitualDrawing from '@/components/daily/RitualDrawing';
@@ -478,7 +477,7 @@ const Daily: React.FC = () => {
                                         <ChevronUp size={11} /> Collapse
                                       </button>
                                     )}
-                                    <BreathingTypewriter text={seg} baseSpeed={22} highlightSpeed={80} onAllComplete={() => handleSegmentComplete(`seg-${i}`)} />
+                                    <BreathingTypewriter text={seg} baseSpeed={22} highlightSpeed={80} onComplete={() => handleSegmentComplete(`seg-${i}`)} />
                                   </div>
                                 ) : (
                                   <button onClick={() => setExpandedSegments((prev) => { const next = new Set(prev); next.add(i); return next; })} className="flex items-center gap-2 text-sm text-text-secondary hover:text-gold transition-colors py-1.5 w-full">
@@ -494,7 +493,7 @@ const Daily: React.FC = () => {
                                   {fu.key === 'career' ? '事业' : fu.key === 'love' ? '感情' : '注意'}
                                 </span>
                                 <div className="mt-2">
-                                  <BreathingTypewriter text={fu.text} baseSpeed={22} highlightSpeed={80} onAllComplete={() => handleSegmentComplete(`fu-${i}`)} />
+                                  <BreathingTypewriter text={fu.text} baseSpeed={22} highlightSpeed={80} onComplete={() => handleSegmentComplete(`fu-${i}`)} />
                                 </div>
                               </motion.div>
                             ))}
