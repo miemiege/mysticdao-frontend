@@ -1,596 +1,1114 @@
-import { useState, useCallback, useRef, useEffect, useMemo } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { motion, AnimatePresence, useMotionValue, useTransform, animate } from 'framer-motion';
 import {
-  X,
-  ChevronLeft,
-  Smartphone,
-  MousePointerClick,
-  RotateCcw,
+  Lock,
+  Unlock,
+  Bookmark,
+  History,
+  Copy,
   Sparkles,
-  Palette,
-  Hash,
-  Compass,
+  X,
+  Navigation,
+  MousePointer2,
 } from 'lucide-react';
+import { directions, getDirectionFromAngle } from '@/components/fengshui/fengshuiData';
 import {
-  directionData,
-  directions,
-  getDirectionFromAngle,
-} from '@/components/fengshui/fengshuiData';
+  mountains24,
+  getMountainFromAngle,
+  getMountainsByDirection,
+  getTrigramForDirection,
+} from './compassData';
 
+// ═══════════════════════════════════════════════════════════════════════
+// Constants
+// ═══════════════════════════════════════════════════════════════════════
 const GOLD = '#c8a45c';
-const GOLD_GLOW = 'rgba(200, 164, 92, 0.15)';
+const GOLD_LIGHT = '#e8c87a';
+const GOLD_DARK = '#8a7340';
+const BG = '#000000';
+const SNAP_THRESHOLD = 7.5;
 
+// ═══════════════════════════════════════════════════════════════════════
+// isMobileDevice
+// ═══════════════════════════════════════════════════════════════════════
+function isMobileDevice(): boolean {
+  if (typeof navigator === 'undefined') return false;
+  return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
+    navigator.userAgent
+  );
+}
+
+// ═══════════════════════════════════════════════════════════════════════
+// Props
+// ═══════════════════════════════════════════════════════════════════════
 interface WebCompassProps {
   onClose?: () => void;
 }
 
-const isMobileDevice = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-
-// ─── Inline useCompass (sensor-driven) ───────────────────────────
-function useCompass() {
-  const [heading, setHeading] = useState<number>(0);
-  const [rawHeading, setRawHeading] = useState<number>(0);
-  const [accuracy, setAccuracy] = useState<number | null>(null);
-  const [isCalibrating, setIsCalibrating] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [permissionGranted, setPermissionGranted] = useState<boolean>(
-    typeof (DeviceOrientationEvent as any).requestPermission !== 'function'
-  );
-  const offsetRef = useRef<number>(0);
-
-  const handleOrientation = useCallback((event: DeviceOrientationEvent) => {
-    let h: number;
-    const anyEvent = event as any;
-    if (anyEvent.webkitCompassHeading !== undefined) {
-      h = anyEvent.webkitCompassHeading;
-    } else if (event.alpha !== null) {
-      h = 360 - event.alpha;
-    } else {
-      return;
-    }
-    const normalized = ((h % 360) + 360) % 360;
-    setRawHeading(normalized);
-    setHeading(((normalized - offsetRef.current) % 360 + 360) % 360);
-    if ('webkitCompassAccuracy' in event) {
-      setAccuracy(anyEvent.webkitCompassAccuracy);
-    }
-  }, []);
-
-  useEffect(() => {
-    window.addEventListener('deviceorientation', handleOrientation, true);
-    return () => {
-      window.removeEventListener('deviceorientation', handleOrientation, true);
-    };
-  }, [handleOrientation]);
-
-  const requestPermission = useCallback(async () => {
-    if (typeof (DeviceOrientationEvent as any).requestPermission === 'function') {
-      try {
-        const response = await (DeviceOrientationEvent as any).requestPermission();
-        if (response === 'granted') {
-          setPermissionGranted(true);
-        } else {
-          setError('传感器权限被拒绝');
-        }
-      } catch {
-        setError('请求传感器权限失败');
-      }
-    } else {
-      setPermissionGranted(true);
-    }
-  }, []);
-
-  const startCalibration = useCallback(() => {
-    offsetRef.current = rawHeading;
-    setIsCalibrating(true);
-    setTimeout(() => setIsCalibrating(false), 5000);
-  }, [rawHeading]);
-
-  return { heading, accuracy, isCalibrating, error, permissionGranted, requestPermission, startCalibration };
+// ═══════════════════════════════════════════════════════════════════════
+// Types
+// ═══════════════════════════════════════════════════════════════════════
+interface HistoryRecord {
+  id: string;
+  angle: number;
+  direction: string;
+  mountain: string;
+  trigram: string;
+  timestamp: number;
 }
 
-// ─── Inline useCompassPC (mouse/touch drag) ──────────────────────
-function useCompassPC() {
-  const [heading, setHeading] = useState<number>(0);
-  const [isDragging, setIsDragging] = useState(false);
-  const startAngleRef = useRef<number>(0);
-  const startHeadingRef = useRef<number>(0);
-  const centerRef = useRef<{ x: number; y: number } | null>(null);
+interface CompassState {
+  heading: number;
+  accuracy: number | null;
+  supported: boolean;
+  error: string | null;
+}
 
-  const getAngle = useCallback((clientX: number, clientY: number): number => {
-    if (!centerRef.current) return 0;
-    const dx = clientX - centerRef.current.x;
-    const dy = clientY - centerRef.current.y;
-    return (Math.atan2(dy, dx) * 180) / Math.PI + 90;
+// ═══════════════════════════════════════════════════════════════════════
+// useCompass hook (传感器模式)
+// ═══════════════════════════════════════════════════════════════════════
+function useCompass(): {
+  heading: number;
+  accuracy: number | null;
+  supported: boolean;
+  error: string | null;
+} {
+  const [state, setState] = useState<CompassState>({
+    heading: 0,
+    accuracy: null,
+    supported: false,
+    error: null,
+  });
+
+  useEffect(() => {
+    if (!isMobileDevice()) {
+      setState((s) => ({ ...s, error: '非移动设备' }));
+      return;
+    }
+
+    const handleOrientation = (e: DeviceOrientationEvent) => {
+      let heading = 0;
+      if ((e as any).webkitCompassHeading) {
+        heading = (e as any).webkitCompassHeading;
+      } else if (e.alpha !== null) {
+        heading = 360 - e.alpha;
+      }
+      setState({
+        heading: ((heading % 360) + 360) % 360,
+        accuracy: e.alpha !== null ? 5 : null,
+        supported: true,
+        error: null,
+      });
+    };
+
+    if (typeof window !== 'undefined') {
+      window.addEventListener('deviceorientation', handleOrientation);
+      setState((s) => ({ ...s, supported: true }));
+    }
+
+    return () => {
+      if (typeof window !== 'undefined') {
+        window.removeEventListener('deviceorientation', handleOrientation);
+      }
+    };
   }, []);
 
-  const startDrag = useCallback((e: React.MouseEvent | React.TouchEvent) => {
-    const rect = (e.currentTarget as HTMLElement).getBoundingClientRect();
-    centerRef.current = {
-      x: rect.left + rect.width / 2,
-      y: rect.top + rect.height / 2,
-    };
-    const clientX = 'touches' in e ? e.touches[0].clientX : e.clientX;
-    const clientY = 'touches' in e ? e.touches[0].clientY : e.clientY;
-    startAngleRef.current = getAngle(clientX, clientY);
-    startHeadingRef.current = heading;
+  return {
+    heading: state.heading,
+    accuracy: state.accuracy,
+    supported: state.supported,
+    error: state.error,
+  };
+}
+
+// ═══════════════════════════════════════════════════════════════════════
+// useCompassPC hook (手动拖拽模式)
+// ═══════════════════════════════════════════════════════════════════════
+function useCompassPC(): {
+  heading: number;
+  isDragging: boolean;
+  handlers: {
+    onMouseDown: (e: React.MouseEvent) => void;
+    onTouchStart: (e: React.TouchEvent) => void;
+  };
+} {
+  const [heading, setHeading] = useState(0);
+  const [isDragging, setIsDragging] = useState(false);
+  const startYRef = useRef(0);
+  const startHeadingRef = useRef(0);
+
+  const handleMouseDown = useCallback((e: React.MouseEvent) => {
     setIsDragging(true);
-  }, [heading, getAngle]);
+    startYRef.current = e.clientY;
+    startHeadingRef.current = heading;
+  }, [heading]);
 
-  const onDrag = useCallback((e: React.MouseEvent | React.TouchEvent) => {
+  const handleMouseMove = useCallback((e: MouseEvent) => {
     if (!isDragging) return;
-    e.preventDefault();
-    const clientX = 'touches' in e ? e.touches[0].clientX : e.clientX;
-    const clientY = 'touches' in e ? e.touches[0].clientY : e.clientY;
-    const angle = getAngle(clientX, clientY);
-    const delta = angle - startAngleRef.current;
-    const newHeading = ((startHeadingRef.current - delta) % 360 + 360) % 360;
+    const deltaY = startYRef.current - e.clientY;
+    const newHeading = ((startHeadingRef.current + deltaY * 2) % 360 + 360) % 360;
     setHeading(newHeading);
-  }, [isDragging, getAngle]);
+  }, [isDragging]);
 
-  const endDrag = useCallback(() => {
+  const handleMouseUp = useCallback(() => {
     setIsDragging(false);
   }, []);
 
-  return { heading, isDragging, startDrag, onDrag, endDrag };
+  const handleTouchStart = useCallback((e: React.TouchEvent) => {
+    setIsDragging(true);
+    startYRef.current = e.touches[0].clientY;
+    startHeadingRef.current = heading;
+  }, [heading]);
+
+  const handleTouchMove = useCallback((e: TouchEvent) => {
+    if (!isDragging) return;
+    const deltaY = startYRef.current - e.touches[0].clientY;
+    const newHeading = ((startHeadingRef.current + deltaY * 2) % 360 + 360) % 360;
+    setHeading(newHeading);
+  }, [isDragging]);
+
+  const handleTouchEnd = useCallback(() => {
+    setIsDragging(false);
+  }, []);
+
+  useEffect(() => {
+    if (isDragging) {
+      window.addEventListener('mousemove', handleMouseMove);
+      window.addEventListener('mouseup', handleMouseUp);
+      window.addEventListener('touchmove', handleTouchMove);
+      window.addEventListener('touchend', handleTouchEnd);
+      return () => {
+        window.removeEventListener('mousemove', handleMouseMove);
+        window.removeEventListener('mouseup', handleMouseUp);
+        window.removeEventListener('touchmove', handleTouchMove);
+        window.removeEventListener('touchend', handleTouchEnd);
+      };
+    }
+  }, [isDragging, handleMouseMove, handleMouseUp, handleTouchMove, handleTouchEnd]);
+
+  return {
+    heading,
+    isDragging,
+    handlers: {
+      onMouseDown: handleMouseDown,
+      onTouchStart: handleTouchStart,
+    },
+  };
 }
 
-// ─── Main Component ──────────────────────────────────────────────
-export default function WebCompass({ onClose }: WebCompassProps) {
-  const [mode, setMode] = useState<'sensor' | 'manual'>(isMobileDevice ? 'sensor' : 'manual');
-  const [selectedKey, setSelectedKey] = useState<string | null>(null);
-  const [showCalibrate, setShowCalibrate] = useState(false);
+// ═══════════════════════════════════════════════════════════════════════
+// Helper: 获取最近24山角度
+// ═══════════════════════════════════════════════════════════════════════
+function getNearestMountainAngle(angle: number): number {
+  const normalized = ((angle % 360) + 360) % 360;
+  let minDiff = Infinity;
+  let nearestAngle = 0;
+  for (const m of mountains24) {
+    const diff = Math.abs(((normalized - m.angle + 180) % 360) - 180);
+    if (diff < minDiff) {
+      minDiff = diff;
+      nearestAngle = m.angle;
+    }
+  }
+  return nearestAngle;
+}
 
-  const compassMobile = useCompass();
-  const compassPC = useCompassPC();
+// ═══════════════════════════════════════════════════════════════════════
+// Helper: Signal bars
+// ═══════════════════════════════════════════════════════════════════════
+function getSignalBars(accuracy: number | null): number {
+  if (accuracy === null) return 0;
+  if (accuracy < 5) return 3;
+  if (accuracy < 15) return 2;
+  if (accuracy < 30) return 1;
+  return 0;
+}
 
-  const isSensorMode = mode === 'sensor';
-  const heading = isSensorMode ? compassMobile.heading : compassPC.heading;
-  const currentKey = getDirectionFromAngle(heading);
-  const currentDir = directions.find((d) => d.key === currentKey);
+// ═══════════════════════════════════════════════════════════════════════
+// Helper: Format date
+// ═══════════════════════════════════════════════════════════════════════
+function formatDate(ts: number): string {
+  const d = new Date(ts);
+  const pad = (n: number) => n.toString().padStart(2, '0');
+  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}`;
+}
 
-  const toggleMode = useCallback(() => {
-    setMode((m) => (m === 'sensor' ? 'manual' : 'sensor'));
+// ═══════════════════════════════════════════════════════════════════════
+// Main Component
+// ═══════════════════════════════════════════════════════════════════════
+function WebCompass({ onClose }: WebCompassProps) {
+  const [isSensorMode, setIsSensorMode] = useState(isMobileDevice());
+  const [locked, setLocked] = useState(false);
+  const [showHistory, setShowHistory] = useState(false);
+  const [showFengshui, setShowFengshui] = useState(false);
+  const [history, setHistory] = useState<HistoryRecord[]>([]);
+  const [copied, setCopied] = useState(false);
+  const [headingSnapshot, setHeadingSnapshot] = useState(0);
+
+  const compass = useCompass();
+  const pcCompass = useCompassPC();
+
+  // Heading from active mode
+  const rawHeading = isSensorMode ? compass.heading : pcCompass.heading;
+
+  // Animate heading transitions
+  const animatedHeading = useMotionValue(rawHeading);
+  const negatedHeading = useTransform(animatedHeading, (v) => -v);
+
+  useEffect(() => {
+    if (!locked) {
+      animate(animatedHeading, rawHeading, {
+        duration: 0.4,
+        ease: 'easeOut',
+      });
+    }
+  }, [rawHeading, locked, animatedHeading]);
+
+  // Snap on drag end
+  useEffect(() => {
+    if (!isSensorMode && !pcCompass.isDragging && !locked) {
+      const currentVal = animatedHeading.get();
+      const snapAngle = getNearestMountainAngle(currentVal);
+      const diff = Math.abs(((currentVal - snapAngle + 180) % 360) - 180);
+      if (diff <= SNAP_THRESHOLD) {
+        animate(animatedHeading, snapAngle, {
+          duration: 0.3,
+          ease: 'easeOut',
+        });
+      }
+    }
+  }, [pcCompass.isDragging, isSensorMode, locked, animatedHeading]);
+
+  // Snapshot heading when locked
+  useEffect(() => {
+    if (locked) {
+      setHeadingSnapshot(rawHeading);
+    }
+  }, [locked, rawHeading]);
+
+  const currentHeading = locked ? headingSnapshot : rawHeading;
+  const currentDirectionKey = getDirectionFromAngle(currentHeading);
+  const currentDirection = directions.find((d) => d.key === currentDirectionKey) || directions[0];
+  const currentMountain = getMountainFromAngle(currentHeading);
+  const trigramInfo = getTrigramForDirection(currentDirectionKey);
+
+  // Signal bars
+  const signalBars = getSignalBars(compass.accuracy);
+
+  // ═════════════════════════════════════════════════════════════════════
+  // Memoized compass positions
+  // ═════════════════════════════════════════════════════════════════════
+  const size = 320;
+  const center = size / 2;
+  const radius = 130;
+
+  const mountainPositions = useMemo(() => {
+    return mountains24.map((m) => {
+      const rad = ((m.angle - 90) * Math.PI) / 180;
+      const r = radius + 28;
+      return {
+        ...m,
+        x: center + r * Math.cos(rad),
+        y: center + r * Math.sin(rad),
+      };
+    });
   }, []);
 
-  const handleCalibrate = useCallback(() => {
+  const directionPositions = useMemo(() => {
+    return directions.map((d) => {
+      const rad = ((d.angle - 90) * Math.PI) / 180;
+      return {
+        ...d,
+        x: center + radius * Math.cos(rad),
+        y: center + radius * Math.sin(rad),
+      };
+    });
+  }, []);
+
+  // ═════════════════════════════════════════════════════════════════════
+  // Load history from localStorage
+  // ═════════════════════════════════════════════════════════════════════
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem('compass-history');
+      if (saved) {
+        const parsed = JSON.parse(saved) as HistoryRecord[];
+        setHistory(parsed);
+      }
+    } catch { /* ignore */ }
+  }, []);
+
+  // Save history to localStorage
+  const saveHistory = useCallback((records: HistoryRecord[]) => {
+    setHistory(records);
+    try {
+      localStorage.setItem('compass-history', JSON.stringify(records));
+    } catch { /* ignore */ }
+  }, []);
+
+  // Handle save current direction
+  const handleSave = useCallback(() => {
+    const record: HistoryRecord = {
+      id: Date.now().toString(),
+      angle: Math.round(currentHeading),
+      direction: currentDirection.label,
+      mountain: currentMountain.name,
+      trigram: trigramInfo.trigram,
+      timestamp: Date.now(),
+    };
+    const newHistory = [record, ...history].slice(0, 20);
+    saveHistory(newHistory);
+  }, [currentHeading, currentDirection, currentMountain, trigramInfo, history, saveHistory]);
+
+  // Handle copy
+  const handleCopy = useCallback(async () => {
+    const text = `方向：${currentDirection.label} · ${trigramInfo.trigram}卦 | 角度：${Math.round(currentHeading)}° | ${formatDate(Date.now())}`;
+    try {
+      await navigator.clipboard.writeText(text);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch { /* ignore */ }
+  }, [currentDirection, trigramInfo, currentHeading]);
+
+  // Handle click history item
+  const handleHistoryClick = useCallback((record: HistoryRecord) => {
+    setShowHistory(false);
     if (isSensorMode) {
-      compassMobile.startCalibration();
-      setShowCalibrate(true);
+      setIsSensorMode(false);
     }
-  }, [isSensorMode, compassMobile]);
+    animate(animatedHeading, record.angle, {
+      duration: 0.4,
+      ease: 'easeOut',
+    });
+  }, [isSensorMode, animatedHeading]);
 
-  useEffect(() => {
-    if (!showCalibrate) return;
-    const t = setTimeout(() => setShowCalibrate(false), 5000);
-    return () => clearTimeout(t);
-  }, [showCalibrate]);
+  // Delete history item
+  const handleDeleteHistory = useCallback((id: string) => {
+    const newHistory = history.filter((h) => h.id !== id);
+    saveHistory(newHistory);
+  }, [history, saveHistory]);
 
-  // Auto-show/update detail panel based on current heading
-  useEffect(() => {
-    if (!currentKey) return;
-    setSelectedKey(currentKey);
-  }, [currentKey]);
-
-  const diskSize = typeof window !== 'undefined' && window.innerWidth < 768 ? 320 : 400;
-  const radius = diskSize / 2 - 20;
-
-  // Generate tick marks (360° every 5°)
-  const ticks = useMemo(() => {
-    const result: { angle: number; isMajor: boolean }[] = [];
-    for (let i = 0; i < 360; i += 5) {
-      result.push({ angle: i, isMajor: i % 30 === 0 });
-    }
-    return result;
+  // Toggle lock
+  const toggleLock = useCallback(() => {
+    setLocked((prev) => !prev);
   }, []);
 
-  const handleSectorClick = useCallback((key: string) => {
-    setSelectedKey(key);
+  // Mode switch
+  const switchMode = useCallback((sensor: boolean) => {
+    setIsSensorMode(sensor);
+    setLocked(false);
   }, []);
 
-  const closePanel = useCallback(() => {
-    setSelectedKey(null);
-  }, []);
-
+  // ═════════════════════════════════════════════════════════════════════
+  // Render
+  // ═════════════════════════════════════════════════════════════════════
   return (
-    <motion.div
-      className="fixed inset-0 z-50 flex flex-col"
-      style={{ backgroundColor: '#000000' }}
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      transition={{ duration: 0.4 }}
+    <div
+      className="relative flex flex-col items-center w-full min-h-screen overflow-hidden select-none"
+      style={{ backgroundColor: BG, color: GOLD }}
     >
-      {/* Top Bar */}
-      <div className="flex items-center justify-between px-4 py-4 md:px-8">
+      {/* ─── 顶部信息栏 ─────────────────────────────────────────── */}
+      <div className="flex flex-col items-center pt-6 pb-2 z-10 relative w-full">
+        {/* Close button */}
         {onClose && (
           <button
             onClick={onClose}
-            className="flex items-center gap-1 text-white/60 hover:text-white transition-colors"
+            className="absolute top-4 right-4 p-2 rounded-full transition-all hover:scale-110"
+            style={{ color: GOLD_DARK }}
           >
-            <ChevronLeft size={24} />
-            <span className="text-sm">返回</span>
+            <X size={22} />
           </button>
         )}
-
-        <div className="flex-1 flex flex-col items-center">
-          <motion.div
-            className="text-5xl md:text-6xl font-bold tabular-nums"
-            style={{ color: GOLD }}
-            key={Math.round(heading)}
-            initial={{ scale: 1.05 }}
-            animate={{ scale: 1 }}
-            transition={{ type: 'spring', stiffness: 300, damping: 20 }}
+        <div className="flex items-center gap-2 mb-1">
+          <span className="text-4xl font-bold tracking-wider" style={{ color: GOLD_LIGHT }}>
+            {Math.round(currentHeading)}°
+          </span>
+        </div>
+        <div className="flex items-center gap-3 text-sm" style={{ color: GOLD }}>
+          <span className="text-base font-medium">{currentDirection.label}</span>
+          <span>·</span>
+          <span>{trigramInfo.trigram}卦</span>
+          <span>{trigramInfo.trigramChar}</span>
+          <span>·</span>
+          <span>{trigramInfo.element}行</span>
+        </div>
+        <div className="flex items-center gap-2 mt-1 text-xs" style={{ color: GOLD_DARK }}>
+          <span>{currentMountain.name}</span>
+          <span>·</span>
+          <span
+            style={{
+              color: currentMountain.auspicious === '吉' ? '#4ade80'
+                : currentMountain.auspicious === '凶' ? '#f87171' : GOLD,
+            }}
           >
-            {Math.round(heading)}°
-          </motion.div>
-          <div className="text-lg md:text-xl text-white/80 mt-1">
-            {currentDir ? `${currentDir.label} · ${directionData[currentKey]?.chinese || ''}` : currentKey}
-          </div>
+            {currentMountain.auspicious}
+          </span>
         </div>
 
-        <div className="flex items-center gap-2">
-          {isMobileDevice && (
-            <button
-              onClick={toggleMode}
-              className="flex items-center gap-1 px-3 py-1.5 rounded-full text-xs border transition-colors"
-              style={{
-                borderColor: 'rgba(200,164,92,0.4)',
-                color: GOLD,
-                backgroundColor: 'rgba(200,164,92,0.1)',
-              }}
-            >
-              {isSensorMode ? <Smartphone size={14} /> : <MousePointerClick size={14} />}
-              {isSensorMode ? '传感器' : '手动'}
-            </button>
-          )}
-          {isMobileDevice && isSensorMode && (
-            <button
-              onClick={handleCalibrate}
-              className="flex items-center gap-1 px-3 py-1.5 rounded-full text-xs border transition-colors"
-              style={{
-                borderColor: 'rgba(200,164,92,0.4)',
-                color: GOLD,
-                backgroundColor: 'rgba(200,164,92,0.1)',
-              }}
-            >
-              <RotateCcw size={14} />
-              校准
-            </button>
-          )}
-          {onClose && (
-            <button onClick={onClose} className="text-white/60 hover:text-white transition-colors ml-1">
-              <X size={24} />
-            </button>
-          )}
-        </div>
+        {/* 传感器信号 */}
+        {isSensorMode && (
+          <div className="flex items-center gap-1 mt-2">
+            {[1, 2, 3].map((i) => (
+              <div
+                key={i}
+                className="rounded-sm"
+                style={{
+                  width: 4,
+                  height: 4 + i * 3,
+                  backgroundColor: i <= signalBars ? GOLD : GOLD_DARK,
+                  opacity: i <= signalBars ? 1 : 0.25,
+                  transition: 'all 0.3s ease',
+                }}
+              />
+            ))}
+            <span className="ml-1 text-xs" style={{ color: GOLD_DARK }}>
+              {compass.accuracy !== null ? `${Math.round(compass.accuracy)}°` : '无信号'}
+            </span>
+          </div>
+        )}
       </div>
 
-      {/* Calibration Overlay */}
-      <AnimatePresence>
-        {showCalibrate && (
-          <motion.div
-            className="absolute inset-0 z-40 flex flex-col items-center justify-center"
-            style={{ backgroundColor: 'rgba(0,0,0,0.85)' }}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            onClick={() => setShowCalibrate(false)}
-          >
-            <svg width="200" height="120" viewBox="0 0 200 120" className="mb-6">
-              <path
-                d="M 20 60 C 20 20, 80 20, 100 60 C 120 100, 180 100, 180 60 C 180 20, 120 20, 100 60 C 80 100, 20 100, 20 60"
-                fill="none"
-                stroke={GOLD}
-                strokeWidth="2"
-                strokeDasharray="4 4"
-                opacity="0.5"
-              />
-              <circle r="6" fill={GOLD} filter="drop-shadow(0 0 8px rgba(200,164,92,0.8))">
-                <animateMotion
-                  dur="2s"
-                  repeatCount="indefinite"
-                  path="M 20 60 C 20 20, 80 20, 100 60 C 120 100, 180 100, 180 60 C 180 20, 120 20, 100 60 C 80 100, 20 100, 20 60"
-                />
-              </circle>
-            </svg>
-            <div className="text-white text-center px-8">
-              <div className="text-lg font-medium mb-2" style={{ color: GOLD }}>
-                正在校准指南针
-              </div>
-              <div className="text-sm text-white/60">
-                请将设备在空中画 8 字以校准指南针
-              </div>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-
-      {/* iOS Permission Request */}
-      <AnimatePresence>
-        {isSensorMode && !compassMobile.permissionGranted && (
-          <motion.div
-            className="absolute inset-0 z-40 flex flex-col items-center justify-center"
-            style={{ backgroundColor: 'rgba(0,0,0,0.85)' }}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-          >
-            <Smartphone size={48} style={{ color: GOLD }} className="mb-4" />
-            <div className="text-white text-center px-8 max-w-xs">
-              <div className="text-lg font-medium mb-2" style={{ color: GOLD }}>
-                启用方向传感器
-              </div>
-              <div className="text-sm text-white/60 mb-6">
-                需要访问设备方向传感器以使用数字罗盘功能
-              </div>
-              <button
-                onClick={() => compassMobile.requestPermission()}
-                className="px-6 py-2.5 rounded-full text-sm font-medium"
-                style={{ backgroundColor: GOLD, color: '#0a0a0f' }}
-              >
-                允许访问
-              </button>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-
-      {/* Compass Area */}
-      <div className="flex-1 flex flex-col items-center justify-center relative">
-        {/* Fixed North Pointer (golden triangle at top) */}
-        <div
-          className="absolute"
-          style={{
-            width: 0,
-            height: 0,
-            borderLeft: '10px solid transparent',
-            borderRight: '10px solid transparent',
-            borderBottom: `16px solid ${GOLD}`,
-            top: '8%',
-            zIndex: 10,
-            filter: 'drop-shadow(0 0 6px rgba(200,164,92,0.5))',
-          }}
-        />
-
-        {/* Rotating Compass Disk */}
-        <motion.div
-          className="relative rounded-full cursor-grab active:cursor-grabbing"
-          style={{
-            width: diskSize,
-            height: diskSize,
-            border: `1px solid rgba(200,164,92,0.3)`,
-            boxShadow: `0 0 40px rgba(200,164,92,0.1), inset 0 0 60px rgba(200,164,92,0.05)`,
-          }}
-          animate={{ rotate: -heading }}
-          transition={{ type: 'spring', stiffness: 150, damping: 20 }}
-          {...(!isSensorMode ? {
-            onMouseDown: compassPC.startDrag,
-            onMouseMove: compassPC.onDrag,
-            onMouseUp: compassPC.endDrag,
-            onMouseLeave: compassPC.endDrag,
-            onTouchStart: compassPC.startDrag,
-            onTouchMove: compassPC.onDrag,
-            onTouchEnd: compassPC.endDrag,
-          } : {})}
+      {/* ─── 罗盘主体 (SVG) ────────────────────────────────────── */}
+      <motion.div
+        className="relative flex items-center justify-center my-4"
+        style={{
+          rotate: negatedHeading,
+          cursor: !isSensorMode ? (pcCompass.isDragging ? 'grabbing' : 'grab') : 'default',
+        }}
+        {...(!isSensorMode && !locked ? pcCompass.handlers : {})}
+      >
+        <svg
+          width={size}
+          height={size}
+          viewBox={`0 0 ${size} ${size}`}
+          style={{ overflow: 'visible' }}
         >
-          <svg
-            width={diskSize}
-            height={diskSize}
-            viewBox={`0 0 ${diskSize} ${diskSize}`}
-            className="absolute inset-0 pointer-events-none"
+          {/* CSS Animations */}
+          <style>{`
+            @keyframes orbitRotate {
+              from { transform: rotate(0deg); }
+              to { transform: rotate(360deg); }
+            }
+            @keyframes breathe {
+              0%, 100% { filter: drop-shadow(0 0 8px rgba(200, 164, 92, 0.15)); }
+              50% { filter: drop-shadow(0 0 22px rgba(200, 164, 92, 0.4)); }
+            }
+            .breathe-ring {
+              animation: breathe 3s ease-in-out infinite;
+            }
+            .dir-text {
+              transition: all 0.25s ease;
+              cursor: default;
+            }
+            .dir-text:hover {
+              font-size: 16px;
+              filter: drop-shadow(0 0 6px rgba(200, 164, 92, 0.9));
+            }
+          `}</style>
+
+          {/* 星轨环 - 外虚线旋转环 */}
+          <g
+            style={{
+              transformOrigin: `${center}px ${center}px`,
+              animation: 'orbitRotate 30s linear infinite',
+            }}
           >
-            {/* Tick marks */}
-            {ticks.map((tick, i) => {
-              const inner = tick.isMajor ? radius - 20 : radius - 10;
-              const outer = radius;
-              const rad = (tick.angle * Math.PI) / 180;
-              const cx = diskSize / 2;
-              const cy = diskSize / 2;
-              return (
-                <line
-                  key={i}
-                  x1={cx + Math.cos(rad) * inner}
-                  y1={cy + Math.sin(rad) * inner}
-                  x2={cx + Math.cos(rad) * outer}
-                  y2={cy + Math.sin(rad) * outer}
-                  stroke={tick.isMajor ? GOLD : 'rgba(255,255,255,0.2)'}
-                  strokeWidth={tick.isMajor ? 2 : 1}
-                />
-              );
-            })}
+            <circle
+              cx={center}
+              cy={center}
+              r={radius + 50}
+              fill="none"
+              stroke={GOLD}
+              strokeWidth="1"
+              strokeDasharray="6 8"
+              opacity={0.35}
+            />
+            <circle
+              cx={center}
+              cy={center}
+              r={radius + 42}
+              fill="none"
+              stroke={GOLD}
+              strokeWidth="0.5"
+              strokeDasharray="3 12"
+              opacity={0.25}
+            />
+          </g>
 
-            {/* 8 Direction Labels */}
-            {directions.map((dir) => {
-              const rad = (dir.angle * Math.PI) / 180;
-              const cx = diskSize / 2 + Math.cos(rad) * (radius - 36);
-              const cy = diskSize / 2 + Math.sin(rad) * (radius - 36);
-              const isActive = dir.key === currentKey;
-              return (
-                <text
-                  key={dir.key}
-                  x={cx}
-                  y={cy}
-                  textAnchor="middle"
-                  dominantBaseline="central"
-                  fill={isActive ? GOLD : 'rgba(255,255,255,0.6)'}
-                  fontSize={isActive ? 16 : 13}
-                  fontWeight={isActive ? 700 : 500}
-                  style={{ userSelect: 'none' }}
-                >
-                  {dir.label}
-                </text>
-              );
-            })}
+          {/* 呼吸光环背景 */}
+          <circle
+            cx={center}
+            cy={center}
+            r={radius + 35}
+            fill="none"
+            stroke={GOLD}
+            strokeWidth="1"
+            opacity={0.15}
+            className="breathe-ring"
+          />
 
-            {/* Inner sectors — 8 slices, clickable via transparent overlay */}
-            {directions.map((dir, i) => {
-              const startAngle = i * 45 - 22.5;
-              const endAngle = i * 45 + 22.5;
-              const isActive = dir.key === currentKey;
-              const r = radius - 50;
-              const cx = diskSize / 2;
-              const cy = diskSize / 2;
+          {/* 罗盘盘面 */}
+          <defs>
+            <radialGradient id="compassBg" cx="50%" cy="50%" r="50%">
+              <stop offset="0%" stopColor="#1a1508" />
+              <stop offset="70%" stopColor="#0a0804" />
+              <stop offset="100%" stopColor="#000000" />
+            </radialGradient>
+            <radialGradient id="goldGlow" cx="50%" cy="50%" r="50%">
+              <stop offset="0%" stopColor={GOLD} stopOpacity="0.12" />
+              <stop offset="100%" stopColor={GOLD} stopOpacity="0" />
+            </radialGradient>
+            <linearGradient id="beamGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" stopColor={GOLD_LIGHT} stopOpacity="0.55" />
+              <stop offset="100%" stopColor={GOLD} stopOpacity="0" />
+            </linearGradient>
+          </defs>
 
-              const toRad = (a: number) => (a * Math.PI) / 180;
-              const x1 = cx + Math.cos(toRad(startAngle)) * r;
-              const y1 = cy + Math.sin(toRad(startAngle)) * r;
-              const x2 = cx + Math.cos(toRad(endAngle)) * r;
-              const y2 = cy + Math.sin(toRad(endAngle)) * r;
+          {/* 盘面背景 */}
+          <circle cx={center} cy={center} r={radius + 20} fill="url(#compassBg)" stroke={GOLD_DARK} strokeWidth="1" />
+          <circle cx={center} cy={center} r={radius + 20} fill="url(#goldGlow)" />
 
-              const largeArc = endAngle - startAngle > 180 ? 1 : 0;
-              const path = [
-                `M ${cx} ${cy}`,
-                `L ${x1} ${y1}`,
-                `A ${r} ${r} 0 ${largeArc} 1 ${x2} ${y2}`,
-                'Z',
-              ].join(' ');
+          {/* 主刻度环 */}
+          <circle cx={center} cy={center} r={radius} fill="none" stroke={GOLD} strokeWidth="1.5" opacity={0.6} />
+          <circle cx={center} cy={center} r={radius - 25} fill="none" stroke={GOLD_DARK} strokeWidth="0.5" opacity={0.4} />
+          <circle cx={center} cy={center} r={28} fill="none" stroke={GOLD} strokeWidth="1" opacity={0.3} />
 
-              const midAngle = i * 45;
-              const labelR = r * 0.65;
-              const lx = cx + Math.cos(toRad(midAngle)) * labelR;
-              const ly = cy + Math.sin(toRad(midAngle)) * labelR;
+          {/* 中心点 */}
+          <circle cx={center} cy={center} r={4} fill={GOLD} />
+          <circle cx={center} cy={center} r={2} fill="#fff" />
 
-              return (
-                <g key={dir.key}>
-                  <path
-                    d={path}
-                    fill={isActive ? GOLD_GLOW : 'rgba(255,255,255,0.02)'}
-                    stroke="rgba(255,255,255,0.1)"
-                    strokeWidth={1}
-                    style={{ pointerEvents: 'all', cursor: 'pointer' }}
-                    onClick={() => handleSectorClick(dir.key)}
-                  />
-                  <text
-                    x={lx}
-                    y={ly}
-                    textAnchor="middle"
-                    dominantBaseline="central"
-                    fill={isActive ? GOLD : 'rgba(255,255,255,0.5)'}
-                    fontSize={12}
-                    fontWeight={isActive ? 600 : 400}
-                    style={{ userSelect: 'none', pointerEvents: 'none' }}
-                  >
-                    {directionData[dir.key]?.chinese || dir.label}
-                  </text>
-                </g>
-              );
-            })}
+          {/* 刻度线 (每5°) */}
+          {Array.from({ length: 72 }).map((_, i) => {
+            const angle = i * 5;
+            const rad = ((angle - 90) * Math.PI) / 180;
+            const isMain = angle % 15 === 0;
+            const isSub = angle % 45 === 0;
+            const innerR = isSub ? radius - 20 : isMain ? radius - 12 : radius - 6;
+            return (
+              <line
+                key={`tick-${i}`}
+                x1={center + innerR * Math.cos(rad)}
+                y1={center + innerR * Math.sin(rad)}
+                x2={center + radius * Math.cos(rad)}
+                y2={center + radius * Math.sin(rad)}
+                stroke={isSub ? GOLD_LIGHT : GOLD}
+                strokeWidth={isSub ? 1.5 : isMain ? 1 : 0.5}
+                opacity={isSub ? 0.9 : isMain ? 0.6 : 0.3}
+              />
+            );
+          })}
 
-            {/* Center dot */}
-            <circle cx={diskSize / 2} cy={diskSize / 2} r={4} fill={GOLD} opacity={0.8} />
-          </svg>
-        </motion.div>
+          {/* 8主方向文字 */}
+          {directionPositions.map((d) => (
+            <text
+              key={d.key}
+              x={d.x}
+              y={d.y}
+              textAnchor="middle"
+              dominantBaseline="middle"
+              fill={d.key === currentDirection.key ? GOLD_LIGHT : GOLD}
+              fontSize={d.key === currentDirection.key ? 18 : 14}
+              fontWeight={d.key === currentDirection.key ? 'bold' : 'normal'}
+              className="dir-text"
+              style={{ transformOrigin: `${d.x}px ${d.y}px` }}
+            >
+              {d.label}
+            </text>
+          ))}
 
-        {/* Manual mode hint */}
-        {!isSensorMode && (
+          {/* 24山文字 */}
+          {mountainPositions.map((m) => (
+            <text
+              key={m.id}
+              x={m.x}
+              y={m.y}
+              textAnchor="middle"
+              dominantBaseline="middle"
+              fill={m.id === currentMountain.id ? GOLD_LIGHT : GOLD_DARK}
+              fontSize={m.id === currentMountain.id ? 11 : 9}
+              fontWeight={m.id === currentMountain.id ? 'bold' : 'normal'}
+              opacity={0.85}
+            >
+              {m.name.replace('山', '')}
+            </text>
+          ))}
+
+          {/* 卦象符号 - 内圈 */}
+          {directionPositions.map((d) => {
+            const rad = ((d.angle - 90) * Math.PI) / 180;
+            const r = radius - 36;
+            const trigramChar = getTrigramForDirection(d.key).trigramChar;
+            return (
+              <text
+                key={`yao-${d.key}`}
+                x={center + r * Math.cos(rad)}
+                y={center + r * Math.sin(rad)}
+                textAnchor="middle"
+                dominantBaseline="middle"
+                fill={GOLD_DARK}
+                fontSize={10}
+                opacity={0.6}
+              >
+                {trigramChar}
+              </text>
+            );
+          })}
+
+          {/* 光束射线 - 随盘面旋转 */}
+          <polygon
+            points={`${center - 3},${center} ${center + 3},${center} ${center},${center - radius + 15}`}
+            fill="url(#beamGrad)"
+            opacity={0.5}
+          />
+          <line
+            x1={center}
+            y1={center}
+            x2={center}
+            y2={center - radius + 15}
+            stroke={GOLD_LIGHT}
+            strokeWidth="1.5"
+            opacity={0.6}
+          />
+
+          {/* 指针 (顶部固定指向，盘面旋转) */}
+          <polygon
+            points={`${center},${center - radius + 35} ${center - 6},${center + 15} ${center + 6},${center + 15}`}
+            fill={GOLD}
+            opacity={0.85}
+          />
+          <polygon
+            points={`${center},${center + radius - 35} ${center - 5},${center - 10} ${center + 5},${center - 10}`}
+            fill={GOLD_DARK}
+            opacity={0.5}
+          />
+
+          {/* 模式指示标签 */}
+          <text
+            x={center}
+            y={center + radius + 38}
+            textAnchor="middle"
+            dominantBaseline="middle"
+            fill={GOLD_DARK}
+            fontSize={10}
+            opacity={0.5}
+          >
+            {isSensorMode ? '传感器模式' : '手动模式'}
+          </text>
+        </svg>
+      </motion.div>
+
+      {/* ─── 当前24山信息卡片 ───────────────────────────────────── */}
+      <div
+        className="flex flex-col items-center px-5 py-3 mx-4 rounded-lg w-full max-w-xs"
+        style={{
+          border: `1px solid ${GOLD_DARK}`,
+          backgroundColor: 'rgba(200, 164, 92, 0.06)',
+        }}
+      >
+        <div className="flex items-center gap-2 text-sm mb-1 flex-wrap justify-center">
+          <span className="font-bold" style={{ color: GOLD_LIGHT }}>{currentMountain.name}</span>
+          <span>·</span>
+          <span>{currentMountain.trigramChar}</span>
+          <span>{currentMountain.trigram}卦</span>
+          <span>·</span>
+          <span>{currentMountain.element}</span>
+          <span>·</span>
+          <span
+            className="font-bold"
+            style={{
+              color: currentMountain.auspicious === '吉' ? '#4ade80'
+                : currentMountain.auspicious === '凶' ? '#f87171' : GOLD,
+            }}
+          >
+            {currentMountain.auspicious}
+          </span>
+        </div>
+        <p className="text-xs text-center leading-relaxed" style={{ color: GOLD_DARK }}>
+          {currentMountain.advice}
+        </p>
+      </div>
+
+      {/* ─── 模式切换按钮 ───────────────────────────────────────── */}
+      <div className="flex items-center gap-2 mt-4 mb-2">
+        <button
+          onClick={() => switchMode(true)}
+          className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs transition-all duration-300"
+          style={{
+            border: `1px solid ${isSensorMode ? GOLD : GOLD_DARK}`,
+            backgroundColor: isSensorMode ? 'rgba(200, 164, 92, 0.15)' : 'transparent',
+            color: isSensorMode ? GOLD_LIGHT : GOLD_DARK,
+          }}
+        >
+          <Navigation size={12} />
+          传感器
+        </button>
+        <button
+          onClick={() => switchMode(false)}
+          className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs transition-all duration-300"
+          style={{
+            border: `1px solid ${!isSensorMode ? GOLD : GOLD_DARK}`,
+            backgroundColor: !isSensorMode ? 'rgba(200, 164, 92, 0.15)' : 'transparent',
+            color: !isSensorMode ? GOLD_LIGHT : GOLD_DARK,
+          }}
+        >
+          <MousePointer2 size={12} />
+          手动
+        </button>
+      </div>
+
+      {/* ─── 底部按钮栏 ─────────────────────────────────────────── */}
+      <div className="flex items-center justify-center gap-3 mt-3 mb-4 z-20">
+        {/* 锁定 */}
+        <button
+          onClick={toggleLock}
+          title={locked ? '解锁' : '锁定'}
+          className="flex items-center justify-center rounded-full transition-all duration-300 hover:scale-110"
+          style={{
+            width: 36,
+            height: 36,
+            border: `1.5px solid ${locked ? GOLD_LIGHT : GOLD_DARK}`,
+            backgroundColor: locked ? 'rgba(200, 164, 92, 0.2)' : 'rgba(0,0,0,0.5)',
+            color: locked ? GOLD_LIGHT : GOLD,
+          }}
+        >
+          {locked ? <Lock size={16} /> : <Unlock size={16} />}
+        </button>
+
+        {/* 保存 */}
+        <button
+          onClick={handleSave}
+          title="保存当前方向"
+          className="flex items-center justify-center rounded-full transition-all duration-300 hover:scale-110"
+          style={{
+            width: 36,
+            height: 36,
+            border: `1.5px solid ${GOLD_DARK}`,
+            backgroundColor: 'rgba(0,0,0,0.5)',
+            color: GOLD,
+          }}
+        >
+          <Bookmark size={16} />
+        </button>
+
+        {/* 历史 */}
+        <button
+          onClick={() => { setShowHistory(true); setShowFengshui(false); }}
+          title="查看历史"
+          className="flex items-center justify-center rounded-full transition-all duration-300 hover:scale-110"
+          style={{
+            width: 36,
+            height: 36,
+            border: `1.5px solid ${showHistory ? GOLD_LIGHT : GOLD_DARK}`,
+            backgroundColor: showHistory ? 'rgba(200, 164, 92, 0.2)' : 'rgba(0,0,0,0.5)',
+            color: showHistory ? GOLD_LIGHT : GOLD,
+          }}
+        >
+          <History size={16} />
+        </button>
+
+        {/* 复制 */}
+        <button
+          onClick={handleCopy}
+          title="复制方向信息"
+          className="flex items-center justify-center rounded-full transition-all duration-300 hover:scale-110 relative"
+          style={{
+            width: 36,
+            height: 36,
+            border: `1.5px solid ${copied ? '#4ade80' : GOLD_DARK}`,
+            backgroundColor: copied ? 'rgba(74, 222, 128, 0.15)' : 'rgba(0,0,0,0.5)',
+            color: copied ? '#4ade80' : GOLD,
+          }}
+        >
+          <Copy size={16} />
+        </button>
+
+        {/* 风水分析 */}
+        <button
+          onClick={() => { setShowFengshui(true); setShowHistory(false); }}
+          title="风水分析"
+          className="flex items-center justify-center rounded-full transition-all duration-300 hover:scale-110"
+          style={{
+            width: 36,
+            height: 36,
+            border: `1.5px solid ${showFengshui ? GOLD_LIGHT : GOLD_DARK}`,
+            backgroundColor: showFengshui ? 'rgba(200, 164, 92, 0.2)' : 'rgba(0,0,0,0.5)',
+            color: showFengshui ? GOLD_LIGHT : GOLD,
+          }}
+        >
+          <Sparkles size={16} />
+        </button>
+      </div>
+
+      {/* ─── 复制成功提示 ───────────────────────────────────────── */}
+      <AnimatePresence>
+        {copied && (
           <motion.div
-            className="absolute bottom-24 text-sm"
-            style={{ color: 'rgba(255,255,255,0.4)' }}
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.5 }}
+            exit={{ opacity: 0, y: -10 }}
+            className="fixed bottom-20 left-1/2 -translate-x-1/2 px-4 py-2 rounded-full text-xs z-50"
+            style={{
+              backgroundColor: 'rgba(74, 222, 128, 0.15)',
+              border: '1px solid rgba(74, 222, 128, 0.4)',
+              color: '#4ade80',
+            }}
           >
-            {isMobileDevice ? '滑动旋转罗盘' : '拖拽罗盘旋转'}
+            已复制到剪贴板
           </motion.div>
         )}
-      </div>
+      </AnimatePresence>
 
-      {/* Bottom Detail Panel */}
+      {/* ─── 历史面板 ───────────────────────────────────────────── */}
       <AnimatePresence>
-        {selectedKey && directionData[selectedKey] && (
+        {showHistory && (
           <motion.div
-            key={selectedKey}
-            className="absolute bottom-0 left-0 right-0 z-30"
-            initial={{ y: '100%' }}
-            animate={{ y: 0 }}
-            exit={{ y: '100%' }}
-            transition={{ type: 'spring', damping: 25, stiffness: 200 }}
+            initial={{ opacity: 0, y: 100 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 100 }}
+            transition={{ duration: 0.3, ease: 'easeOut' }}
+            className="fixed bottom-0 left-0 right-0 z-40 max-h-[60vh] overflow-y-auto rounded-t-2xl"
+            style={{
+              backgroundColor: 'rgba(0, 0, 0, 0.95)',
+              borderTop: `1px solid ${GOLD_DARK}`,
+              backdropFilter: 'blur(12px)',
+            }}
           >
             <div
-              className="relative px-6 py-6 pb-10 md:px-10 md:pb-12"
+              className="flex items-center justify-between px-5 py-3 sticky top-0"
               style={{
-                backgroundColor: 'rgba(17, 17, 17, 0.95)',
-                borderTopLeftRadius: 24,
-                borderTopRightRadius: 24,
-                borderTop: `1px solid rgba(200,164,92,0.2)`,
-                backdropFilter: 'blur(12px)',
+                backgroundColor: 'rgba(0,0,0,0.95)',
+                borderBottom: `1px solid ${GOLD_DARK}`,
               }}
             >
-              {/* Close button */}
+              <span className="text-sm font-bold" style={{ color: GOLD_LIGHT }}>历史记录</span>
               <button
-                onClick={closePanel}
-                className="absolute top-4 right-4 text-white/40 hover:text-white transition-colors"
+                onClick={() => setShowHistory(false)}
+                className="p-1 rounded-full transition-all hover:scale-110"
+                style={{ color: GOLD_DARK }}
               >
-                <X size={22} />
+                <X size={18} />
               </button>
+            </div>
 
-              {(() => {
-                const info = directionData[selectedKey];
-                const dirObj = directions.find((d) => d.key === selectedKey);
-                return (
-                  <div className="max-w-md mx-auto">
-                    {/* Header */}
-                    <div className="flex items-center gap-3 mb-4">
-                      <Compass size={24} style={{ color: GOLD }} />
-                      <div>
-                        <div className="text-xl font-bold" style={{ color: GOLD }}>
-                          {info.chinese} · {info.trigramChar}卦
-                        </div>
-                        <div className="text-xs text-white/40 mt-0.5">
-                          {dirObj?.label} — {info.meaning}
-                        </div>
+            {history.length === 0 ? (
+              <div className="flex flex-col items-center py-10" style={{ color: GOLD_DARK }}>
+                <History size={32} opacity={0.3} />
+                <p className="mt-2 text-sm">暂无保存的记录</p>
+              </div>
+            ) : (
+              <div className="px-4 py-2 space-y-2">
+                {history.map((record) => (
+                  <motion.div
+                    key={record.id}
+                    layout
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    className="flex items-center justify-between px-3 py-2.5 rounded-lg cursor-pointer transition-all hover:brightness-125"
+                    style={{
+                      border: `1px solid ${GOLD_DARK}`,
+                      backgroundColor: 'rgba(200, 164, 92, 0.05)',
+                    }}
+                    onClick={() => handleHistoryClick(record)}
+                  >
+                    <div className="flex flex-col gap-0.5">
+                      <div className="flex items-center gap-2 text-sm">
+                        <span style={{ color: GOLD_LIGHT }}>{record.direction}</span>
+                        <span style={{ color: GOLD_DARK }}>·</span>
+                        <span>{record.mountain}</span>
+                        <span style={{ color: GOLD_DARK }}>·</span>
+                        <span>{record.trigram}卦</span>
+                        <span style={{ color: GOLD_DARK }}>·</span>
+                        <span>{record.angle}°</span>
                       </div>
+                      <span className="text-xs" style={{ color: GOLD_DARK }}>
+                        {formatDate(record.timestamp)}
+                      </span>
                     </div>
-
-                    {/* Info Grid */}
-                    <div className="grid grid-cols-3 gap-3 mb-4">
-                      <div
-                        className="flex flex-col items-center p-3 rounded-xl"
-                        style={{ backgroundColor: 'rgba(255,255,255,0.05)' }}
-                      >
-                        <span className="text-xs text-white/40 mb-1">五行</span>
-                        <span className="text-sm font-medium text-white">{info.element}</span>
-                      </div>
-                      <div
-                        className="flex flex-col items-center p-3 rounded-xl"
-                        style={{ backgroundColor: 'rgba(255,255,255,0.05)' }}
-                      >
-                        <span className="text-xs text-white/40 mb-1 flex items-center gap-1">
-                          <Palette size={10} /> 幸运色
-                        </span>
-                        <span className="text-sm font-medium text-white text-center">
-                          {info.colors[0]}
-                        </span>
-                      </div>
-                      <div
-                        className="flex flex-col items-center p-3 rounded-xl"
-                        style={{ backgroundColor: 'rgba(255,255,255,0.05)' }}
-                      >
-                        <span className="text-xs text-white/40 mb-1 flex items-center gap-1">
-                          <Hash size={10} /> 幸运数
-                        </span>
-                        <span className="text-2xl font-bold" style={{ color: GOLD }}>
-                          {info.numbers[0]}
-                        </span>
-                      </div>
-                    </div>
-
-                    {/* Advice */}
-                    <div
-                      className="flex gap-2 p-4 rounded-xl"
-                      style={{ backgroundColor: 'rgba(200,164,92,0.08)' }}
+                    <button
+                      onClick={(e) => { e.stopPropagation(); handleDeleteHistory(record.id); }}
+                      className="p-1 rounded transition-all hover:scale-110"
+                      style={{ color: GOLD_DARK }}
                     >
-                      <Sparkles size={16} style={{ color: GOLD, marginTop: 2, flexShrink: 0 }} />
-                      <p className="text-sm text-white/80 leading-relaxed">{info.advice}</p>
-                    </div>
-                  </div>
-                );
-              })()}
+                      <X size={14} />
+                    </button>
+                  </motion.div>
+                ))}
+              </div>
+            )}
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* ─── 风水分析面板 ───────────────────────────────────────── */}
+      <AnimatePresence>
+        {showFengshui && (
+          <motion.div
+            initial={{ opacity: 0, y: 100 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 100 }}
+            transition={{ duration: 0.3, ease: 'easeOut' }}
+            className="fixed bottom-0 left-0 right-0 z-40 max-h-[70vh] overflow-y-auto rounded-t-2xl"
+            style={{
+              backgroundColor: 'rgba(0, 0, 0, 0.95)',
+              borderTop: `1px solid ${GOLD_DARK}`,
+              backdropFilter: 'blur(12px)',
+            }}
+          >
+            <div
+              className="flex items-center justify-between px-5 py-3 sticky top-0 z-10"
+              style={{
+                backgroundColor: 'rgba(0,0,0,0.95)',
+                borderBottom: `1px solid ${GOLD_DARK}`,
+              }}
+            >
+              <div className="flex items-center gap-2">
+                <Sparkles size={16} style={{ color: GOLD }} />
+                <span className="text-sm font-bold" style={{ color: GOLD_LIGHT }}>
+                  风水分析 · {currentMountain.name}
+                </span>
+              </div>
+              <button
+                onClick={() => setShowFengshui(false)}
+                className="p-1 rounded-full transition-all hover:scale-110"
+                style={{ color: GOLD_DARK }}
+              >
+                <X size={18} />
+              </button>
+            </div>
+
+            <div className="px-5 py-4 space-y-4">
+              {/* 基本信息行 */}
+              <div className="flex items-center justify-center gap-4 py-3">
+                <div className="flex flex-col items-center">
+                  <span className="text-2xl">{currentMountain.trigramChar}</span>
+                  <span className="text-xs mt-1" style={{ color: GOLD_DARK }}>{currentMountain.trigram}卦</span>
+                </div>
+                <div style={{ width: 1, height: 40, backgroundColor: GOLD_DARK, opacity: 0.4 }} />
+                <div className="flex flex-col items-center">
+                  <span className="text-lg font-bold" style={{ color: GOLD_LIGHT }}>{currentMountain.name}</span>
+                  <span className="text-xs" style={{ color: GOLD_DARK }}>{currentMountain.directionLabel}</span>
+                </div>
+                <div style={{ width: 1, height: 40, backgroundColor: GOLD_DARK, opacity: 0.4 }} />
+                <div className="flex flex-col items-center">
+                  <span
+                    className="text-lg font-bold"
+                    style={{
+                      color: currentMountain.auspicious === '吉' ? '#4ade80'
+                        : currentMountain.auspicious === '凶' ? '#f87171' : GOLD,
+                    }}
+                  >
+                    {currentMountain.auspicious}
+                  </span>
+                  <span className="text-xs" style={{ color: GOLD_DARK }}>评级</span>
+                </div>
+                <div style={{ width: 1, height: 40, backgroundColor: GOLD_DARK, opacity: 0.4 }} />
+                <div className="flex flex-col items-center">
+                  <span className="text-lg">{currentMountain.element}</span>
+                  <span className="text-xs" style={{ color: GOLD_DARK }}>五行</span>
+                </div>
+              </div>
+
+              {/* 角度信息 */}
+              <div className="text-center text-xs" style={{ color: GOLD_DARK }}>
+                角度：{currentMountain.angle}°（当前：{Math.round(currentHeading)}°）
+              </div>
+
+              {/* 宜 */}
+              <div>
+                <div className="text-xs font-bold mb-2" style={{ color: '#4ade80' }}>宜</div>
+                <div className="flex flex-wrap gap-2">
+                  {currentMountain.suitable.map((item) => (
+                    <span
+                      key={item}
+                      className="px-2.5 py-1 rounded-full text-xs"
+                      style={{
+                        border: '1px solid rgba(74, 222, 128, 0.35)',
+                        backgroundColor: 'rgba(74, 222, 128, 0.08)',
+                        color: '#4ade80',
+                      }}
+                    >
+                      {item}
+                    </span>
+                  ))}
+                </div>
+              </div>
+
+              {/* 忌 */}
+              <div>
+                <div className="text-xs font-bold mb-2" style={{ color: '#f87171' }}>忌</div>
+                <div className="flex flex-wrap gap-2">
+                  {currentMountain.avoid.map((item) => (
+                    <span
+                      key={item}
+                      className="px-2.5 py-1 rounded-full text-xs"
+                      style={{
+                        border: '1px solid rgba(248, 113, 113, 0.35)',
+                        backgroundColor: 'rgba(248, 113, 113, 0.08)',
+                        color: '#f87171',
+                      }}
+                    >
+                      {item}
+                    </span>
+                  ))}
+                </div>
+              </div>
+
+              {/* 建议 */}
+              <div
+                className="p-3 rounded-lg text-sm leading-relaxed"
+                style={{
+                  border: `1px solid ${GOLD_DARK}`,
+                  backgroundColor: 'rgba(200, 164, 92, 0.06)',
+                  color: GOLD,
+                }}
+              >
+                {currentMountain.advice}
+              </div>
+
+              {/* 同向其他山 */}
+              <div>
+                <div className="text-xs font-bold mb-2" style={{ color: GOLD_DARK }}>
+                  {currentDirection.label}方 · 同卦诸山
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  {getMountainsByDirection(currentDirection.key).map((m) => (
+                    <span
+                      key={m.id}
+                      className="px-2 py-1 rounded text-xs"
+                      style={{
+                        border: `1px solid ${m.id === currentMountain.id ? GOLD_LIGHT : GOLD_DARK}`,
+                        backgroundColor: m.id === currentMountain.id ? 'rgba(200, 164, 92, 0.15)' : 'transparent',
+                        color: m.id === currentMountain.id ? GOLD_LIGHT : GOLD_DARK,
+                      }}
+                    >
+                      {m.name}
+                    </span>
+                  ))}
+                </div>
+              </div>
             </div>
           </motion.div>
         )}
       </AnimatePresence>
-    </motion.div>
+
+      {/* ─── 遮罩层 ─────────────────────────────────────────────── */}
+      <AnimatePresence>
+        {(showHistory || showFengshui) && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-30"
+            style={{ backgroundColor: 'rgba(0, 0, 0, 0.5)' }}
+            onClick={() => { setShowHistory(false); setShowFengshui(false); }}
+          />
+        )}
+      </AnimatePresence>
+
+      {/* 底部留白 */}
+      <div className="h-8" />
+    </div>
   );
 }
+
+export default WebCompass;
