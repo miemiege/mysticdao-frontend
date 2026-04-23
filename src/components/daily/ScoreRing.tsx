@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { motion } from 'framer-motion';
+import React, { useEffect, useRef } from 'react';
+import { motion, useMotionValue, useTransform, animate } from 'framer-motion';
 
 interface ScoreRingProps {
   label: string;
@@ -9,27 +9,26 @@ interface ScoreRingProps {
 }
 
 const ScoreRing: React.FC<ScoreRingProps> = ({ label, score, color, delay = 0 }) => {
-  const [animatedScore, setAnimatedScore] = useState(0);
+  const count = useMotionValue(0);
+  const rounded = useTransform(count, (latest) => Math.round(latest));
   const circumference = 2 * Math.PI * 40;
-  const strokeDashoffset = circumference * (1 - animatedScore / 100);
+  const strokeDashoffset = circumference * (1 - score / 100);
+  const hasAnimated = useRef(false);
 
   useEffect(() => {
+    if (hasAnimated.current) return;
     const timeout = setTimeout(() => {
-      let current = 0;
-      const increment = score / 40;
-      const interval = setInterval(() => {
-        current += increment;
-        if (current >= score) {
-          setAnimatedScore(score);
-          clearInterval(interval);
-        } else {
-          setAnimatedScore(Math.round(current));
-        }
-      }, 25);
-      return () => clearInterval(interval);
+      const controls = animate(count, score, {
+        duration: 1,
+        ease: 'easeOut',
+        onComplete: () => {
+          hasAnimated.current = true;
+        },
+      });
+      return () => controls.stop();
     }, delay);
     return () => clearTimeout(timeout);
-  }, [score, delay]);
+  }, [score, delay, count]);
 
   return (
     <motion.div
@@ -59,15 +58,15 @@ const ScoreRing: React.FC<ScoreRingProps> = ({ label, score, color, delay = 0 })
             strokeDasharray={circumference}
             initial={{ strokeDashoffset: circumference }}
             animate={{ strokeDashoffset }}
-            transition={{ duration: 1, ease: [0.25, 0.1, 0.25, 1], delay: delay / 1000 }}
+            transition={{ duration: 1, ease: 'easeOut', delay: delay / 1000 }}
             transform="rotate(-90 50 50)"
             style={{ filter: `drop-shadow(0 0 8px ${color}50) drop-shadow(0 0 16px ${color}20)` }}
           />
         </svg>
         <div className="absolute inset-0 flex flex-col items-center justify-center">
-          <span className="text-xl font-bold tabular-nums" style={{ color }}>
-            {animatedScore}
-          </span>
+          <motion.span className="text-xl font-bold tabular-nums" style={{ color }}>
+            {rounded}
+          </motion.span>
         </div>
       </div>
       <span className="text-xs text-text-secondary mt-2">{label}</span>

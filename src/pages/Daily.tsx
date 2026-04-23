@@ -7,7 +7,8 @@ import LuckyInfo from '@/components/daily/LuckyInfo';
 import RitualDrawing from '@/components/daily/RitualDrawing';
 import SharePoster from '@/components/daily/SharePoster';
 import GlobalCounter from '@/components/daily/GlobalCounter';
-import TypewriterText from '@/components/TypewriterText';
+import BreathingTypewriter from '@/components/BreathingTypewriter';
+import RollingNumber from '@/components/daily/RollingNumber';
 import { fetchAIInterpretation } from '@/services/api';
 import { getDailyState, saveDailyState, addHistory, addFavorite, isFavorite, generateShareId } from '@/lib/storage';
 import { toast } from 'sonner';
@@ -227,7 +228,9 @@ const Daily: React.FC = () => {
                 <div className="mb-10"><FortuneCard name={fortune.card.name} keyword={fortune.card.keyword} aspect={fortune.card.aspect} color={fortune.card.color} /></div>
                 <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3, duration: 0.8, ease: [0.16, 1, 0.3, 1] }} className="text-center mb-10">
                   <div className="text-xs uppercase tracking-[0.2em] text-text-muted mb-3">Overall Fortune</div>
-                  <motion.div className="text-7xl md:text-8xl font-bold tracking-tight font-heading" style={{ color: fortune.card.color, textShadow: `0 0 40px ${fortune.card.color}30` }} initial={{ scale: 0.3, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ delay: 0.4, type: 'spring', stiffness: 150, damping: 15 }}>{fortune.overallScore}</motion.div>
+                  <motion.div className="text-7xl md:text-8xl font-bold tracking-tight font-heading" initial={{ scale: 0.3, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ delay: 0.4, type: 'spring', stiffness: 150, damping: 15 }}>
+                    <RollingNumber value={fortune.overallScore} delay={400} style={{ color: fortune.card.color, textShadow: `0 0 40px ${fortune.card.color}30` }} />
+                  </motion.div>
                   <div className="flex items-center justify-center gap-2 mt-2">
                     <div className="h-px w-8" style={{ background: `linear-gradient(90deg, transparent, ${fortune.card.color}40)` }} />
                     <span className="text-xs text-text-muted uppercase tracking-wider">out of 100</span>
@@ -251,7 +254,7 @@ const Daily: React.FC = () => {
                     <div className="absolute top-0 left-0 right-0 h-[1px]" style={{ background: 'linear-gradient(90deg, transparent, rgba(200,164,92,0.2), transparent)' }} />
                     <div className="p-6 md:p-8">
                       <div className="flex items-center gap-2 mb-5"><Sparkles size={16} className="text-gold" /><h3 className="text-sm font-semibold text-gold/80 tracking-wider uppercase">MysticDao AI Reading</h3></div>
-                      <div className="text-text-secondary leading-relaxed text-[15px]"><TypewriterText text={reading} speed={20} /></div>
+                      <div className="text-text-secondary leading-relaxed text-[15px]"><BreathingTypewriter text={reading} baseSpeed={20} highlightSpeed={80} /></div>
                     </div>
                     <div className="absolute bottom-0 left-0 right-0 h-[1px]" style={{ background: 'linear-gradient(90deg, transparent, rgba(200,164,92,0.1), transparent)' }} />
                   </motion.div>
