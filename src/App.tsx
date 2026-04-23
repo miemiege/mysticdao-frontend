@@ -6,6 +6,7 @@ import Pricing from './pages/Pricing'
 import Daily from './pages/Daily'
 import FengShui from './pages/FengShui'
 import CompassPage from './pages/CompassPage'
+import UserProfile from './pages/UserProfile'
 
 export default function App() {
   return (
@@ -17,6 +18,7 @@ export default function App() {
         <Route path="/pricing" element={<Pricing />} />
         <Route path="/daily" element={<Daily />} />
         <Route path="/compass" element={<CompassPage />} />
+        <Route path="/profile" element={<UserProfile />} />
         <Route path="*" element={<Home />} />
       </Route>
     </Routes>

@@ -9,6 +9,7 @@ const navLinks = [
   { label: 'Daily', href: './#/daily' },
   { label: 'Compass', href: './#/compass' },
   { label: 'Pricing', href: './#/pricing' },
+  { label: 'Profile', href: './#/profile' },
 ];
 
 function YinYangIcon({ className }: { className?: string }) {

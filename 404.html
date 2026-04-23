@@ -1,19 +1,82 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
   <head>
     <meta charset="utf-8">
-    <title>MysticDao</title>
-    <script>
-      // GitHub Pages SPA fallback for HashRouter
-      var l = window.location;
-      var path = l.pathname + l.search + l.hash;
-      if (path !== '/' && path !== './' && path !== './index.html') {
-        sessionStorage.setItem('__spa_redirect', path);
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MysticDao — Redirecting</title>
+    <style>
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      body {
+        background: #000;
+        color: #c8a45c;
+        font-family: 'Georgia', 'Noto Serif SC', serif;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        padding: 2rem;
       }
-      l.replace('./');
+      .symbol {
+        font-size: 4rem;
+        margin-bottom: 1.5rem;
+        opacity: 0.4;
+        animation: pulse 2s ease-in-out infinite;
+      }
+      @keyframes pulse {
+        0%, 100% { opacity: 0.3; transform: scale(1); }
+        50% { opacity: 0.6; transform: scale(1.05); }
+      }
+      h1 {
+        font-size: 1.25rem;
+        font-weight: 400;
+        letter-spacing: 0.15em;
+        margin-bottom: 0.75rem;
+        color: #e8dcc8;
+      }
+      p {
+        font-size: 0.85rem;
+        color: rgba(200, 164, 92, 0.5);
+        letter-spacing: 0.05em;
+      }
+      .loader {
+        width: 40px;
+        height: 2px;
+        background: rgba(200, 164, 92, 0.15);
+        border-radius: 1px;
+        margin-top: 2rem;
+        overflow: hidden;
+      }
+      .loader::after {
+        content: '';
+        display: block;
+        width: 20px;
+        height: 100%;
+        background: #c8a45c;
+        border-radius: 1px;
+        animation: sweep 1.5s ease-in-out infinite;
+      }
+      @keyframes sweep {
+        0% { transform: translateX(-20px); }
+        100% { transform: translateX(40px); }
+      }
+    </style>
+    <script>
+      (function() {
+        var l = window.location;
+        var path = l.pathname + l.search + l.hash;
+        if (path !== '/' && path !== './' && path !== './index.html') {
+          sessionStorage.setItem('__spa_redirect', path);
+        }
+        l.replace('./');
+      })();
     </script>
   </head>
   <body>
-    Redirecting...
+    <div class="symbol">☯</div>
+    <h1>ENTERING THE SACRED REALM</h1>
+    <p>Redirecting to MysticDao...</p>
+    <div class="loader"></div>
   </body>
 </html>

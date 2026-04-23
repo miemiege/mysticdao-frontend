@@ -1,5 +1,5 @@
 import React, { useRef, useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { X, Download, Globe, Instagram, Twitter, MessageCircle, Share2 } from 'lucide-react';
 import { PLATFORM_LIST, type PlatformKey } from '@/lib/share-platforms';
 
@@ -24,7 +24,7 @@ const platformIcons: Record<string, React.ReactNode> = {
 };
 
 const ShareCard: React.FC<ShareCardProps> = ({
-  hexagramName, blessingTheme, element, category, seed, score, goldenQuote, onClose
+  hexagramName, blessingTheme, element: _element, category, seed: _seed, score, goldenQuote, onClose
 }) => {
   const cardRef = useRef<HTMLDivElement>(null);
   const [activePlatform, setActivePlatform] = useState<PlatformKey>('web');

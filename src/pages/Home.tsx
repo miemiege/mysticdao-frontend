@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState, memo } from 'react';
 import { motion, useInView, useMotionValue, useTransform } from 'framer-motion';
 import { ChevronDown, ScrollText, Compass, Sparkles, Crown, ArrowRight } from 'lucide-react';
+import TaijiParticles from '@/components/home/TaijiParticles';
 
 /* ─── Easing Token ─── */
 const easeOutExpo = [0.16, 1, 0.3, 1] as [number, number, number, number];
@@ -39,84 +40,6 @@ const RotatingMandala = memo(function RotatingMandala() {
 });
 
 const MandalaMemo = RotatingMandala;
-
-/* ─── Particle Field (Canvas) ─── */
-const ParticleField = memo(function ParticleField({ count = 150 }: { count?: number }) {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const ctx = canvas.getContext('2d');
-    if (!ctx) return;
-
-    let animId: number;
-    let w: number, h: number;
-
-    interface Particle {
-      x: number;
-      y: number;
-      size: number;
-      speedY: number;
-      speedX: number;
-      opacity: number;
-    }
-
-    const particles: Particle[] = [];
-
-    function resize() {
-      w = canvas!.width = canvas!.offsetWidth;
-      h = canvas!.height = canvas!.offsetHeight;
-    }
-
-    function init() {
-      resize();
-      for (let i = 0; i < count; i++) {
-        particles.push({
-          x: Math.random() * w,
-          y: Math.random() * h,
-          size: 1 + Math.random() * 2,
-          speedY: -(0.2 + Math.random() * 0.3),
-          speedX: (Math.random() - 0.5) * 0.2,
-          opacity: 0.3 + Math.random() * 0.5,
-        });
-      }
-    }
-
-    function draw() {
-      ctx!.clearRect(0, 0, w, h);
-      for (const p of particles) {
-        ctx!.beginPath();
-        ctx!.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-        ctx!.fillStyle = `rgba(200, 164, 92, ${p.opacity})`;
-        ctx!.fill();
-        p.y += p.speedY;
-        p.x += p.speedX;
-        if (p.y < -10) p.y = h + 10;
-        if (p.x < -10) p.x = w + 10;
-        if (p.x > w + 10) p.x = -10;
-      }
-      animId = requestAnimationFrame(draw);
-    }
-
-    init();
-    draw();
-    window.addEventListener('resize', resize);
-
-    return () => {
-      cancelAnimationFrame(animId);
-      window.removeEventListener('resize', resize);
-    };
-  }, [count]);
-
-  return (
-    <canvas
-      ref={canvasRef}
-      style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', zIndex: 1 }}
-      aria-hidden="true"
-    />
-  );
-});
 
 /* ─── Section 1: Hero ─── */
 function HeroSection() {
