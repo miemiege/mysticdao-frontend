@@ -302,6 +302,16 @@ const SharePoster: React.FC<SharePosterProps> = ({
         </div>
       </div>
 
+      {/* 红线装饰 */}
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.3 }}
+        className="flex justify-center"
+      >
+        <img src="/red-thread-visual.png" alt="" className="h-2 w-48 object-cover opacity-[0.3]" aria-hidden="true" />
+      </motion.div>
+
       {/* Visible UI Buttons */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
