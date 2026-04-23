@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useLocation, Outlet } from 'react-router-dom';
 import Navbar from './Navbar';
@@ -5,6 +6,10 @@ import Footer from './Footer';
 
 export default function Layout() {
   const location = useLocation();
+
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, [location.pathname]);
 
   return (
     <div className="min-h-[100dvh] flex flex-col bg-black">
