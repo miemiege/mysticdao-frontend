@@ -230,17 +230,25 @@ function HeroSection() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 1.5, duration: 0.6, ease: easeOutExpo }}
-          className="flex flex-col sm:flex-row items-center justify-center gap-4"
+          className="flex flex-col items-center justify-center gap-5"
         >
+          {/* Pre-CTA tagline */}
+          <span className="text-xs text-gold/60 tracking-wider uppercase">
+            Today&apos;s Wisdom Awaits
+          </span>
+
+          {/* Primary CTA */}
           <a
-            href="./#/bazi"
-            className="inline-flex items-center px-8 py-3 rounded-full bg-gold text-black text-xs font-medium uppercase tracking-widest hover:bg-gold-light hover:scale-[1.03] hover:shadow-[0_0_30px_rgba(200,164,92,0.4)] transition-all duration-300"
+            href="./#/daily"
+            className="inline-flex items-center px-10 py-4 rounded-full bg-gold text-black text-sm font-semibold uppercase tracking-widest animate-glow-pulse hover:bg-gold-light hover:scale-[1.04] hover:shadow-[0_0_50px_rgba(200,164,92,0.5)] transition-all duration-300"
           >
-            Get Your Free Reading
+            🔮 Discover Your Daily Fortune
           </a>
+
+          {/* Secondary CTA */}
           <a
             href="#features"
-            className="inline-flex items-center px-8 py-3 rounded-full border border-gold/40 text-gold text-xs font-medium uppercase tracking-widest hover:bg-gold/[0.08] hover:border-gold/70 hover:shadow-[0_0_20px_rgba(200,164,92,0.15)] transition-all duration-300"
+            className="inline-flex items-center px-7 py-2.5 rounded-full border border-gold/40 text-gold text-[11px] font-medium uppercase tracking-widest hover:bg-gold/[0.08] hover:border-gold/70 hover:shadow-[0_0_20px_rgba(200,164,92,0.15)] transition-all duration-300"
           >
             Explore Services
           </a>

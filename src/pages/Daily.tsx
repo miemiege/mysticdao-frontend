@@ -5,6 +5,8 @@ import FortuneCard from '@/components/daily/FortuneCard';
 import ScoreRing from '@/components/daily/ScoreRing';
 import LuckyInfo from '@/components/daily/LuckyInfo';
 import RitualDrawing from '@/components/daily/RitualDrawing';
+import SharePoster from '@/components/daily/SharePoster';
+import GlobalCounter from '@/components/daily/GlobalCounter';
 import TypewriterText from '@/components/TypewriterText';
 import { fetchAIInterpretation } from '@/services/api';
 import { getDailyState, saveDailyState, addHistory, addFavorite, isFavorite, generateShareId } from '@/lib/storage';
@@ -28,6 +30,21 @@ const hexagrams = [
   { name: '地水师', keyword: 'Guide', aspect: 'Wealth', color: '#34D399' },
   { name: '水地比', keyword: 'Unite', aspect: 'Love', color: '#FB923C' },
 ];
+
+const goldenQuotes: Record<string, string> = {
+  '乾为天': '天行健，君子以自强不息',
+  '坤为地': '地势坤，君子以厚德载物',
+  '水雷屯': '云雷屯，君子以经纶',
+  '山水蒙': '山下出泉，蒙，君子以果行育德',
+  '水天需': '云上于天，需，君子以饮食宴乐',
+  '天水讼': '天与水违行，讼，君子以作事谋始',
+  '地水师': '地中有水，师，君子以容民畜众',
+  '水地比': '地上有水，比，先王以建万国，亲诸侯',
+};
+
+const getGoldenQuote = (hexagramName: string): string => {
+  return goldenQuotes[hexagramName] || '宇宙之大，人心之微，皆有定数';
+};
 
 interface FortuneResult {
   card: typeof hexagrams[number];
@@ -148,6 +165,9 @@ const Daily: React.FC = () => {
               <span className="text-gold">Daily</span> Fortune
             </h1>
             <p className="text-text-secondary text-base md:text-lg max-w-lg mx-auto leading-relaxed">Draw your daily hexagram and receive AI-powered wisdom from the ancient I Ching</p>
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.6 }} className="mt-6">
+              <GlobalCounter />
+            </motion.div>
           </motion.div>
         </div>
       </section>
@@ -234,6 +254,15 @@ const Daily: React.FC = () => {
                       <div className="text-text-secondary leading-relaxed text-[15px]"><TypewriterText text={reading} speed={20} /></div>
                     </div>
                     <div className="absolute bottom-0 left-0 right-0 h-[1px]" style={{ background: 'linear-gradient(90deg, transparent, rgba(200,164,92,0.1), transparent)' }} />
+                  </motion.div>
+                )}
+                {fortune && (
+                  <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 1.0 }} className="mt-10">
+                    <SharePoster
+                      hexagramName={fortune.card.name}
+                      fortuneScore={fortune.overallScore}
+                      goldenQuote={getGoldenQuote(fortune.card.name)}
+                    />
                   </motion.div>
                 )}
                 {!alreadyDrawn && (
