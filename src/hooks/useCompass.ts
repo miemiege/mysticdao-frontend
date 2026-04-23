@@ -26,8 +26,10 @@ interface UseCompassReturn {
   accuracy: number | null
   isCalibrating: boolean
   isSupported: boolean
+  permissionGranted: boolean
   directionName: CompassDirection
   calibrate: () => void
+  requestPermission: () => Promise<boolean>
 }
 
 export function useCompass(): UseCompassReturn {
@@ -35,8 +37,10 @@ export function useCompass(): UseCompassReturn {
   const [accuracy, setAccuracy] = useState<number | null>(null)
   const [isCalibrating, setIsCalibrating] = useState<boolean>(false)
   const [isSupported, setIsSupported] = useState<boolean>(false)
+  const [permissionGranted, setPermissionGranted] = useState<boolean>(false)
 
   const calibrateTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const listenerAddedRef = useRef(false)
 
   const calibrate = useCallback(() => {
     setIsCalibrating(true)
@@ -47,6 +51,62 @@ export function useCompass(): UseCompassReturn {
       setIsCalibrating(false)
     }, 3000)
   }, [])
+
+  const handleOrientation = useCallback((event: DeviceOrientationEvent): void => {
+    const e = event as DeviceOrientationEventExtended
+    let newHeading: number
+    let newAccuracy: number | null = null
+
+    if (e.webkitCompassHeading !== undefined) {
+      newHeading = e.webkitCompassHeading
+      if (e.webkitCompassAccuracy !== undefined) {
+        newAccuracy = Math.abs(e.webkitCompassAccuracy)
+      }
+    } else if (e.alpha !== null && e.alpha !== undefined) {
+      newHeading = 360 - e.alpha
+    } else {
+      return
+    }
+
+    const normalized = normalizeHeading(newHeading)
+    setHeading(normalized)
+    if (newAccuracy !== null) {
+      setAccuracy(newAccuracy)
+    }
+  }, [])
+
+  const addListener = useCallback(() => {
+    if (listenerAddedRef.current) return
+    window.addEventListener("deviceorientation", handleOrientation)
+    listenerAddedRef.current = true
+  }, [handleOrientation])
+
+  const removeListener = useCallback(() => {
+    if (!listenerAddedRef.current) return
+    window.removeEventListener("deviceorientation", handleOrientation)
+    listenerAddedRef.current = false
+  }, [handleOrientation])
+
+  const requestPermission = useCallback(async (): Promise<boolean> => {
+    const doe = DeviceOrientationEvent as any
+    if (typeof doe.requestPermission === 'function') {
+      try {
+        const response = await doe.requestPermission()
+        if (response === 'granted') {
+          setPermissionGranted(true)
+          addListener()
+          return true
+        }
+        return false
+      } catch {
+        return false
+      }
+    }
+    // Android 或非 iOS 13+ 设备，直接添加监听器
+    setPermissionGranted(true)
+    addListener()
+    return true
+  }, [addListener])
 
   useEffect(() => {
     const checkSupport = (): boolean => {
@@ -59,40 +119,21 @@ export function useCompass(): UseCompassReturn {
 
     if (!supported) return
 
-    const handleOrientation = (event: DeviceOrientationEvent): void => {
-      const e = event as DeviceOrientationEventExtended
-      let newHeading: number
-      let newAccuracy: number | null = null
-
-      if (e.webkitCompassHeading !== undefined) {
-        // iOS
-        newHeading = e.webkitCompassHeading
-        if (e.webkitCompassAccuracy !== undefined) {
-          newAccuracy = Math.abs(e.webkitCompassAccuracy)
-        }
-      } else if (e.alpha !== null && e.alpha !== undefined) {
-        // Android
-        newHeading = 360 - e.alpha
-      } else {
-        return
-      }
-
-      const normalized = normalizeHeading(newHeading)
-      setHeading(normalized)
-      if (newAccuracy !== null) {
-        setAccuracy(newAccuracy)
-      }
+    const doe = DeviceOrientationEvent as any
+    if (typeof doe.requestPermission !== 'function') {
+      // Android 或非权限限制设备，直接监听
+      setPermissionGranted(true)
+      addListener()
     }
-
-    window.addEventListener("deviceorientation", handleOrientation)
+    // iOS 13+ 需要等待用户调用 requestPermission()
 
     return () => {
-      window.removeEventListener("deviceorientation", handleOrientation)
+      removeListener()
       if (calibrateTimeoutRef.current) {
         clearTimeout(calibrateTimeoutRef.current)
       }
     }
-  }, [])
+  }, [addListener, removeListener])
 
   const directionName = getDirectionName(heading)
 
@@ -101,7 +142,9 @@ export function useCompass(): UseCompassReturn {
     accuracy,
     isCalibrating,
     isSupported,
+    permissionGranted,
     directionName,
     calibrate,
+    requestPermission,
   }
 }

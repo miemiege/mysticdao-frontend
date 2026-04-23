@@ -1,7 +1,7 @@
 import { useRef, useState } from 'react';
 import type { JSX } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
-import { PerformanceMonitor } from '@react-three/drei';
+import { PerformanceMonitor, ContactShadows } from '@react-three/drei';
 import * as THREE from 'three';
 import { BaguaCompass } from './models/BaguaCompass';
 import { useCompassRotation } from './animation/useCompassRotation';
@@ -9,7 +9,7 @@ import { useFloatAnimation } from './animation/useFloatAnimation';
 import { useCaptureFreeze } from './animation/useCaptureFreeze';
 
 /* ═══════════════════════════════════════════════════════════════════════
-   BaguaScene3D — 3D 八卦罗盘场景（集成 Agent B 模型 + Agent C 动画）
+   BaguaScene3D — 3D 八卦罗盘场景（手持罗盘视角）
    ═══════════════════════════════════════════════════════════════════════ */
 
 interface BaguaScene3DProps {
@@ -38,7 +38,7 @@ function CaptureIndicator({
 
   return (
     <mesh ref={meshRef} rotation={[Math.PI / 2, 0, 0]}>
-      <torusGeometry args={[3.5, 0.025, 8, 128]} />
+      <torusGeometry args={[3.2, 0.025, 8, 128]} />
       <meshBasicMaterial color="#ff4444" transparent opacity={0.5} />
     </mesh>
   );
@@ -62,21 +62,44 @@ function Scene({ heading, isCapturing, quality }: SceneProps): JSX.Element {
 
   useFrame(() => {
     if (!compassGroupRef.current || isFrozenRef.current) return;
+    /* 罗盘绕 Y 轴旋转（跟随 heading）—— 倾斜由初始 rotation 固定 */
     compassGroupRef.current.rotation.y = rotationRef.current;
+    /* 浮动 */
     compassGroupRef.current.position.y = yOffsetRef.current;
   });
 
   return (
     <>
-      {/* Lighting */}
-      <ambientLight intensity={0.5} />
-      <pointLight position={[5, 5, 5]} intensity={0.8} />
-      <pointLight position={[-5, -3, 3]} color="#c8a45c" intensity={0.3} />
+      {/* Lighting: 主光源 + 补光 + 轮廓光 */}
+      <ambientLight intensity={0.3} />
+      <directionalLight
+        position={[3, 6, 4]}
+        intensity={1.2}
+        castShadow
+        shadow-mapSize-width={1024}
+        shadow-mapSize-height={1024}
+      />
+      <directionalLight position={[-3, 2, -2]} intensity={0.4} color="#c8a45c" />
+      <pointLight position={[0, -2, 3]} intensity={0.5} color="#ffaa44" />
 
-      {/* Compass group: rotation & float driven by Agent C hooks */}
-      <group ref={compassGroupRef}>
+      {/* Compass group: 倾斜 35° 面向用户，像手持罗盘 */}
+      <group
+        ref={compassGroupRef}
+        rotation={[-Math.PI / 5, 0, 0]} /* ≈ -36° 绕 X 轴倾斜 */
+        scale={0.75} /* 缩小 25% 避免占满画面 */
+      >
         <BaguaCompass rotationY={0} quality={quality} />
       </group>
+
+      {/* 地面接触阴影 —— 增强立体感 */}
+      <ContactShadows
+        position={[0, -1.8, 0]}
+        opacity={0.35}
+        scale={12}
+        blur={2.5}
+        far={4}
+        color="#000000"
+      />
 
       {/* Photo capture indicator */}
       <CaptureIndicator isCapturing={isCapturing} />
@@ -101,8 +124,10 @@ export default function BaguaScene3D({
       <Canvas
         gl={{ alpha: true, antialias: true }}
         dpr={dpr}
-        camera={{ position: [0, 3, 7], fov: 45, near: 0.1, far: 100 }}
+        /* 相机更正面，略低，像看着手中的罗盘 */
+        camera={{ position: [0, 1.2, 4.5], fov: 42, near: 0.1, far: 100 }}
         style={{ background: 'transparent' }}
+        shadows
       >
         <PerformanceMonitor
           onDecline={() => {

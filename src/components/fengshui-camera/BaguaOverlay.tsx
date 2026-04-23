@@ -124,11 +124,15 @@ export default function BaguaOverlay({
       while (diff > 180) diff -= 360;
       while (diff < -180) diff += 360;
 
-      smoothedRef.current = current + diff * 0.08;
+      smoothedRef.current = current + diff * 0.25;
+
+      // Normalize to [-180, 180] to prevent cumulative drift
+      while (smoothedRef.current > 180) smoothedRef.current -= 360;
+      while (smoothedRef.current < -180) smoothedRef.current += 360;
 
       if (compassRef.current) {
         compassRef.current.style.transform =
-          `perspective(800px) rotateX(25deg) rotateZ(${smoothedRef.current}deg) scale(1.02)`;
+          `rotateX(25deg) rotateZ(${smoothedRef.current}deg) scale(1.02)`;
       }
 
       rafRef.current = requestAnimationFrame(animate);
@@ -237,6 +241,7 @@ export default function BaguaOverlay({
     marginLeft: `calc(${compassSize} * -0.5)`,
     marginTop: `calc(${compassSize} * -0.5)`,
     transformOrigin: 'center center',
+    transformStyle: 'preserve-3d',
     opacity,
     filter: `brightness(${brightness}) drop-shadow(0 0 ${glowSize}px rgba(200, 164, 92, 0.5))`,
     pointerEvents: 'none',
@@ -377,6 +382,8 @@ const animatedWrapperStyle: CSSProperties = {
   alignItems: 'center',
   justifyContent: 'center',
   animation: 'baguaEnter 0.6s ease-out',
+  perspective: 800,
+  transformStyle: 'preserve-3d',
 };
 
 const northPointerContainerStyle: CSSProperties = {

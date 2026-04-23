@@ -95,13 +95,13 @@ export function FengshuiCamera({
     start,
     stop,
   } = useCamera();
-  const { heading, isSupported, calibrate } = useCompass();
+  const { heading, isSupported, calibrate, permissionGranted, requestPermission } = useCompass();
 
   const [mode, setMode] = useState<'camera' | 'preview' | 'gallery'>('camera');
   const [lastPhoto, setLastPhoto] = useState<PhotoItem | null>(null);
   const [photos, setPhotos] = useState<PhotoItem[]>(loadPhotos);
   const [selectedPhotoId, setSelectedPhotoId] = useState<string | null>(null);
-  const [isCapturing, setIsCapturing] = useState<boolean>(false);
+
 
   // Lifecycle: start/stop camera
   useEffect(() => {
@@ -122,18 +122,13 @@ export function FengshuiCamera({
     const video = videoRef.current;
     if (!video || !video.videoWidth || !video.videoHeight) return;
 
-    setIsCapturing(true);
-
     const canvas = document.createElement('canvas');
     const w = video.videoWidth;
     const h = video.videoHeight;
     canvas.width = w;
     canvas.height = h;
     const ctx = canvas.getContext('2d');
-    if (!ctx) {
-      setIsCapturing(false);
-      return;
-    }
+    if (!ctx) return;
 
     // Draw video frame
     ctx.drawImage(video, 0, 0, w, h);
@@ -189,7 +184,6 @@ export function FengshuiCamera({
       savePhotos(next);
       return next;
     });
-    setIsCapturing(false);
     setMode('preview');
   }, [videoRef, heading, dirInfo, directionKey]);
 
@@ -311,7 +305,13 @@ export function FengshuiCamera({
         </motion.button>
 
         <button
-          onClick={calibrate}
+          onClick={() => {
+            if (!permissionGranted && isSupported) {
+              requestPermission();
+            } else {
+              calibrate();
+            }
+          }}
           className={`flex flex-col items-center justify-center w-12 h-12 rounded-full bg-black/50 text-white active:scale-95 transition-transform ${
             isSupported ? '' : 'opacity-0 pointer-events-none'
           }`}

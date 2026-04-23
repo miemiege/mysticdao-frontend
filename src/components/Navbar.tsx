@@ -3,12 +3,12 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Menu, X } from 'lucide-react';
 
 const navLinks = [
-  { label: 'Home', href: '#/' },
-  { label: 'Bazi', href: '#/bazi' },
-  { label: 'Feng Shui', href: '#/fengshui' },
-  { label: 'Daily', href: '#/daily' },
-  { label: 'Compass', href: '#/compass' },
-  { label: 'Pricing', href: '#/pricing' },
+  { label: 'Home', href: './#/' },
+  { label: 'Bazi', href: './#/bazi' },
+  { label: 'Feng Shui', href: './#/fengshui' },
+  { label: 'Daily', href: './#/daily' },
+  { label: 'Compass', href: './#/compass' },
+  { label: 'Pricing', href: './#/pricing' },
 ];
 
 function YinYangIcon({ className }: { className?: string }) {
@@ -43,7 +43,7 @@ export default function Navbar() {
   }, []);
 
   const isActive = (href: string) => {
-    const path = href.replace('/#', '') || '/';
+    const path = href.replace('./#', '') || '/';
     return activePath === path;
   };
 

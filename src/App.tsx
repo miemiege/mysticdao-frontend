@@ -17,6 +17,7 @@ export default function App() {
         <Route path="/pricing" element={<Pricing />} />
         <Route path="/daily" element={<Daily />} />
         <Route path="/compass" element={<CompassPage />} />
+        <Route path="*" element={<Home />} />
       </Route>
     </Routes>
   )

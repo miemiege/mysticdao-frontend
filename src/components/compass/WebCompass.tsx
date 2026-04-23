@@ -72,6 +72,8 @@ function useCompass(): {
   accuracy: number | null;
   supported: boolean;
   error: string | null;
+  permissionGranted: boolean;
+  requestPermission: () => Promise<boolean>;
 } {
   const [state, setState] = useState<CompassState>({
     heading: 0,
@@ -79,6 +81,8 @@ function useCompass(): {
     supported: false,
     error: null,
   });
+  const [permissionGranted, setPermissionGranted] = useState(false);
+  const handleRef = useRef<((e: DeviceOrientationEvent) => void) | null>(null);
 
   useEffect(() => {
     if (!isMobileDevice()) {
@@ -86,7 +90,7 @@ function useCompass(): {
       return;
     }
 
-    const handleOrientation = (e: DeviceOrientationEvent) => {
+    handleRef.current = (e: DeviceOrientationEvent) => {
       let heading = 0;
       if ((e as any).webkitCompassHeading) {
         heading = (e as any).webkitCompassHeading;
@@ -101,16 +105,44 @@ function useCompass(): {
       });
     };
 
-    if (typeof window !== 'undefined') {
-      window.addEventListener('deviceorientation', handleOrientation);
+    const doe = DeviceOrientationEvent as any;
+    if (typeof doe.requestPermission !== 'function') {
+      // Android or non-iOS device — listen directly
+      window.addEventListener('deviceorientation', handleRef.current);
+      setState((s) => ({ ...s, supported: true }));
+      setPermissionGranted(true);
+    } else {
+      // iOS 13+ — wait for user permission
       setState((s) => ({ ...s, supported: true }));
     }
 
     return () => {
-      if (typeof window !== 'undefined') {
-        window.removeEventListener('deviceorientation', handleOrientation);
+      if (handleRef.current) {
+        window.removeEventListener('deviceorientation', handleRef.current);
       }
     };
+  }, []);
+
+  const requestPermission = useCallback(async (): Promise<boolean> => {
+    const doe = DeviceOrientationEvent as any;
+    if (typeof doe.requestPermission === 'function') {
+      try {
+        const response = await doe.requestPermission();
+        if (response === 'granted' && handleRef.current) {
+          setPermissionGranted(true);
+          window.addEventListener('deviceorientation', handleRef.current);
+          return true;
+        }
+        return false;
+      } catch {
+        return false;
+      }
+    }
+    if (handleRef.current) {
+      setPermissionGranted(true);
+      window.addEventListener('deviceorientation', handleRef.current);
+    }
+    return true;
   }, []);
 
   return {
@@ -118,6 +150,8 @@ function useCompass(): {
     accuracy: state.accuracy,
     supported: state.supported,
     error: state.error,
+    permissionGranted,
+    requestPermission,
   };
 }
 
@@ -251,18 +285,27 @@ function WebCompass({ onClose }: WebCompassProps) {
   // Heading from active mode
   const rawHeading = isSensorMode ? compass.heading : pcCompass.heading;
 
+  // Angle wrap helper: ensure shortest rotation path
+  const normalizeAngleTarget = useCallback((current: number, target: number): number => {
+    let diff = target - current;
+    while (diff > 180) diff -= 360;
+    while (diff < -180) diff += 360;
+    return current + diff;
+  }, []);
+
   // Animate heading transitions
   const animatedHeading = useMotionValue(rawHeading);
   const negatedHeading = useTransform(animatedHeading, (v) => -v);
 
   useEffect(() => {
     if (!locked) {
-      animate(animatedHeading, rawHeading, {
+      const adjusted = normalizeAngleTarget(animatedHeading.get(), rawHeading);
+      animate(animatedHeading, adjusted, {
         duration: 0.4,
         ease: 'easeOut',
       });
     }
-  }, [rawHeading, locked, animatedHeading]);
+  }, [rawHeading, locked, animatedHeading, normalizeAngleTarget]);
 
   // Snap on drag end
   useEffect(() => {
@@ -271,7 +314,8 @@ function WebCompass({ onClose }: WebCompassProps) {
       const snapAngle = getNearestMountainAngle(currentVal);
       const diff = Math.abs(((currentVal - snapAngle + 180) % 360) - 180);
       if (diff <= SNAP_THRESHOLD) {
-        animate(animatedHeading, snapAngle, {
+        const adjusted = normalizeAngleTarget(animatedHeading.get(), snapAngle);
+        animate(animatedHeading, adjusted, {
           duration: 0.3,
           ease: 'easeOut',
         });
@@ -376,7 +420,8 @@ function WebCompass({ onClose }: WebCompassProps) {
     if (isSensorMode) {
       setIsSensorMode(false);
     }
-    animate(animatedHeading, record.angle, {
+    const adjusted = normalizeAngleTarget(animatedHeading.get(), record.angle);
+    animate(animatedHeading, adjusted, {
       duration: 0.4,
       ease: 'easeOut',
     });
@@ -445,8 +490,23 @@ function WebCompass({ onClose }: WebCompassProps) {
           </span>
         </div>
 
+        {/* iOS 权限请求 */}
+        {isSensorMode && !compass.permissionGranted && (
+          <button
+            onClick={() => compass.requestPermission()}
+            className="mt-2 px-4 py-1.5 rounded-full text-xs font-medium"
+            style={{
+              backgroundColor: 'rgba(200, 164, 92, 0.15)',
+              color: GOLD,
+              border: `1px solid ${GOLD}`,
+            }}
+          >
+            点击激活传感器
+          </button>
+        )}
+
         {/* 传感器信号 */}
-        {isSensorMode && (
+        {isSensorMode && compass.permissionGranted && (
           <div className="flex items-center gap-1 mt-2">
             {[1, 2, 3].map((i) => (
               <div
