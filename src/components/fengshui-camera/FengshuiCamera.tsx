@@ -101,7 +101,7 @@ export function FengshuiCamera({
   const [lastPhoto, setLastPhoto] = useState<PhotoItem | null>(null);
   const [photos, setPhotos] = useState<PhotoItem[]>(loadPhotos);
   const [selectedPhotoId, setSelectedPhotoId] = useState<string | null>(null);
-
+  const [isCapturing, setIsCapturing] = useState<boolean>(false);
 
   // Lifecycle: start/stop camera
   useEffect(() => {
@@ -121,6 +121,8 @@ export function FengshuiCamera({
   const handleCapture = useCallback(() => {
     const video = videoRef.current;
     if (!video || !video.videoWidth || !video.videoHeight) return;
+
+    setIsCapturing(true);
 
     const canvas = document.createElement('canvas');
     const w = video.videoWidth;
@@ -184,6 +186,7 @@ export function FengshuiCamera({
       savePhotos(next);
       return next;
     });
+    setIsCapturing(false);
     setMode('preview');
   }, [videoRef, heading, dirInfo, directionKey]);
 
