@@ -16,7 +16,7 @@ import {
   directionData,
   getDirectionFromAngle,
 } from '../fengshui/fengshuiData';
-import BaguaOverlay from './BaguaOverlay';
+import BaguaScene3D from './BaguaScene3D';
 
 // ─── Types ───────────────────────────────────────────────────────────
 
@@ -260,7 +260,7 @@ export function FengshuiCamera({
         autoPlay
       />
 
-      <BaguaOverlay heading={heading} isCapturing={isCapturing} />
+      <BaguaScene3D heading={heading} isCapturing={isCapturing} />
 
       <AnimatePresence>
         {error && (
