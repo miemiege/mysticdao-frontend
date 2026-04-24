@@ -154,7 +154,7 @@ function HeroSection() {
           transition={{ delay: 1.2, duration: 0.7, ease: easeOutExpo }}
           className="text-base text-white/60 leading-relaxed max-w-[540px] mx-auto mb-10"
         >
-          Eastern mysticism for the modern soul. Bazi destiny, Feng Shui harmony, and daily I Ching guidance — all in one sacred space.
+          Eastern mysticism for the modern soul. Feng Shui harmony and daily I Ching guidance.
         </motion.p>
 
         {/* CTAs */}
@@ -299,130 +299,6 @@ function FeatureSection() {
 }
 
 /* ─── Section 3: Brand Story ─── */
-function CTASection() {
-  const ref = useRef<HTMLElement>(null);
-  const isInView = useInView(ref, { once: true, amount: 0.3 });
-
-  return (
-    <section ref={ref} className="relative py-24 lg:py-32 overflow-hidden">
-      <motion.div
-        initial={{ opacity: 0, y: 40 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, amount: 0.15 }}
-        transition={{ duration: 0.8, ease: easeOutExpo }}
-        className="contents"
-      >
-      {/* Background */}
-      <div className="absolute inset-0 bg-black" />
-      <div
-        className="absolute inset-0 pointer-events-none"
-        style={{ background: 'radial-gradient(ellipse at 50% 50%, rgba(200,164,92,0.06) 0%, transparent 60%)' }}
-      />
-      <div className="absolute inset-0 z-[1]">
-        <TaijiParticles count={40} />
-      </div>
-
-      <motion.div
-        initial={{ opacity: 0, y: 30 }}
-        animate={isInView ? { opacity: 1, y: 0 } : {}}
-        transition={{ duration: 0.8, ease: easeOutExpo }}
-        className="relative z-10 max-w-2xl mx-auto px-4 sm:px-6 text-center"
-      >
-        <span className="text-xs font-medium uppercase tracking-[0.2em] text-gold mb-3 block">
-          Your Journey Awaits
-        </span>
-        <h2 className="font-heading text-[26px] lg:text-[36px] font-semibold text-white leading-tight mb-4">
-          Begin Your Journey Today
-        </h2>
-        <p className="text-base text-white/60 max-w-[460px] mx-auto mb-8">
-          The universe has been waiting for you to ask. Discover what the ancient wisdom can reveal about your path.
-        </p>
-
-        <a
-          href="./#/daily"
-          className="inline-flex items-center px-10 py-4 rounded-full bg-gold text-black text-sm font-medium uppercase tracking-widest hover:bg-gold-light hover:scale-[1.03] animate-glow-pulse transition-all duration-300"
-        >
-          Daily Fortune
-        </a>
-
-        <div className="mt-6">
-          <a
-            href="./#/fengshui"
-            className="text-sm text-gold hover:underline transition-all duration-200"
-          >
-            Feng Shui Compass
-          </a>
-        </div>
-      </motion.div>
-
-      {/* Zen Stone Decoration — Taiji stone arrangement */}
-      <div className="absolute bottom-0 left-0 right-0 h-20 pointer-events-none overflow-hidden">
-        {/* Yin stones (white/light) — left curve */}
-        {[...Array(8)].map((_, i) => {
-          const t = i / 7;
-          const x = 50 - 30 * Math.cos(t * Math.PI * 0.8);
-          const y = 85 - 60 * Math.sin(t * Math.PI * 0.8);
-          return (
-            <div
-              key={`yin-${i}`}
-              className="absolute rounded-full"
-              style={{
-                left: `${x}%`,
-                top: `${y}%`,
-                width: `${5 + Math.sin(i * 1.3) * 3}px`,
-                height: `${4 + Math.cos(i * 1.1) * 2.5}px`,
-                background: 'rgba(200, 180, 140, 0.35)',
-                transform: 'translate(-50%, -50%)',
-                boxShadow: '0 1px 3px rgba(0,0,0,0.3)',
-              }}
-            />
-          );
-        })}
-        {/* Yang stones (dark) — right curve */}
-        {[...Array(8)].map((_, i) => {
-          const t = i / 7;
-          const x = 50 + 30 * Math.cos(t * Math.PI * 0.8);
-          const y = 85 - 60 * Math.sin(t * Math.PI * 0.8);
-          return (
-            <div
-              key={`yang-${i}`}
-              className="absolute rounded-full"
-              style={{
-                left: `${x}%`,
-                top: `${y}%`,
-                width: `${5 + Math.cos(i * 1.2) * 3}px`,
-                height: `${4 + Math.sin(i * 1.0) * 2.5}px`,
-                background: 'rgba(140, 120, 80, 0.3)',
-                transform: 'translate(-50%, -50%)',
-                boxShadow: '0 1px 3px rgba(0,0,0,0.3)',
-              }}
-            />
-          );
-        })}
-        {/* Center taiji eye stones */}
-        <div
-          className="absolute rounded-full"
-          style={{
-            left: '38%', top: '35%',
-            width: '4px', height: '3px',
-            background: 'rgba(140, 120, 80, 0.4)',
-            transform: 'translate(-50%, -50%)',
-          }}
-        />
-        <div
-          className="absolute rounded-full"
-          style={{
-            left: '62%', top: '35%',
-            width: '4px', height: '3px',
-            background: 'rgba(200, 180, 140, 0.45)',
-            transform: 'translate(-50%, -50%)',
-          }}
-        />
-      </div>
-      </motion.div>
-    </section>
-  );
-}
 
 /* ─── Home Page ─── */
 export default function Home() {
@@ -431,7 +307,7 @@ export default function Home() {
       <HeroSection />
       <FeatureSection />
 
-      <CTASection />
+
     </div>
   );
 }

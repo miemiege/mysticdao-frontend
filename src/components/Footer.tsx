@@ -1,18 +1,14 @@
-import { ScrollText, Compass, Sparkles, Crown } from 'lucide-react';
+import { Compass, Sparkles } from 'lucide-react';
 
 const quickLinks = [
   { label: 'Home', href: '/#/' },
-  { label: 'Bazi', href: '/#/bazi' },
   { label: 'Feng Shui', href: '/#/fengshui' },
   { label: 'Daily I Ching', href: '/#/daily' },
-  { label: 'Pricing', href: '/#/pricing' },
 ];
 
 const services = [
-  { label: 'Bazi Destiny', icon: ScrollText, href: '/#/bazi' },
   { label: 'Feng Shui', icon: Compass, href: '/#/fengshui' },
   { label: 'Daily I Ching', icon: Sparkles, href: '/#/daily' },
-  { label: 'Premium Access', icon: Crown, href: '/#/pricing' },
 ];
 
 export default function Footer() {
@@ -32,8 +28,7 @@ export default function Footer() {
               <span className="font-heading text-lg font-bold">MysticDao</span>
             </div>
             <p className="text-sm text-white/50 leading-relaxed max-w-xs">
-              Ancient Eastern wisdom, digitally reborn. Discover the secrets of
-              Bazi, Feng Shui, and I Ching in a modern sacred space.
+              Ancient Eastern wisdom, digitally reborn. Feng Shui and I Ching in a modern sacred space.
             </p>
           </div>
 
