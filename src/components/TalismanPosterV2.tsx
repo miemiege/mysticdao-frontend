@@ -8,11 +8,12 @@
  * - html2canvas兼容（所有样式通过属性内联，避免CSS类名丢失）
  */
 import React from 'react';
-import { PosterStyleName, getStyleConfig } from '@/lib/posterStyles';
+import type { PosterStyleName } from '@/lib/posterStyles';
+import { getStyleConfig } from '@/lib/posterStyles';
 import { PosterFilters } from './PosterFilters';
 import { PosterDecorations } from './PosterDecorations';
-import { Gua64 } from '@/data/gua64';
-import { HexagramTalisman } from '@/data/hexagram-talismans';
+import type { Gua64 } from '@/data/gua64';
+import type { HexagramTalisman } from '@/data/hexagram-talismans';
 import { getTheme } from '@/lib/theme';
 
 export interface TalismanPosterV2Props {
@@ -96,6 +97,7 @@ export const TalismanPosterV2 = React.forwardRef<SVGSVGElement, TalismanPosterV2
 
       {/* 英文判词 */}
       <foreignObject x={40} y={240} width={width - 80} height={120}>
+        {/* @ts-expect-error xmlns is valid in SVG foreignObject but not in React HTML types */}
         <div xmlns="http://www.w3.org/1999/xhtml" style={{
           color: config.textColor,
           fontSize: '12px',
