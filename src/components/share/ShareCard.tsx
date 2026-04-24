@@ -24,7 +24,7 @@ const platformIcons: Record<string, React.ReactNode> = {
 };
 
 const ShareCard: React.FC<ShareCardProps> = ({
-  hexagramName, blessingTheme, element: _element, category, seed: _seed, score, goldenQuote, onClose
+  hexagramName, blessingTheme, category, score, goldenQuote, onClose
 }) => {
   const cardRef = useRef<HTMLDivElement>(null);
   const [activePlatform, setActivePlatform] = useState<PlatformKey>('web');

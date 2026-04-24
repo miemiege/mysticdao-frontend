@@ -1,7 +1,6 @@
 import React, { useState, useCallback, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Sparkles, RotateCcw, Heart, Share2, Star, ChevronDown, ChevronUp } from 'lucide-react';
-// import FortuneCard from '@/components/daily/FortuneCard';
 import ScoreRing from '@/components/daily/ScoreRing';
 import LuckyInfo from '@/components/daily/LuckyInfo';
 import RitualDrawing from '@/components/daily/RitualDrawing';
