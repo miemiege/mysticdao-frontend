@@ -33,7 +33,7 @@ const RotatingMandala = memo(function RotatingMandala() {
       <img
         src="./hero-mandala-bg.png"
         alt=""
-        className="w-[800px] h-[800px] lg:w-[1000px] lg:h-[1000px] object-contain opacity-[0.25] animate-spin-slow"
+        className="w-[800px] h-[800px] lg:w-[1000px] lg:h-[1000px] object-contain opacity-[0.15] animate-spin-slow"
         aria-hidden="true"
       />
     </div>
@@ -67,16 +67,14 @@ function HeroSection() {
       <div className="absolute inset-0 bg-black z-0" />
 
       {/* Layer 1.5: Ink Wash Background */}
-      <div
-        className="absolute inset-0 z-[0.5] pointer-events-none"
-        style={{
-          backgroundImage: 'url(./hero-ink-wash-bg.jpg)',
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-          opacity: 0.35,
-          mixBlendMode: 'screen',
-        }}
-      />
+      <div className="absolute inset-0 z-[0.5]">
+        <img
+          src="./hero-ink-wash-bg.jpg"
+          alt=""
+          className="w-full h-full object-cover opacity-[0.12]"
+          aria-hidden="true"
+        />
+      </div>
 
       {/* Layer 2: Particle field */}
       <div className="absolute inset-0 z-[1]">
@@ -84,9 +82,7 @@ function HeroSection() {
       </div>
 
       {/* Layer 3: Mandala */}
-      <div className="absolute inset-0 z-[2] pointer-events-none">
-        <MandalaMemo />
-      </div>
+      <MandalaMemo />
 
       {/* Layer 4: Fog */}
       <motion.div
