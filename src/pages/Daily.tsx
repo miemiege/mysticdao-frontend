@@ -394,7 +394,7 @@ const Daily: React.FC = () => {
                           {(() => {
                             const imgSrc = getTalismanImage(fortune.card.name);
                             if (imgSrc) {
-                              return <img src={imgSrc} alt={fortune.card.name} className="w-[300px] h-[450px] object-cover rounded-xl" />;
+                              return <img src={imgSrc} alt={fortune.card.name} className="w-[260px] h-auto object-contain rounded-xl" />;
                             }
                             return (
                               <TalismanSVG

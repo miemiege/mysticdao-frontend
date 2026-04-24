@@ -71,7 +71,7 @@ function HeroSection() {
         <img
           src="./hero-ink-wash-bg.jpg"
           alt=""
-          className="w-full h-full object-cover opacity-[0.12]"
+          className="w-full h-full object-cover opacity-[0.28]"
           aria-hidden="true"
         />
       </div>
