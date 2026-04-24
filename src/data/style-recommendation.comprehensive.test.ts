@@ -24,7 +24,7 @@ function assertValidRecommendation(rec: StyleRecommendation): void {
   if (!rec || !rec.primary || !rec.secondary || !rec.reason) {
     throw new Error(`Invalid recommendation: ${JSON.stringify(rec)}`);
   }
-  const validStyles = ['ink', 'dark', 'royal', 'vintage', 'tianshi', 'blackgold'];
+  const validStyles = ['ink', 'dark', 'royal', 'vintage', 'tianshi', 'blackgold', 'cybertao', 'zengarden'];
   if (!validStyles.includes(rec.primary)) {
     throw new Error(`Invalid primary style: ${rec.primary}`);
   }
