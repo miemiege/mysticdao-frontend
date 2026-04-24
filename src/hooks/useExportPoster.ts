@@ -17,6 +17,7 @@ import {
   type ExportResult,
 } from '@/lib/exportPoster';
 import { getRecommendedFormat } from '@/lib/exportCompatibility';
+import { trackExport, trackShare } from '@/lib/analytics';
 
 /* ─── Hook State ─── */
 
@@ -128,15 +129,20 @@ export function useExportPoster(): UseExportPosterState & UseExportPosterActions
   const exportAndDownload = useCallback(
     async (
       svgRef: React.RefObject<SVGSVGElement | null>,
-      options?: ExportOptions & { filename?: string }
+      options?: ExportOptions & { filename?: string; style?: string }
     ): Promise<void> => {
-      const { filename = 'poster.png', ...exportOpts } = options ?? {};
+      const { filename = 'poster.png', style = 'unknown', ...exportOpts } = options ?? {};
+      const start = performance.now();
       const res = await exportImage(svgRef, exportOpts);
+      const duration = Math.round(performance.now() - start);
       if (res) {
+        trackExport(style, res.strategy, true, duration);
         downloadImage(res.url, filename);
+      } else {
+        trackExport(style, 'unknown', false, duration, error?.message);
       }
     },
-    [exportImage]
+    [exportImage, error]
   );
 
   return {
