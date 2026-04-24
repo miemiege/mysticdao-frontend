@@ -432,15 +432,18 @@ const Daily: React.FC = () => {
                           </div>
                           <div className="text-[10px] text-text-muted tracking-wider mt-1">FORTUNE SCORE</div>
                         </div>
-                        {/* 真实印章: seal-stamp.png + spring盖印动画 */}
+                        {/* 朱砂印章 - 纯CSS绘制 */}
                         <motion.div
                           initial={{ scale: 2.5, opacity: 0, rotate: -30, y: -20 }}
                           animate={{ scale: 1, opacity: 1, rotate: 8, y: 0 }}
                           transition={{ delay: 1.1, type: 'spring', stiffness: 150, damping: 12 }}
-                          className="relative w-16 h-16"
+                          className="w-16 h-16 rounded-full flex items-center justify-center border-2 border-red-700/80"
+                          style={{
+                            background: 'radial-gradient(circle, rgba(180,30,30,0.15) 0%, rgba(120,20,20,0.3) 100%)',
+                            boxShadow: `inset 0 0 12px rgba(200,40,40,0.3), 0 0 8px ${fortune.card.color}30`,
+                          }}
                         >
-                          <img src="./seal-stamp.png" alt="" className="w-full h-full object-contain" style={{ filter: `drop-shadow(0 0 8px ${fortune.card.color}40)` }} />
-                          <span className="absolute inset-0 flex items-center justify-center text-sm font-bold" style={{ color: fortune.card.color, textShadow: '0 1px 3px rgba(0,0,0,0.8)' }}>
+                          <span className="text-lg font-bold text-red-500/90" style={{ textShadow: '0 1px 3px rgba(0,0,0,0.8)' }}>
                             {fortune.overallScore >= 85 ? '上' : fortune.overallScore >= 70 ? '吉' : fortune.overallScore >= 55 ? '中' : '平'}
                           </span>
                         </motion.div>

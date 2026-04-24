@@ -142,7 +142,9 @@ const ShareCard: React.FC<ShareCardProps> = ({
                 {score}
               </div>
               <div className="text-[10px] text-gold/40 tracking-wider mt-1">FORTUNE SCORE</div>
-              <img src="./seal-stamp.png" alt="" className="w-10 h-10 mx-auto mt-2 opacity-80" loading="lazy" decoding="async" />
+              <div className="w-10 h-10 mx-auto mt-2 rounded-full flex items-center justify-center border-2 border-red-700/80" style={{ background: 'radial-gradient(circle, rgba(180,30,30,0.15) 0%, rgba(120,20,20,0.3) 100%)' }}>
+                <span className="text-sm font-bold text-red-500/90">{score >= 85 ? '上' : score >= 70 ? '吉' : score >= 55 ? '中' : '平'}</span>
+              </div>
             </div>
 
             {/* 底部：金色语录 + 日期 */}
