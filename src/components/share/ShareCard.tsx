@@ -53,7 +53,7 @@ const ShareCard: React.FC<ShareCardProps> = ({
   };
 
   const activeConfig = PLATFORM_LIST.find(p => p.key === activePlatform) || PLATFORM_LIST[0];
-  const talismanBg = getTalismanImage(hexagramName, 'dark');
+  const talismanBg = getTalismanImage(hexagramName);
 
   return (
     <motion.div

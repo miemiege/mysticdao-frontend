@@ -219,7 +219,7 @@ const features = [
     description: 'Uncover the blueprint of your life written in the stars at your birth. Your Four Pillars reveal personality, career path, relationships, and fortune cycles.',
     href: '/#/bazi',
     icon: ScrollText,
-    image: '/service-bazi.jpg',
+    image: './service-bazi.jpg',
   },
   {
     title: 'Feng Shui',
@@ -227,7 +227,7 @@ const features = [
     description: 'Harmonize your living and working spaces with the ancient art of energy flow. Discover how orientation, layout, and elements shape your daily fortune.',
     href: '/#/fengshui',
     icon: Compass,
-    image: '/service-fengshui.jpg',
+    image: './service-fengshui.jpg',
   },
   {
     title: 'Daily I Ching',
@@ -235,7 +235,7 @@ const features = [
     description: 'Draw from the timeless I Ching for daily guidance and deep introspection. Each hexagram carries a message from the universe, waiting to be revealed.',
     href: '/#/daily',
     icon: Sparkles,
-    image: '/service-love.jpg',
+    image: './service-love.jpg',
   },
   {
     title: 'Premium Access',
@@ -243,7 +243,7 @@ const features = [
     description: 'Unlock deeper insights with AI-powered interpretations. Personalized readings, detailed analysis, and unlimited daily draws.',
     href: '/#/pricing',
     icon: Crown,
-    image: '/service-tarot.jpg',
+    image: './service-tarot.jpg',
   },
 ];
 
