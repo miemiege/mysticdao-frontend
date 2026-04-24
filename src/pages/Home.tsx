@@ -66,16 +66,6 @@ function HeroSection() {
       {/* Layer 1: Black base */}
       <div className="absolute inset-0 bg-black z-0" />
 
-      {/* Layer 1.5: Ink Wash Background */}
-      <div className="absolute inset-0 z-[0.5]">
-        <img
-          src="./hero-ink-wash-bg.jpg"
-          alt=""
-          className="w-full h-full object-cover opacity-[0.12]"
-          aria-hidden="true"
-        />
-      </div>
-
       {/* Layer 2: Particle field */}
       <div className="absolute inset-0 z-[1]">
         <TaijiParticles count={80} />
