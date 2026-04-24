@@ -15,8 +15,14 @@ import {
   Clock,
   Calendar,
   BarChart3,
+  Album,
+  Swords,
+  MessageCircle,
   type LucideIcon,
 } from 'lucide-react';
+import CardAlbum from '@/components/daily/CardAlbum';
+import FortunePK from '@/components/daily/FortunePK';
+import AnonymousBoard from '@/components/daily/AnonymousBoard';
 import { toast } from 'sonner';
 import {
   getUserProfile,
@@ -31,7 +37,7 @@ import {
   type FavoriteItem,
 } from '../lib/storage';
 
-type TabValue = 'history' | 'favorites' | 'shares';
+type TabValue = 'history' | 'favorites' | 'shares' | 'album' | 'fortunePK' | 'board';
 
 const typeConfig = {
   bazi: { label: '八字', icon: ScrollText, color: '#c8a45c', path: '/#/bazi' },
@@ -141,12 +147,15 @@ export default function UserProfile() {
 
   const totalReadings = history.length;
   const baziCount = history.filter((h) => h.type === 'bazi').length;
-  const dailyCount = history.filter((h) => h.type === 'daily').length;
+  const favoriteCount = favorites.length;
 
   const tabs: { value: TabValue; label: string; icon: LucideIcon }[] = [
     { value: 'history', label: '历史记录', icon: History },
     { value: 'favorites', label: '我的收藏', icon: Heart },
     { value: 'shares', label: '分享管理', icon: Share2 },
+    { value: 'album', label: '卡册', icon: Album },
+    { value: 'fortunePK', label: '运势PK', icon: Swords },
+    { value: 'board', label: '留言板', icon: MessageCircle },
   ];
 
   return (
@@ -220,10 +229,10 @@ export default function UserProfile() {
                 </div>
               </div>
               <div className="text-center">
-                <div className="text-2xl font-bold text-gold">{dailyCount}</div>
+                <div className="text-2xl font-bold text-gold">{favoriteCount}</div>
                 <div className="text-xs text-text-muted mt-1 flex items-center justify-center gap-1">
-                  <Sparkles className="w-3 h-3" />
-                  每日运势
+                  <Heart className="w-3 h-3" />
+                  收藏
                 </div>
               </div>
             </div>
@@ -489,6 +498,45 @@ export default function UserProfile() {
                       ))}
                     </div>
                   )}
+                </motion.div>
+              )}
+
+              {/* Album Tab */}
+              {activeTab === 'album' && (
+                <motion.div
+                  key="album"
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -10 }}
+                  transition={{ duration: 0.25 }}
+                >
+                  <CardAlbum />
+                </motion.div>
+              )}
+
+              {/* FortunePK Tab */}
+              {activeTab === 'fortunePK' && (
+                <motion.div
+                  key="fortunePK"
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -10 }}
+                  transition={{ duration: 0.25 }}
+                >
+                  <FortunePK />
+                </motion.div>
+              )}
+
+              {/* Board Tab */}
+              {activeTab === 'board' && (
+                <motion.div
+                  key="board"
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -10 }}
+                  transition={{ duration: 0.25 }}
+                >
+                  <AnonymousBoard />
                 </motion.div>
               )}
             </AnimatePresence>
