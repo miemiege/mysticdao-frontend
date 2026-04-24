@@ -5,54 +5,6 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        /* ─── Legacy Tokens (backward compatible) ─── */
-        'bg-primary': '#000000',
-        'bg-card': '#0A0A0A',
-        'bg-elevated': '#111111',
-        'text-primary': '#FFFFFF',
-        'text-secondary': '#888888',
-        'text-muted': '#555555',
-        'border-subtle': 'rgba(255,255,255,0.08)',
-        'border-hover': 'rgba(255,255,255,0.2)',
-        'border-glow': 'rgba(255,255,255,0.35)',
-        'element-wood': '#4ADE80',
-        'element-fire': '#F87171',
-        'element-earth': '#FBBF24',
-        'element-metal': '#E5E7EB',
-        'element-water': '#60A5FA',
-        'glow-white': 'rgba(255,255,255,0.15)',
-        'glow-amber': 'rgba(245, 158, 11, 0.3)',
-
-        /* ─── NEW: Surface System (4 levels) ─── */
-        surface: {
-          page: '#000000',
-          card: '#0A0A0F',
-          elevated: '#12121A',
-          overlay: 'rgba(0,0,0,0.8)',
-        },
-
-        /* ─── NEW: Gold Semantic System (4 levels) ─── */
-        gold: {
-          DEFAULT: '#c8a45c',
-          light: '#e8d5a3',
-          dim: 'rgba(200, 164, 92, 0.15)',
-          primary: '#C8A45C',
-          muted: '#8B7340',
-          subtle: 'rgba(200,164,92,0.15)',
-          ghost: 'rgba(200,164,92,0.06)',
-        },
-
-        /* ─── NEW: Seal Red (for Talisman Cards) ─── */
-        seal: {
-          DEFAULT: '#8B0000',
-          light: '#C41E3A',
-          subtle: 'rgba(139,0,0,0.15)',
-        },
-        wood: '#4ADE80',
-        fire: '#F87171',
-        earth: '#FBBF24',
-        metal: '#E5E7EB',
-        water: '#60A5FA',
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",
@@ -86,11 +38,16 @@ module.exports = {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
-      },
-      fontFamily: {
-        sans: ['"Noto Sans SC"', '"PingFang SC"', 'system-ui', 'sans-serif'],
-        mono: ['"JetBrains Mono"', '"SF Mono"', 'monospace'],
-        heading: ['"Playfair Display"', 'Georgia', 'serif'],
+        sidebar: {
+          DEFAULT: "hsl(var(--sidebar-background))",
+          foreground: "hsl(var(--sidebar-foreground))",
+          primary: "hsl(var(--sidebar-primary))",
+          "primary-foreground": "hsl(var(--sidebar-primary-foreground))",
+          accent: "hsl(var(--sidebar-accent))",
+          "accent-foreground": "hsl(var(--sidebar-accent-foreground))",
+          border: "hsl(var(--sidebar-border))",
+          ring: "hsl(var(--sidebar-ring))",
+        },
       },
       borderRadius: {
         xl: "calc(var(--radius) + 4px)",
@@ -98,31 +55,9 @@ module.exports = {
         md: "calc(var(--radius) - 2px)",
         sm: "calc(var(--radius) - 4px)",
         xs: "calc(var(--radius) - 6px)",
-        pill: '9999px',
-        /* ─── NEW: Radius Scale ─── */
-        'radius-sm': '6px',
-        'radius-md': '10px',
-        'radius-lg': '16px',
-        'radius-xl': '24px',
-      },
-      spacing: {
-        /* ─── NEW: Spacing Scale (8px grid) ─── */
-        'space-xs': '4px',
-        'space-sm': '8px',
-        'space-md': '16px',
-        'space-lg': '24px',
-        'space-xl': '32px',
-        'space-2xl': '48px',
-        'space-3xl': '64px',
-        'space-4xl': '96px',
       },
       boxShadow: {
-        /* ─── NEW: Shadow System ─── */
-        'shadow-sm': '0 1px 2px rgba(0,0,0,0.3)',
-        'shadow-md': '0 4px 12px rgba(0,0,0,0.4)',
-        'shadow-lg': '0 8px 32px rgba(0,0,0,0.5)',
-        'glow-gold': '0 0 20px rgba(200,164,92,0.15)',
-        'glow-gold-lg': '0 0 40px rgba(200,164,92,0.25)',
+        xs: "0 1px 2px 0 rgb(0 0 0 / 0.05)",
       },
       keyframes: {
         "accordion-down": {
@@ -137,61 +72,11 @@ module.exports = {
           "0%,70%,100%": { opacity: "1" },
           "20%,50%": { opacity: "0" },
         },
-        "fade-up": {
-          from: { opacity: "0", transform: "translateY(30px)" },
-          to: { opacity: "1", transform: "translateY(0)" },
-        },
-        "shimmer": {
-          "0%": { backgroundPosition: "-200% 0" },
-          "100%": { backgroundPosition: "200% 0" },
-        },
-        "spin-slow": {
-          from: { transform: "rotate(0deg)" },
-          to: { transform: "rotate(360deg)" },
-        },
-        "bounce-down": {
-          "0%, 100%": { transform: "translateY(0)" },
-          "50%": { transform: "translateY(8px)" },
-        },
-        "text-glow": {
-          "0%, 100%": { textShadow: "0 0 40px rgba(255,255,255,0.06)" },
-          "50%": { textShadow: "0 0 40px rgba(255,255,255,0.12)" },
-        },
-        "glow-pulse": {
-          "0%, 100%": { boxShadow: "0 0 20px rgba(200,164,92,0.15)" },
-          "50%": { boxShadow: "0 0 40px rgba(200,164,92,0.25)" },
-        },
-        "shake": {
-          "0%": { transform: "translateX(0)" },
-          "20%": { transform: "translateX(-8px)" },
-          "40%": { transform: "translateX(8px)" },
-          "60%": { transform: "translateX(-4px)" },
-          "80%": { transform: "translateX(4px)" },
-          "100%": { transform: "translateX(0)" },
-        },
-        "fadeUp": {
-          "0%": { opacity: "0", transform: "translateY(30px)" },
-          "100%": { opacity: "1", transform: "translateY(0)" },
-        },
-        "bounce-subtle": {
-          "0%, 100%": { transform: "translateY(0)" },
-          "50%": { transform: "translateY(6px)" },
-        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
         "caret-blink": "caret-blink 1.25s ease-out infinite",
-        "fade-up": "fade-up 0.6s ease-out forwards",
-        "shimmer": "shimmer 1.5s infinite",
-        "spin-slow": "spin-slow 3s linear infinite",
-        "spin-slower": "spin-slow 4s linear infinite",
-        "bounce-down": "bounce-down 2s infinite",
-        "text-glow": "text-glow 4s ease-in-out infinite",
-        "glow-pulse": "glow-pulse 3s ease-in-out infinite",
-        "shake": "shake 0.4s ease-in-out",
-        "fadeUp": "fadeUp 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards",
-        "bounce-subtle": "bounce-subtle 2s ease-in-out infinite",
       },
     },
   },

@@ -1,26 +1,15 @@
 /**
  * Theme System — 五行主题化颜色系统
- *
- * 规则：墨玉黑底(#000) + 主题主色 + 金色点缀(#C8A45C) + 朱砂印章(#8B0000)
- * 所有卦根据五行属性自动匹配主题色
  */
 
 export interface ThemeColors {
-  /** 主色：边框、文字、六爻线条、核心符形 */
   primary: string;
-  /** 辅色：高亮、光晕、hover效果 */
   secondary: string;
-  /** 点缀：细微装饰、背景暗纹 */
   accent: string;
-  /** 发光效果色值 */
   glow: string;
-  /** 背景暗纹透明度色值 */
   background: string;
-  /** 印章：固定朱砂红（所有主题统一） */
   seal: string;
-  /** 金色点缀：品牌一致性锚点 */
   gold: string;
-  /** 金色发光 */
   goldGlow: string;
 }
 
@@ -77,12 +66,8 @@ export const THEMES: Record<string, ThemeColors> = {
   },
 };
 
-/** 获取主题色 */
-export const getTheme = (element: string): ThemeColors => {
-  return THEMES[element] || THEMES['金'];
-};
+export const getTheme = (element: string): ThemeColors => THEMES[element] || THEMES['金'];
 
-/** 印章系统 */
 export interface SealInfo {
   text: string;
   color: string;
@@ -99,7 +84,6 @@ export const getSealInfo = (score: number): SealInfo => {
   return { text: '需谨慎', color: '#4A3728', shape: 'oval', size: 44 };
 };
 
-/** 符胆字映射（五行→符胆） */
 export const FU_GALL_CHARS: Record<string, string> = {
   金: '罡',
   木: '化',
@@ -108,7 +92,6 @@ export const FU_GALL_CHARS: Record<string, string> = {
   土: '井',
 };
 
-/** 符头类型映射（分类→符头） */
 export const FU_HEAD_TYPE: Record<string, 'sanqing' | 'santai' | 'chiling'> = {
   '天官赐福': 'sanqing',
   '武运昌隆': 'sanqing',

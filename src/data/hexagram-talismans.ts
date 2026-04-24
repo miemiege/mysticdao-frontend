@@ -1,37 +1,6 @@
 /**
  * Hexagram Talisman Library — 64卦符咒素材映射库
- *
- * 设计原则：
- * 1. 每卦对应一种祈福主题，符咒有实际祈福意义
- * 2. 素材路径指向 public/talismans/ 目录
- * 3. 占位符模式：无真实素材时，用程序化 SVG 生成符咒
- * 4. 可扩展：后续只需替换 svgPath 为真实素材，其他数据不变
- *
- * 符咒分类（8大类）：
- * - 天官赐福类（事业/创造）
- * - 地母护身类（包容/承载）
- * - 文昌启智类（学业/启蒙）
- * - 财运亨通类（财富/丰收）
- * - 姻缘和合类（感情/人际）
- * - 平安顺遂类（健康/平安）
- * - 武运昌隆类（竞争/突破）
- * - 转运破厄类（化解/转变）
  */
-
-export interface HexagramTalisman {
-  /** 卦名 */
-  hexagramName: string;
-  /** 祈福主题（如"天官赐福"） */
-  blessingTheme: string;
-  /** 符咒分类 */
-  category: TalismanCategory;
-  /** 五行属性 */
-  element: string;
-  /** 素材路径（相对 public/），null 表示使用占位符 */
-  svgPath: string | null;
-  /** 占位符生成种子（确保同卦符咒每次都一样） */
-  placeholderSeed: number;
-}
 
 export type TalismanCategory =
   | '天官赐福' // 事业、创造、领导
@@ -43,7 +12,15 @@ export type TalismanCategory =
   | '武运昌隆' // 竞争、突破、力量
   | '转运破厄'; // 化解、转变、重生
 
-/** 根据运势分数获取印章文字 */
+export interface HexagramTalisman {
+  hexagramName: string;
+  blessingTheme: string;
+  category: TalismanCategory;
+  element: string;
+  svgPath: string | null;
+  placeholderSeed: number;
+}
+
 export const getSealText = (score: number): string => {
   if (score >= 90) return '上上签';
   if (score >= 80) return '上吉';
@@ -53,16 +30,13 @@ export const getSealText = (score: number): string => {
   return '需谨慎';
 };
 
-/** 根据运势分数获取印章颜色 */
 export const getSealColor = (score: number): string => {
   if (score >= 80) return '#8B0000';
   if (score >= 60) return '#A52A2A';
   return '#6B4423';
 };
 
-/** 64卦符咒映射表 — 按周易标准顺序排列 */
 export const HEXAGRAM_TALISMANS: Record<string, HexagramTalisman> = {
-  // === 上经 30卦 ===
   '乾为天':   { hexagramName: '乾为天',   blessingTheme: '天官赐福', category: '天官赐福', element: '金', svgPath: null, placeholderSeed: 1 },
   '坤为地':   { hexagramName: '坤为地',   blessingTheme: '地母护身', category: '地母护身', element: '土', svgPath: null, placeholderSeed: 2 },
   '水雷屯':   { hexagramName: '水雷屯',   blessingTheme: '开运转运', category: '转运破厄', element: '水', svgPath: null, placeholderSeed: 3 },
@@ -93,7 +67,6 @@ export const HEXAGRAM_TALISMANS: Record<string, HexagramTalisman> = {
   '泽风大过': { hexagramName: '泽风大过', blessingTheme: '独立不惧', category: '转运破厄', element: '金', svgPath: null, placeholderSeed: 28 },
   '坎为水':   { hexagramName: '坎为水',   blessingTheme: '渡厄平安', category: '平安顺遂', element: '水', svgPath: null, placeholderSeed: 29 },
   '离为火':   { hexagramName: '离为火',   blessingTheme: '光明普照', category: '武运昌隆', element: '火', svgPath: null, placeholderSeed: 30 },
-  // === 下经 34卦 ===
   '泽山咸':   { hexagramName: '泽山咸',   blessingTheme: '姻缘和合', category: '姻缘和合', element: '金', svgPath: null, placeholderSeed: 31 },
   '雷风恒':   { hexagramName: '雷风恒',   blessingTheme: '恒久不渝', category: '姻缘和合', element: '木', svgPath: null, placeholderSeed: 32 },
   '天山遁':   { hexagramName: '天山遁',   blessingTheme: '遁世保身', category: '平安顺遂', element: '金', svgPath: null, placeholderSeed: 33 },
@@ -130,27 +103,17 @@ export const HEXAGRAM_TALISMANS: Record<string, HexagramTalisman> = {
   '火水未济': { hexagramName: '火水未济', blessingTheme: '未济待机', category: '转运破厄', element: '火', svgPath: null, placeholderSeed: 64 },
 };
 
-/** 获取卦的符咒数据 */
 export const getHexagramTalisman = (hexagramName: string): HexagramTalisman => {
-  return (
-    HEXAGRAM_TALISMANS[hexagramName] ?? {
-      hexagramName,
-      blessingTheme: '开运祈福',
-      category: '天官赐福',
-      element: '土',
-      svgPath: null,
-      placeholderSeed: hexagramName.split('').reduce((a, c) => a + c.charCodeAt(0), 0),
-    }
-  );
+  return HEXAGRAM_TALISMANS[hexagramName] ?? {
+    hexagramName,
+    blessingTheme: '开运祈福',
+    category: '天官赐福',
+    element: '土',
+    svgPath: null,
+    placeholderSeed: hexagramName.split('').reduce((a, b) => a + b.charCodeAt(0), 0),
+  };
 };
 
-/** 检查某卦是否有真实素材 */
-export const hasRealTalisman = (hexagramName: string): boolean => {
-  const t = HEXAGRAM_TALISMANS[hexagramName];
-  return t?.svgPath !== null && t?.svgPath !== undefined;
-};
-
-/** 获取分类下的所有卦 */
-export const getHexagramsByCategory = (category: TalismanCategory): HexagramTalisman[] => {
-  return Object.values(HEXAGRAM_TALISMANS).filter((t) => t.category === category);
+export const getTalismanByCategory = (category: TalismanCategory): HexagramTalisman[] => {
+  return Object.values(HEXAGRAM_TALISMANS).filter(t => t.category === category);
 };
