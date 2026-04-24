@@ -69,25 +69,25 @@ const TalismanPosterV2: React.FC<TalismanPosterV2Props> = (props) => {
   const seal = getSealInfo(score, styleKey);
   const uid = `v2-${styleKey}-${hexagramName}-${W}-${H}`;
 
-  // 共享布局常量
-  const cx = W / 2;
-  const margin = 30;
-  const lines = gua ? getSixLines(gua.upper, gua.lower) : [];
-  const blessing = gua
-    ? (gua.imageEn.length > 140 ? gua.imageEn.slice(0, 140) + '...' : gua.imageEn)
-    : '';
-  const keywords = gua ? gua.keywordsEn.slice(0, 3) : [];
-
   if (!gua) {
     return (
-      <svg width={W} height={H} viewBox={`0 0 ${W} ${H}`} style={{ display: 'block' }}>
-        <rect width={W} height={H} fill={style.bgPrimary} />
-        <text x={W / 2} y={H / 2} textAnchor="middle" fill={style.textPrimary} fontSize="16">
-          Hexagram not found
+      <svg width={W} height={H} viewBox={`0 0 ${W} ${H}`} xmlns="http://www.w3.org/2000/svg">
+        <rect width={W} height={H} fill="#0a0a0f" />
+        <text x={W / 2} y={H / 2} textAnchor="middle" fill="#666" fontSize="14">
+          Invalid Hexagram
         </text>
       </svg>
     );
   }
+
+  const safeGua = gua;
+
+  // 共享布局常量
+  const cx = W / 2;
+  const margin = 30;
+  const lines = getSixLines(safeGua.upper, safeGua.lower);
+  const blessing = safeGua.imageEn.length > 140 ? safeGua.imageEn.slice(0, 140) + '...' : safeGua.imageEn;
+  const keywords = safeGua.keywordsEn.slice(0, 3);
 
   switch (styleKey) {
     case 'ink': return renderInk();
@@ -112,18 +112,18 @@ const TalismanPosterV2: React.FC<TalismanPosterV2Props> = (props) => {
         <BrandHeader cx={cx} y={m + 18} style="ink" color={style.textSecondary} />
         <FancyDivider x={cx - 60} y={m + 30} width={120} color={style.borderColor} style="ink" />
         <text x={cx} y={m + 70} textAnchor="middle" fill={style.textPrimary}
-          fontSize={gua.nameEn.length > 18 ? 22 : 26} fontFamily={style.fontTitle} fontWeight="bold"
+          fontSize={safeGua.nameEn.length > 18 ? 22 : 26} fontFamily={style.fontTitle} fontWeight="bold"
           letterSpacing="2" filter={`url(#glow-${uid})`} opacity="0.9">
-          {gua.nameEn.toUpperCase()}
+          {safeGua.nameEn.toUpperCase()}
         </text>
         <text x={cx} y={m + 96} textAnchor="middle" fill={style.textSecondary}
           fontSize="12" fontFamily={style.fontCJK} letterSpacing="4" opacity="0.6">
-          {gua.name} · {gua.symbol}
+          {safeGua.name} · {safeGua.symbol}
         </text>
         <FancyDivider x={cx - 50} y={m + 110} width={100} color={style.borderColor} style="ink" />
         <text x={cx} y={H * 0.42} textAnchor="middle" fill={style.textPrimary}
           fontSize="56" fontFamily="serif" opacity="0.15" filter={`url(#ink-bleed-${uid})`}>
-          {gua.symbol}
+          {safeGua.symbol}
         </text>
         <SixLines cx={cx} y={H * 0.58} lines={lines} color={style.textSecondary} />
         <g>
@@ -170,7 +170,7 @@ const TalismanPosterV2: React.FC<TalismanPosterV2Props> = (props) => {
         <BrandHeader cx={cx} y={m + 20} style="darkMystic" color={style.textSecondary} />
         {/* 竖排英文 */}
         <g transform={`translate(${cx - 40}, ${H * 0.22})`}>
-          {gua.nameEn.split('').filter(c => c !== ' ').slice(0, 12).map((char, i) => (
+          {safeGua.nameEn.split('').filter(c => c !== ' ').slice(0, 12).map((char, i) => (
             <text key={i} x={0} y={i * 16}
               fill={style.textPrimary} fontSize="14" fontFamily={style.fontTitle}
               letterSpacing="1" opacity="0.85">
@@ -180,7 +180,7 @@ const TalismanPosterV2: React.FC<TalismanPosterV2Props> = (props) => {
         </g>
         {/* 竖排中文 */}
         <g transform={`translate(${cx + 20}, ${H * 0.22})`}>
-          {gua.name.split('').map((char, i) => (
+          {safeGua.name.split('').map((char, i) => (
             <text key={i} x={0} y={i * 22}
               fill={style.accent} fontSize="16" fontFamily={style.fontCJK}
               letterSpacing="2" opacity="0.7" filter={`url(#glow-${uid})`}>
@@ -190,7 +190,7 @@ const TalismanPosterV2: React.FC<TalismanPosterV2Props> = (props) => {
         </g>
         <text x={cx} y={H * 0.48} textAnchor="middle" fill={style.textPrimary}
           fontSize="72" fontFamily="serif" opacity="0.25" filter={`url(#red-mist-${uid})`}>
-          {gua.symbol}
+          {safeGua.symbol}
         </text>
         {/* 六爻（右侧竖排） */}
         <g transform={`translate(${W - m - 35}, ${H * 0.35})`}>
@@ -250,12 +250,12 @@ const TalismanPosterV2: React.FC<TalismanPosterV2Props> = (props) => {
         <BrandHeader cx={cx} y={m + 16} style="imperialGold" color={style.textSecondary} />
         <line x1={cx - 50} y1={m + 30} x2={cx + 50} y2={m + 30} stroke={style.borderColor} strokeWidth="0.8" strokeOpacity="0.3" />
         <text x={cx} y={m + 65} textAnchor="middle" fill={style.textPrimary}
-          fontSize={gua.nameEn.length > 18 ? 18 : 22} fontFamily={style.fontTitle}
+          fontSize={safeGua.nameEn.length > 18 ? 18 : 22} fontFamily={style.fontTitle}
           fontWeight="bold" letterSpacing="2" filter={`url(#glow-${uid})`} opacity="0.95">
-          {gua.nameEn.toUpperCase()}
+          {safeGua.nameEn.toUpperCase()}
         </text>
         <g transform={`translate(${W - m - 22}, ${m + 85})`}>
-          {gua.name.split('').map((char, i) => (
+          {safeGua.name.split('').map((char, i) => (
             <text key={i} x={0} y={i * 20}
               fill={style.accent} fontSize="14" fontFamily={style.fontCJK}
               opacity="0.7" writingMode="tb">
@@ -266,12 +266,12 @@ const TalismanPosterV2: React.FC<TalismanPosterV2Props> = (props) => {
         <g transform={`translate(${m + 18}, ${m + 85})`}>
           <text x={0} y={0} fill={style.textSecondary} fontSize="7" fontFamily={style.fontCJK}
             opacity="0.35" writingMode="tb" letterSpacing="2">
-            MYSTICDAO·{gua.element}·{gua.fortuneEn.toUpperCase()}
+            MYSTICDAO·{safeGua.element}·{safeGua.fortuneEn.toUpperCase()}
           </text>
         </g>
         <text x={cx} y={H * 0.42} textAnchor="middle" fill={style.textPrimary}
           fontSize="64" fontFamily="serif" opacity="0.8" filter={`url(#glow-${uid})`}>
-          {gua.symbol}
+          {safeGua.symbol}
         </text>
         <SixLines cx={cx} y={H * 0.58} lines={lines} color={style.gold} />
         <foreignObject x={m + 25} y={H * 0.72} width={W - m * 2 - 50} height={H * 0.1}>
@@ -315,13 +315,13 @@ const TalismanPosterV2: React.FC<TalismanPosterV2Props> = (props) => {
         </text>
         <DragonDeco cx={cx} y={m + 35} size={45} color={style.decoColor} />
         <text x={cx} y={m + 80} textAnchor="middle" fill={style.textPrimary}
-          fontSize={gua.nameEn.length > 18 ? 19 : 23} fontFamily={style.fontTitle}
+          fontSize={safeGua.nameEn.length > 18 ? 19 : 23} fontFamily={style.fontTitle}
           fontWeight="bold" letterSpacing="1" opacity="0.9">
-          {gua.nameEn.toUpperCase()}
+          {safeGua.nameEn.toUpperCase()}
         </text>
         <text x={cx} y={m + 102} textAnchor="middle" fill={style.textSecondary}
           fontSize="13" fontFamily={style.fontCJK} letterSpacing="3" opacity="0.6">
-          {gua.name} · {gua.symbol}
+          {safeGua.name} · {safeGua.symbol}
         </text>
         <FancyDivider x={cx - 60} y={m + 118} width={120} color={style.borderColor} style="vintagePrint" />
         <text x={m + 14} y={H * 0.35} fill={style.textSecondary}
@@ -336,7 +336,7 @@ const TalismanPosterV2: React.FC<TalismanPosterV2Props> = (props) => {
         </text>
         <text x={cx} y={H * 0.45} textAnchor="middle" fill={style.textPrimary}
           fontSize="56" fontFamily="serif" opacity="0.8">
-          {gua.symbol}
+          {safeGua.symbol}
         </text>
         <SixLines cx={cx} y={H * 0.56} lines={lines} color={style.textPrimary} />
         <foreignObject x={m + 25} y={H * 0.68} width={W - m * 2 - 50} height={H * 0.1}>
@@ -387,19 +387,19 @@ const TalismanPosterV2: React.FC<TalismanPosterV2Props> = (props) => {
         </text>
         <FancyDivider x={cx - 50} y={m + 58} width={100} color={style.borderColor} style="taoistYellow" />
         <text x={cx} y={m + 92} textAnchor="middle" fill={style.textPrimary}
-          fontSize={gua.nameEn.length > 18 ? 17 : 20} fontFamily={style.fontTitle}
+          fontSize={safeGua.nameEn.length > 18 ? 17 : 20} fontFamily={style.fontTitle}
           fontWeight="bold" letterSpacing="1">
-          {gua.nameEn.toUpperCase()}
+          {safeGua.nameEn.toUpperCase()}
         </text>
         <text x={cx} y={m + 114} textAnchor="middle" fill={style.textSecondary}
           fontSize="12" fontFamily={style.fontCJK} letterSpacing="2" opacity="0.7">
-          {gua.name} · {gua.symbol}
+          {safeGua.name} · {safeGua.symbol}
         </text>
         <path d={`M${cx - 70} ${m + 128} Q${cx} ${m + 100} ${cx + 70} ${m + 128}`}
           fill="none" stroke={style.borderColor} strokeWidth="1.5" strokeOpacity="0.4" />
         <text x={cx} y={H * 0.44} textAnchor="middle" fill={style.textPrimary}
           fontSize="72" fontFamily="serif" opacity="0.85" fontWeight="bold">
-          {gua.symbol}
+          {safeGua.symbol}
         </text>
         {showSeal && (
           <g opacity="0.9">
@@ -417,7 +417,7 @@ const TalismanPosterV2: React.FC<TalismanPosterV2Props> = (props) => {
         <SixLines cx={cx} y={H * 0.66} lines={lines} color={style.textPrimary} />
         <text x={cx} y={H * 0.82} textAnchor="middle" fill={style.textSecondary}
           fontSize="14" fontFamily={style.fontTitle} letterSpacing="2" opacity="0.8">
-          {gua.fortuneEn.toUpperCase()}
+          {safeGua.fortuneEn.toUpperCase()}
         </text>
         <text x={cx} y={H * 0.88} textAnchor="middle" fill={style.textPrimary}
           fontSize="9" fontFamily={style.fontFamily} letterSpacing="2" opacity="0.6">
@@ -452,23 +452,23 @@ const TalismanPosterV2: React.FC<TalismanPosterV2Props> = (props) => {
         <g transform={`translate(${m + 16}, ${m + 50})`}>
           <text x={0} y={0} fill={style.textSecondary} fontSize="7" fontFamily={style.fontCJK}
             opacity="0.25" writingMode="tb" letterSpacing="2">
-            {gua.element}·{gua.upper}上{gua.lower}下
+            {safeGua.element}·{safeGua.upper}上{safeGua.lower}下
           </text>
         </g>
         <text x={cx} y={m + 72} textAnchor="middle" fill={style.textPrimary}
-          fontSize={gua.nameEn.length > 18 ? 20 : 24} fontFamily={style.fontTitle}
+          fontSize={safeGua.nameEn.length > 18 ? 20 : 24} fontFamily={style.fontTitle}
           fontWeight="bold" letterSpacing="2" filter={`url(#glow-${uid})`} opacity="0.95">
-          {gua.nameEn.toUpperCase()}
+          {safeGua.nameEn.toUpperCase()}
         </text>
         <text x={cx} y={m + 96} textAnchor="middle" fill={style.textSecondary}
           fontSize="12" fontFamily={style.fontCJK} letterSpacing="4" opacity="0.55">
-          {gua.name} · {gua.symbol}
+          {safeGua.name} · {safeGua.symbol}
         </text>
         <line x1={cx - 45} y1={m + 108} x2={cx + 45} y2={m + 108}
           stroke={style.gold} strokeWidth="0.7" strokeOpacity="0.25" />
         <text x={cx} y={H * 0.44} textAnchor="middle" fill={style.textPrimary}
           fontSize="60" fontFamily="serif" opacity="0.85" filter={`url(#glow-${uid})`}>
-          {gua.symbol}
+          {safeGua.symbol}
         </text>
         <SixLines cx={cx} y={H * 0.58} lines={lines} color={style.gold} />
         <foreignObject x={m + 25} y={H * 0.72} width={W - m * 2 - 50} height={H * 0.1}>

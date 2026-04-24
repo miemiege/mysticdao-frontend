@@ -13,7 +13,8 @@ import React, { useEffect, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import type { Variants } from 'framer-motion';
 
-import { PosterStyleName, getStyleConfig } from '@/lib/posterStyles';
+import type { PosterStyleName } from '@/lib/posterStyles';
+import { getStyleConfig } from '@/lib/posterStyles';
 import { getTheme } from '@/lib/theme';
 import type { Gua64 } from '@/data/gua64';
 import type { HexagramTalisman } from '@/data/hexagram-talismans';
@@ -23,6 +24,7 @@ import {
   posterEntranceVariants,
   elementStaggerVariants,
   decorationStaggerVariants,
+  decorationFadeVariants,
   symbolRevealVariants,
   titleRevealVariants,
   subtitleRevealVariants,
@@ -56,12 +58,12 @@ export interface AnimatedPosterWrapperProps {
   /** 动画完成回调 */
   onAnimationComplete?: () => void;
   /** 是否使用水墨揭示效果（ink/vintage 风格） */
-  useInkReveal?: boolean;
+  _useInkReveal?: boolean;
 }
 
 /** 为 motion.svg 子元素选择正确的 variant key */
 function pickVariant(
-  base: Variants,
+  _base: Variants,
   isVisible: boolean,
   reducedMotion: boolean
 ): string {
@@ -81,7 +83,6 @@ export const AnimatedPosterWrapper: React.FC<AnimatedPosterWrapperProps> = ({
   trigger = 0,
   reducedMotion = false,
   onAnimationComplete,
-  useInkReveal = false,
 }) => {
   const config = getStyleConfig(style);
   const theme = getTheme(gua.element);
@@ -133,7 +134,7 @@ export const AnimatedPosterWrapper: React.FC<AnimatedPosterWrapperProps> = ({
   );
 
   // 水墨揭示版本（ink / vintage）
-  const shouldUseInkReveal = useInkReveal && (style === 'ink' || style === 'vintage');
+  // const shouldUseInkReveal = useInkReveal && (style === 'ink' || style === 'vintage');
 
   const posterContent = (
     <>
@@ -277,6 +278,7 @@ export const AnimatedPosterWrapper: React.FC<AnimatedPosterWrapperProps> = ({
           animate={pickVariant(judgmentRevealVariants, isVisible, reducedMotion)}
         >
           <div
+            // @ts-ignore
             xmlns="http://www.w3.org/1999/xhtml"
             style={{
               color: config.textColor,

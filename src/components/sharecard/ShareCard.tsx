@@ -14,7 +14,6 @@ import { cn } from '@/lib/utils'
 import type { Gua64 } from '@/data/gua64'
 import type { HexagramTalisman } from '@/data/hexagram-talismans'
 import type { PosterStyleName } from '@/lib/posterStyles'
-import { POSTER_STYLES } from '@/lib/posterStyles'
 import { TalismanPosterV2 } from '@/components/TalismanPosterV2'
 import { useStyleRecommendation } from '@/hooks/useStyleRecommendation'
 
@@ -60,7 +59,6 @@ export const ShareCard = React.forwardRef<SVGSVGElement, ShareCardProps>(
 
     const { recommendation } = useStyleRecommendation(gua, talisman)
     const effectiveStyle: PosterStyleName = style ?? recommendation.primary
-    const styleConfig = POSTER_STYLES[effectiveStyle]
 
     const ogStyles = useMemo(
       () => ({

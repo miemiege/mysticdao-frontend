@@ -471,7 +471,7 @@ export function getAnimationState(
  * 构建 AnimatePresence 模式下的 variant key 映射
  */
 export function getPresenceAnimationState(
-  isVisible: boolean,
+  _isVisible: boolean,
   prefersReducedMotion: boolean
 ): { initial: string; animate: string; exit: string } {
   if (prefersReducedMotion) {

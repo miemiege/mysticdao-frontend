@@ -16,9 +16,7 @@ import type { Gua64 } from '@/data/gua64';
 import type { HexagramTalisman } from '@/data/hexagram-talismans';
 import {
   styleTransitionVariants,
-  decorationExitVariants,
   textSlideVariants,
-  EASE_OUT_EXPO,
 } from '@/lib/posterAnimations';
 import { AnimatedPosterWrapper } from './AnimatedPosterWrapper';
 
@@ -46,7 +44,7 @@ export interface StyleTransitionProps {
   /** 类名 */
   className?: string;
   /** 是否使用水墨揭示 */
-  useInkReveal?: boolean;
+  _useInkReveal?: boolean;
 }
 
 const overlayVariants = {
@@ -59,7 +57,7 @@ export const StyleTransition: React.FC<StyleTransitionProps> = ({
   gua,
   talisman,
   currentStyle,
-  nextStyle,
+  nextStyle: _nextStyle,
   width = 400,
   height = 600,
   showDecorations = true,
@@ -67,7 +65,7 @@ export const StyleTransition: React.FC<StyleTransitionProps> = ({
   reducedMotion = false,
   onTransitionComplete,
   className,
-  useInkReveal = false,
+  _useInkReveal = false,
 }) => {
   const [displayStyle, setDisplayStyle] = useState(currentStyle);
   const [isTransitioning, setIsTransitioning] = useState(false);
@@ -122,7 +120,7 @@ export const StyleTransition: React.FC<StyleTransitionProps> = ({
           showFilters={showFilters}
           reducedMotion
           trigger={posterKey}
-          useInkReveal={useInkReveal}
+          _useInkReveal={_useInkReveal}
         />
       </div>
     );
@@ -157,7 +155,7 @@ export const StyleTransition: React.FC<StyleTransitionProps> = ({
             showFilters={showFilters}
             reducedMotion={false}
             trigger={posterKey}
-            useInkReveal={useInkReveal}
+            _useInkReveal={_useInkReveal}
           />
         </motion.div>
       </AnimatePresence>

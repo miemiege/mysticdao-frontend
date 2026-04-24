@@ -100,7 +100,6 @@ export const TalismanPosterV2 = React.forwardRef<SVGSVGElement, TalismanPosterV2
         {/* @ts-expect-error xmlns is valid in SVG foreignObject but not in React HTML types */}
         <div xmlns="http://www.w3.org/1999/xhtml" style={{
           color: config.textColor,
-          color: config.textColor,
           fontSize: '12px',
           lineHeight: '1.6',
           fontFamily: config.fontFamilyEn,

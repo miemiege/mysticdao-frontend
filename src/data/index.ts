@@ -82,10 +82,8 @@ export type { Bagua } from './bagua';
 
 // ── 六十四卦 ──
 export {
-  GUA64_LIST, GUA64_MAP,
-  getGua64, getGua64ByNumber, getGua64ByUpperLower,
-  getGua64BySymbol, getGua64ByFortune, getRandomGua64,
-  getGua64ByElement,
+  GUA64_LIST,
+  getGuaByName, getGuaByNumber,
 } from './gua64';
 export type { Gua64 } from './gua64';
 
