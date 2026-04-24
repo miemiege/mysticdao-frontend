@@ -21,7 +21,7 @@ export const CornerOrnament: React.FC<DecorationProps> = ({ x = 0, y = 0, width 
   </g>
 );
 
-export const BorderFrame: React.FC<DecorationProps & { inset?: number }> = ({ x = 0, y = 0, width = 400, height = 600, color = '#C8A45C', opacity = 0.6, inset = 20, filter }) => (
+export const BorderFrame: React.FC<DecorationProps & { inset?: number }> = ({ x = 0, y = 0, width, height, color = '#C8A45C', opacity = 0.6, inset = 20, filter }) => (
   <g opacity={opacity} filter={filter}>
     <rect x={Number(x) + inset} y={Number(y) + inset} width={Number(width) - inset * 2} height={Number(height) - inset * 2} fill="none" stroke={color} strokeWidth="2" rx="4" />
     <rect x={Number(x) + inset + 6} y={Number(y) + inset + 6} width={Number(width) - inset * 2 - 12} height={Number(height) - inset * 2 - 12} fill="none" stroke={color} strokeWidth="0.5" opacity="0.4" rx="2" />
