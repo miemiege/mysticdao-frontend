@@ -82,7 +82,9 @@ function HeroSection() {
       </div>
 
       {/* Layer 3: Mandala */}
-      <MandalaMemo />
+      <div className="absolute inset-0 z-[2] pointer-events-none">
+        <MandalaMemo />
+      </div>
 
       {/* Layer 4: Fog */}
       <motion.div

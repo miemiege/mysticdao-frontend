@@ -10,7 +10,8 @@ import GlobalCounter from '@/components/daily/GlobalCounter';
 import BreathingTypewriter from '@/components/BreathingTypewriter';
 import RollingNumber from '@/components/daily/RollingNumber';
 import HexagramDraw, { type Yao } from '@/components/daily/HexagramDraw';
-import TalismanRenderer from '@/components/talisman/TalismanRenderer';
+import TalismanSVG from '@/components/talisman/TalismanSVG';
+import { getTalismanImage } from '@/data/talisman-images';
 import ShareCard from '@/components/share/ShareCard';
 import { GUA64_LIST } from '@/data/gua64';
 import { getHexagramTalisman } from '@/data/hexagram-talismans';
@@ -387,19 +388,27 @@ const Daily: React.FC = () => {
                       {/* 中央光晕 */}
                       <div className="absolute top-20 left-1/2 -translate-x-1/2 w-[300px] h-[400px] rounded-full blur-3xl pointer-events-none opacity-30" style={{ background: `radial-gradient(circle, ${fortune.card.color}40, transparent 70%)` }} />
 
-                      {/* ── 符咒 ── */}
+                      {/* ── 符咒 - 直接img前置显示 ── */}
                       <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4, duration: 0.8 }} className="flex justify-center mb-8 relative z-10">
                         <motion.div animate={{ y: [0, -6, 0] }} transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}>
-                          <TalismanRenderer
-                            hexagramName={fortune.card.name}
-                            blessingTheme={fortune.card.keyword}
-                            element={(() => { const gua = GUA64_LIST.find((g) => g.name === fortune.card.name); return gua?.element || '金'; })()}
-                            category={(() => { const t = getHexagramTalisman(fortune.card.name); return t.category; })()}
-                            seed={(() => { const gua = GUA64_LIST.find((g) => g.name === fortune.card.name); return gua?.number || 1; })()}
-                            score={fortune.overallScore}
-                            width={300}
-                            height={450}
-                          />
+                          {(() => {
+                            const imgSrc = getTalismanImage(fortune.card.name);
+                            if (imgSrc) {
+                              return <img src={imgSrc} alt={fortune.card.name} className="w-[300px] h-[450px] object-cover rounded-xl" />;
+                            }
+                            return (
+                              <TalismanSVG
+                                hexagramName={fortune.card.name}
+                                blessingTheme={fortune.card.keyword}
+                                element={(() => { const gua = GUA64_LIST.find((g) => g.name === fortune.card.name); return gua?.element || '金'; })()}
+                                category={(() => { const t = getHexagramTalisman(fortune.card.name); return t.category; })()}
+                                seed={(() => { const gua = GUA64_LIST.find((g) => g.name === fortune.card.name); return gua?.number || 1; })()}
+                                score={fortune.overallScore}
+                                width={300}
+                                height={450}
+                              />
+                            );
+                          })()}
                         </motion.div>
                       </motion.div>
 
