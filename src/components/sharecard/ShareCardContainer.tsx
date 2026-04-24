@@ -48,6 +48,8 @@ const styleOptions: { value: PosterStyleName; label: string }[] = [
   { value: 'vintage', label: '复古 Vintage' },
   { value: 'tianshi', label: '天师黄 Tianshi Yellow' },
   { value: 'blackgold', label: '黑金 Black & Gold' },
+  { value: 'cybertao', label: '赛博道 Cyber Tao' },
+  { value: 'zengarden', label: '禅意园 Zen Garden' },
 ]
 
 export const ShareCardContainer: React.FC<ShareCardContainerProps> = ({

@@ -16,6 +16,7 @@ import RollingNumber from '@/components/daily/RollingNumber';
 import HexagramDraw, { type Yao } from '@/components/daily/HexagramDraw';
 import { GUA64_LIST } from '@/data/gua64';
 import { getHexagramTalisman } from '@/data/hexagram-talismans';
+import { POSTER_STYLES, type PosterStyleName } from '@/lib/posterStyles';
 import { useRitualSound } from '@/hooks/useRitualSound';
 import { fetchAIInterpretation } from '@/services/api';
 import { getDailyState, saveDailyState, addHistory, addFavorite, isFavorite } from '@/lib/storage';
@@ -174,6 +175,7 @@ const Daily: React.FC = () => {
   const [showFollowUpButtons, setShowFollowUpButtons] = useState(false);
   const [hexagramDrawn, setHexagramDrawn] = useState(false);
   const [showShareCard, setShowShareCard] = useState(false);
+  const [selectedStyle, setSelectedStyle] = useState<PosterStyleName | null>(null);
 
   // 当前卦象数据（用于智能风格推荐 & 新海报系统）
   const currentGua = useMemo(() =>
@@ -188,6 +190,7 @@ const Daily: React.FC = () => {
     currentGua ?? GUA64_LIST[0],
     currentTalisman
   );
+  const activeStyle = selectedStyle || styleRecommendation.primary;
   const { muted, toggleMute } = useRitualSound();
 
   useEffect(() => {
@@ -515,6 +518,52 @@ const Daily: React.FC = () => {
                       style={{ background: `radial-gradient(circle, ${fortune.card.color}40, transparent 70%)` }}
                     />
 
+                    {/* ── 风格切换器 ── */}
+                    <motion.div
+                      initial={{ opacity: 0, y: -10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: 0.3, duration: 0.5 }}
+                      className="flex justify-center mb-3 relative z-10"
+                    >
+                      <div className="flex items-center gap-2.5 flex-wrap justify-center px-4">
+                        {Object.entries(POSTER_STYLES).map(([key, cfg]) => {
+                          const isActive = activeStyle === key;
+                          const isAiRecommended = styleRecommendation.primary === key && !selectedStyle;
+                          return (
+                            <button
+                              key={key}
+                              onClick={() => setSelectedStyle(key as PosterStyleName)}
+                              className={`group flex flex-col items-center gap-1 transition-all cursor-pointer ${
+                                isActive ? 'scale-110' : 'opacity-60 hover:opacity-100'
+                              }`}
+                              title={cfg.label}
+                            >
+                              <div
+                                className={`w-6 h-6 rounded-full border-2 transition-all ${
+                                  isActive ? 'ring-2 ring-yellow-400/60 ring-offset-2 ring-offset-black' : 'border-white/20'
+                                }`}
+                                style={{ backgroundColor: cfg.bgColor }}
+                              />
+                              <span className={`text-[10px] leading-none whitespace-nowrap ${
+                                isActive ? 'text-yellow-300' : 'text-white/40'
+                              }`}>
+                                {cfg.label}
+                                {isAiRecommended && ' ✨'}
+                              </span>
+                            </button>
+                          );
+                        })}
+                        {selectedStyle && (
+                          <button
+                            onClick={() => setSelectedStyle(null)}
+                            className="text-[10px] text-white/30 hover:text-white/60 ml-1 underline cursor-pointer"
+                          >
+                            恢复AI推荐
+                          </button>
+                        )}
+                      </div>
+                    </motion.div>
+
                     {/* ── 符咒（新版海报 + 智能风格推荐）── */}
                     <motion.div
                       initial={{ opacity: 0, y: 30 }}
@@ -530,7 +579,7 @@ const Daily: React.FC = () => {
                           <TalismanPosterLazy
                             gua={currentGua}
                             talisman={currentTalisman}
-                            style={styleRecommendation.primary}
+                            style={activeStyle}
                             width={300}
                             height={450}
                           />
