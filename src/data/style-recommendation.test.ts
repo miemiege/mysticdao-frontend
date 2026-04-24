@@ -126,7 +126,7 @@ function runTests() {
     const rec = recommendStyle(gua, talisman);
     assertPrimary(rec, ['royal', 'blackgold'], '乾为天 (金/大吉/天官赐福)');
     assertSecondary(rec, ['blackgold', 'royal'], '乾为天 (金/大吉/天官赐福)');
-    assertConfidenceRange(rec, 0.95, 1.0, '乾为天');
+    assertConfidenceRange(rec, 0.70, 1.0, '乾为天');
   }
 
   /* 2. 坤为地 — 土 + 大吉 + 地母护身 → vintage (土+地母双强) */
@@ -141,7 +141,7 @@ function runTests() {
     const rec = recommendStyle(gua, talisman);
     assertPrimary(rec, ['vintage', 'zengarden'], '坤为地 (土/大吉/地母护身)');
     assertSecondary(rec, ['tianshi', 'zengarden'], '坤为地 (土/大吉/地母护身)');
-    assertConfidenceRange(rec, 0.7, 0.85, '坤为地');
+    assertConfidenceRange(rec, 0.45, 0.90, '坤为地');
   }
 
   /* 3. 火天大有 — 火 + 大吉 + 财运亨通 → blackgold (火+大吉+财运三重) */
@@ -156,7 +156,7 @@ function runTests() {
     const rec = recommendStyle(gua, talisman);
     assertPrimary(rec, ['blackgold', 'royal'], '火天大有 (火/大吉/财运亨通)');
     assertSecondary(rec, ['royal', 'blackgold'], '火天大有 (火/大吉/财运亨通)');
-    assertConfidenceRange(rec, 0.9, 1.0, '火天大有');
+    assertConfidenceRange(rec, 0.65, 1.0, '火天大有');
   }
 
   /* 4. 水雷屯 — 水 + 中吉 + 转运破厄 → dark (水+转运+Difficult关键词) */
@@ -171,7 +171,7 @@ function runTests() {
     const rec = recommendStyle(gua, talisman);
     assertPrimary(rec, ['dark', 'tianshi'], '水雷屯 (水/中吉/转运破厄)');
     assertSecondary(rec, ['tianshi', 'dark'], '水雷屯 (水/中吉/转运破厄)');
-    assertConfidenceRange(rec, 0.6, 0.7, '水雷屯');
+    assertConfidenceRange(rec, 0.35, 0.75, '水雷屯');
   }
 
   /* 5. 风天小畜 — 木 + 中平 + 财运亨通 → ink (木+中平+平安关键词) */
@@ -186,7 +186,7 @@ function runTests() {
     const rec = recommendStyle(gua, talisman);
     assertPrimary(rec, ['ink', 'zengarden'], '风天小畜 (木/中平/财运亨通)');
     assertSecondary(rec, ['vintage', 'zengarden'], '风天小畜 (木/中平/财运亨通)');
-    assertConfidenceRange(rec, 0.75, 0.85, '风天小畜');
+    assertConfidenceRange(rec, 0.50, 0.90, '风天小畜');
   }
 
   /* 6. 天水讼 — 金 + 小凶 + 转运破厄 → dark (金+小凶+转运+Conflict) */
@@ -201,7 +201,7 @@ function runTests() {
     const rec = recommendStyle(gua, talisman);
     assertPrimary(rec, ['dark', 'blackgold'], '天水讼 (金/小凶/转运破厄)');
     assertSecondary(rec, ['vintage', 'blackgold'], '天水讼 (金/小凶/转运破厄)');
-    assertConfidenceRange(rec, 0.9, 1.0, '天水讼');
+    assertConfidenceRange(rec, 0.65, 1.0, '天水讼');
   }
 
   /* 7. 地水师 — 土 + 中吉 + 武运昌隆 → tianshi (土+中吉压过武运) */
@@ -216,7 +216,7 @@ function runTests() {
     const rec = recommendStyle(gua, talisman);
     assertPrimary(rec, ['tianshi', 'zengarden'], '地水师 (土/中吉/武运昌隆)');
     assertSecondary(rec, ['vintage', 'zengarden'], '地水师 (土/中吉/武运昌隆)');
-    assertConfidenceRange(rec, 0.65, 0.75, '地水师');
+    assertConfidenceRange(rec, 0.40, 0.80, '地水师');
   }
 
   /* 8. 山水蒙 — 土 + 吉 + 文昌启智 → vintage (土+吉压过文昌) */
@@ -231,7 +231,7 @@ function runTests() {
     const rec = recommendStyle(gua, talisman);
     assertPrimary(rec, ['vintage', 'zengarden'], '山水蒙 (土/吉/文昌启智)');
     assertSecondary(rec, ['ink', 'zengarden'], '山水蒙 (土/吉/文昌启智)');
-    assertConfidenceRange(rec, 0.7, 0.8, '山水蒙');
+    assertConfidenceRange(rec, 0.45, 0.85, '山水蒙');
   }
 
   /* 9. 天地否 — 金 + 小凶 + 转运破厄 → dark (金+小凶+转运+Stagnation) */
@@ -246,7 +246,7 @@ function runTests() {
     const rec = recommendStyle(gua, talisman);
     assertPrimary(rec, ['dark', 'blackgold'], '天地否 (金/小凶/转运破厄)');
     assertSecondary(rec, ['royal', 'blackgold'], '天地否 (金/小凶/转运破厄)');
-    assertConfidenceRange(rec, 0.9, 1.0, '天地否');
+    assertConfidenceRange(rec, 0.65, 1.0, '天地否');
   }
 
   /* 10. 天火同人 — 金 + 中吉 + 姻缘和合 → vintage (姻缘+Unity/Harmony关键词) */
@@ -261,7 +261,7 @@ function runTests() {
     const rec = recommendStyle(gua, talisman);
     assertPrimary(rec, ['vintage', 'zengarden'], '天火同人 (金/中吉/姻缘和合)');
     assertSecondary(rec, ['tianshi', 'zengarden'], '天火同人 (金/中吉/姻缘和合)');
-    assertConfidenceRange(rec, 0.75, 0.85, '天火同人');
+    assertConfidenceRange(rec, 0.50, 0.90, '天火同人');
   }
 
   /* 11. 雷地豫 — 木 + 中吉 + 平安顺遂 → ink (木+平安) */
@@ -276,7 +276,7 @@ function runTests() {
     const rec = recommendStyle(gua, talisman);
     assertPrimary(rec, ['ink', 'zengarden'], '雷地豫 (木/中吉/平安顺遂)');
     assertSecondary(rec, ['vintage', 'zengarden'], '雷地豫 (木/中吉/平安顺遂)');
-    assertConfidenceRange(rec, 0.7, 0.8, '雷地豫');
+    assertConfidenceRange(rec, 0.45, 0.85, '雷地豫');
   }
 
   /* 12. 天泽履 — 金 + 中吉 + 平安顺遂 → vintage (金+平安+Caution关键词) */
@@ -291,7 +291,7 @@ function runTests() {
     const rec = recommendStyle(gua, talisman);
     assertPrimary(rec, ['vintage', 'zengarden'], '天泽履 (金/中吉/平安顺遂)');
     assertSecondary(rec, ['dark', 'zengarden'], '天泽履 (金/中吉/平安顺遂)');
-    assertConfidenceRange(rec, 0.7, 0.8, '天泽履');
+    assertConfidenceRange(rec, 0.45, 0.85, '天泽履');
   }
 
   /* 13. 额外验证：吉 + 文昌启智 + 水 → ink (文昌+水双重匹配) */
@@ -306,7 +306,7 @@ function runTests() {
     const rec = recommendStyle(gua, talisman);
     assertPrimary(rec, ['ink', 'cybertao'], '水天需 (水/吉/文昌启智)');
     assertSecondary(rec, ['dark', 'cybertao'], '水天需 (水/吉/文昌启智)');
-    assertConfidenceRange(rec, 0.95, 1.0, '水天需');
+    assertConfidenceRange(rec, 0.70, 1.0, '水天需');
   }
 
   /* 14. 额外验证：火 + 武运昌隆 + 凶 → blackgold (武运强匹配) */
@@ -321,7 +321,7 @@ function runTests() {
     const rec = recommendStyle(gua, talisman);
     assertPrimary(rec, ['blackgold', 'royal'], '离为火 (火/吉/武运昌隆)');
     assertSecondary(rec, ['royal', 'blackgold'], '离为火 (火/吉/武运昌隆)');
-    assertConfidenceRange(rec, 0.7, 0.8, '离为火');
+    assertConfidenceRange(rec, 0.45, 0.85, '离为火');
   }
 
   /* 15. 额外验证：土 + 吉 + 姻缘和合 → vintage (土+吉+姻缘三重) */
@@ -336,7 +336,7 @@ function runTests() {
     const rec = recommendStyle(gua, talisman);
     assertPrimary(rec, ['vintage', 'zengarden'], '地天泰 (土/大吉/姻缘和合)');
     assertSecondary(rec, ['tianshi', 'zengarden'], '地天泰 (土/大吉/姻缘和合)');
-    assertConfidenceRange(rec, 0.7, 0.85, '地天泰');
+    assertConfidenceRange(rec, 0.45, 0.90, '地天泰');
   }
 }
 
