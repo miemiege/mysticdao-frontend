@@ -1,0 +1,10 @@
+[{"id":1,"user_id":"1","reading_type":"bazi","reading_id":1,"rating":5,"comment":"非常准确！事业建议很有用，已经按照建议调整了工作方向。","tags":"accurate,helpful,career","source_ip_hash":"a1b2c3d4","created_at":"2024-01-16 10:00:00"},
+{"id":2,"user_id":"1","reading_type":"fengshui","reading_id":1,"rating":4,"comment":"客厅布局调整后，家人关系确实改善了不少。","tags":"fengshui,layout,family","source_ip_hash":"a1b2c3d4","created_at":"2024-02-03 09:30:00"},
+{"id":3,"user_id":"2","reading_type":"bazi","reading_id":3,"rating":5,"comment":"海外拓展的建议太及时了，已经签下新加坡客户。","tags":"business,overseas,timing","source_ip_hash":"e5f6g7h8","created_at":"2024-08-12 14:00:00"},
+{"id":4,"user_id":"3","reading_type":"bazi","reading_id":4,"rating":4,"comment":"投资谨慎的建议帮我避开了股市大跌，感谢！","tags":"investment,warning,timely","source_ip_hash":"i9j0k1l2","created_at":"2024-03-12 13:00:00"},
+{"id":5,"user_id":"4","reading_type":"bazi","reading_id":5,"rating":5,"comment":"变动中求发展说得很好，我换了工作，薪资涨了40%。","tags":"career,change,salary","source_ip_hash":"m3n4o5p6","created_at":"2024-07-02 10:00:00"},
+{"id":6,"user_id":"5","reading_type":"fengshui","reading_id":5,"rating":4,"comment":"厨房灶向调整后，做饭心情好多了，神奇。","tags":"kitchen,mood,daily","source_ip_hash":"q7r8s9t0","created_at":"2024-06-23 10:00:00"},
+{"id":7,"user_id":"6","reading_type":"bazi","reading_id":8,"rating":5,"comment":"甲寅大运的转折点说中了，今年确实升职了。","tags":"promotion,career,accurate","source_ip_hash":"u1v2w3x4","created_at":"2024-11-01 09:00:00"},
+{"id":8,"user_id":"7","reading_type":"bazi","reading_id":9,"rating":4,"comment":"学习深造的建议很对，今年考上了研究生。","tags":"education,study,success","source_ip_hash":"y5z6a7b8","created_at":"2024-11-01 10:00:00"},
+{"id":9,"user_id":"8","reading_type":"bazi","reading_id":10,"rating":5,"comment":"晚年运势转好给了我很大信心，开始规划退休生活。","tags":"retirement,planning,hope","source_ip_hash":"c9d0e1f2","created_at":"2024-12-01 11:00:00"},
+{"id":10,"user_id":"2","reading_type":"fengshui","reading_id":2,"rating":4,"comment":"办公室金属书架装好后，工作效率提升明显。","tags":"office,productivity,metal","source_ip_hash":"e5f6g7h8","created_at":"2024-09-11 15:00:00"}]

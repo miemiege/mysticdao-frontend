@@ -1,0 +1,8 @@
+[{"id":3,"user_id":"1","fav_type":"bazi","reading_id":1,"title":"Sarah 八字命盘","note":"我的本命盘，常看","created_at":"2024-01-16 09:00:00"},
+{"id":4,"user_id":"1","fav_type":"fengshui","reading_id":1,"title":"上海客厅风水","note":"搬家前的布局参考","created_at":"2024-02-02 11:00:00"},
+{"id":5,"user_id":"2","fav_type":"bazi","reading_id":3,"title":"James 2024流年","note":"甲辰年运势分析","created_at":"2024-08-11 10:00:00"},
+{"id":6,"user_id":"3","fav_type":"bazi","reading_id":4,"title":"Emma 庚申大运","note":"投资前必看","created_at":"2024-03-11 14:00:00"},
+{"id":7,"user_id":"4","fav_type":"bazi","reading_id":5,"title":"Wei Zhang 命局","note":"甲戌大运变动期","created_at":"2024-03-26 09:00:00"},
+{"id":8,"user_id":"4","fav_type":"fengshui","reading_id":4,"title":"北京大门风水","note":"五帝钱布局方案","created_at":"2024-05-19 10:00:00"},
+{"id":9,"user_id":"6","fav_type":"bazi","reading_id":8,"title":"David Kim 甲寅大运","note":"转折点计划","created_at":"2024-04-29 11:00:00"},
+{"id":10,"user_id":"8","fav_type":"bazi","reading_id":10,"title":"Alex 癸亥大运","note":"退休规划参考","created_at":"2024-05-26 09:00:00"}]
