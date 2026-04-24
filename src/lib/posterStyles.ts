@@ -1,8 +1,8 @@
 /**
- * Poster Styles — 6种海报风格配置系统
+ * Poster Styles — 8种海报风格配置系统
  */
 
-export type PosterStyleName = 'ink' | 'dark' | 'royal' | 'vintage' | 'tianshi' | 'blackgold';
+export type PosterStyleName = 'ink' | 'dark' | 'royal' | 'vintage' | 'tianshi' | 'blackgold' | 'cybertao' | 'zengarden';
 
 export interface PosterStyleConfig {
   name: PosterStyleName;
@@ -137,6 +137,42 @@ export const POSTER_STYLES: Record<PosterStyleName, PosterStyleConfig> = {
     glowIntensity: 0.5,
     goldLeafOpacity: 0.25,
   },
+  cybertao: {
+    name: 'cybertao',
+    label: '赛博道',
+    labelEn: 'Cyber Tao',
+    description: 'Neon Eastern cyberpunk: deep blue-purple-black base with neon cyan/magenta highlights and CRT scanlines',
+    bgColor: '#0A0A1A',
+    bgGradient: 'linear-gradient(135deg, #0A0A1A 0%, #1A0A2E 50%, #0D1B2A 100%)',
+    textColor: '#E0E0E0',
+    accentColor: '#00F5FF',        // 霓虹青
+    borderColor: '#FF00FF',        // 品红
+    borderStyle: 'solid',
+    fontFamily: "'Noto Serif SC', 'Orbitron', monospace",
+    fontFamilyEn: "'Orbitron', 'Cinzel', monospace",
+    sealColor: '#00F5FF',          // 霓虹青印章
+    sealBg: 'rgba(0, 245, 255, 0.1)',
+    noiseOpacity: 0.04,
+    glowIntensity: 0.8,            // 高发光强度
+  },
+  zengarden: {
+    name: 'zengarden',
+    label: '禅意园',
+    labelEn: 'Zen Garden',
+    description: 'Wabi-sabi aesthetics + dry landscape: cream/sand base with ink green/stone gray, generous whitespace',
+    bgColor: '#F5F0E6',
+    bgGradient: 'linear-gradient(135deg, #F5F0E6 0%, #EDE7DB 50%, #E8E2D4 100%)',
+    textColor: '#4A4A4A',
+    accentColor: '#5B7B6F',        // 墨绿
+    borderColor: '#8B9D83',        // 石灰绿
+    borderStyle: 'ornate',
+    fontFamily: "'Noto Serif SC', 'Zen Old Mincho', serif",
+    fontFamilyEn: "'Cinzel', 'Cormorant Garamond', serif",
+    sealColor: '#8B4513',          // 赭石印章
+    sealBg: 'rgba(139, 69, 19, 0.08)',
+    noiseOpacity: 0.02,            // 极低噪点
+    glowIntensity: 0.05,           // 极低光晕
+  },
 };
 
 export const getStyleConfig = (name: PosterStyleName): PosterStyleConfig => POSTER_STYLES[name];
@@ -147,10 +183,12 @@ export const getStyleNames = (): PosterStyleName[] => Object.keys(POSTER_STYLES)
 /* 兼容层 — 旧系统 (src/components/talisman/) 命名与接口映射       */
 /* ================================================================ */
 
-/** 旧系统风格键（长命名） */
-export type StyleKey = 'ink' | 'darkMystic' | 'imperialGold' | 'vintagePrint' | 'taoistYellow' | 'obsidianLux';
+/** 旧系统风格键名 — 包含新增风格的映射键 */
+export type StyleKey = 'ink' | 'darkMystic' | 'imperialGold' | 'vintagePrint' | 'taoistYellow' | 'obsidianLux' | 'cyberTao' | 'zenGarden';
 
-/** 新系统 → 旧系统 风格名称映射表 */
+/** 旧系统原始 6 种风格的子集 */
+export type LegacyStyleKey = 'ink' | 'darkMystic' | 'imperialGold' | 'vintagePrint' | 'taoistYellow' | 'obsidianLux';
+
 export const STYLE_NAME_MAP: Record<PosterStyleName, StyleKey> = {
   ink: 'ink',
   dark: 'darkMystic',
@@ -158,9 +196,10 @@ export const STYLE_NAME_MAP: Record<PosterStyleName, StyleKey> = {
   vintage: 'vintagePrint',
   tianshi: 'taoistYellow',
   blackgold: 'obsidianLux',
+  cybertao: 'cyberTao',
+  zengarden: 'zenGarden',
 };
 
-/** 旧系统 → 新系统 风格名称反向映射表 */
 export const LEGACY_STYLE_NAME_MAP: Record<StyleKey, PosterStyleName> = {
   ink: 'ink',
   darkMystic: 'dark',
@@ -168,171 +207,232 @@ export const LEGACY_STYLE_NAME_MAP: Record<StyleKey, PosterStyleName> = {
   vintagePrint: 'vintage',
   taoistYellow: 'tianshi',
   obsidianLux: 'blackgold',
+  cyberTao: 'cybertao',
+  zenGarden: 'zengarden',
 };
 
-/** 旧系统海报主题配置接口 */
-export interface PosterStyleTheme {
-  key: StyleKey;
-  name: string;
-  nameEn: string;
-  bgPrimary: string;
-  bgSecondary?: string;
-  textPrimary: string;
-  textSecondary: string;
-  accent: string;
+/* ================================================================ */
+/* 旧系统配置 — 兼容原始 6 风格（POSTER_STYLES_LEGACY 对象不新增） */
+/* ================================================================ */
+
+export interface PosterConfig {
+  width: number;
+  height: number;
+  scale: number;
+  bgColor: string;
+  bgGradient?: string;
+  noiseOpacity: number;
+  frameColor: string;
+  frameStyle: 'ornate' | 'simple' | 'none';
+  frameWidth: number;
+  textColor: string;
+  titleFont: string;
+  titleSize: number;
+  titleWeight: string;
+  titleLineHeight: number;
+  bodyFont: string;
+  bodySize: number;
+  bodyLineHeight: number;
+  accentColor: string;
+  glowIntensity: number;
   sealColor: string;
-  borderColor: string;
-  decoColor: string;
-  gold: string;
-  glow: string;
-  textureOpacity: number;
-  borderStyle: 'solid' | 'dashed' | 'dotted' | 'double' | 'ornate' | 'geometric' | 'none';
-  borderRadius: number;
-  fontFamily: string;
-  fontTitle: string;
-  fontCJK: string;
-  decoDensity: number;
-  sealStyle: 'circle' | 'square' | 'oval' | 'rect';
-  textDirection: 'horizontal' | 'vertical' | 'mixed';
-  inspiration: string;
+  sealBg: string;
+  sealShape: 'square' | 'round';
+  sealSize: number;
+  inkWashOpacity?: number;
+  goldLeafOpacity?: number;
 }
 
-/** 旧系统完整风格配置表 */
-export const POSTER_STYLES_LEGACY: Record<StyleKey, PosterStyleTheme> = {
+export interface LegacyStyleConfig {
+  name: StyleKey;
+  label: string;
+  description: string;
+  poster: PosterConfig;
+}
+
+/** 旧系统仅兼容原始 6 种风格 — 新风格通过 STYLE_NAME_MAP / LEGACY_STYLE_NAME_MAP 做双向映射 */
+export const POSTER_STYLES_LEGACY: Record<LegacyStyleKey, LegacyStyleConfig> = {
   ink: {
-    key: 'ink', name: '水墨', nameEn: 'Ink Wash',
-    bgPrimary: '#F5F0EB', bgSecondary: '#E8E0D8',
-    textPrimary: '#2C2C2C', textSecondary: '#6B6560',
-    accent: '#8B7355', sealColor: '#8B0000', borderColor: '#C4B8A8',
-    decoColor: '#B8A898', gold: '#8B7355',
-    glow: 'rgba(139, 115, 85, 0.15)',
-    textureOpacity: 0.08, borderStyle: 'none', borderRadius: 0,
-    fontFamily: "Georgia, 'Noto Serif', serif",
-    fontTitle: "Georgia, 'Playfair Display', serif",
-    fontCJK: "'Noto Serif SC', 'SimSun', serif",
-    decoDensity: 0.2, sealStyle: 'square', textDirection: 'mixed',
-    inspiration: '水墨太极 — 极简留白，东方禅意',
+    name: 'ink',
+    label: '水墨',
+    description: '传统水墨画美学，流动笔触',
+    poster: {
+      width: 750,
+      height: 1200,
+      scale: 1,
+      bgColor: '#F5F0E8',
+      bgGradient: 'linear-gradient(135deg, #F5F0E8 0%, #E8E0D0 100%)',
+      noiseOpacity: 0.03,
+      frameColor: '#3A3A3A',
+      frameStyle: 'ornate',
+      frameWidth: 4,
+      textColor: '#2C2C2C',
+      titleFont: "'Noto Serif SC', serif",
+      titleSize: 36,
+      titleWeight: '600',
+      titleLineHeight: 1.6,
+      bodyFont: "'Noto Serif SC', serif",
+      bodySize: 20,
+      bodyLineHeight: 1.8,
+      accentColor: '#8B0000',
+      glowIntensity: 0.1,
+      sealColor: '#8B0000',
+      sealBg: 'transparent',
+      sealShape: 'square',
+      sealSize: 48,
+      inkWashOpacity: 0.15,
+    },
   },
   darkMystic: {
-    key: 'darkMystic', name: '暗黑神秘', nameEn: 'Dark Mystic',
-    bgPrimary: '#0A0A0F', bgSecondary: '#1A1018',
-    textPrimary: '#D4C5B0', textSecondary: '#8B7D6B',
-    accent: '#8B0000', sealColor: '#DC143C', borderColor: '#3A2525',
-    decoColor: '#5A3A3A', gold: '#B8860B',
-    glow: 'rgba(139, 0, 0, 0.3)',
-    textureOpacity: 0.15, borderStyle: 'ornate', borderRadius: 4,
-    fontFamily: "Georgia, 'Cinzel', serif",
-    fontTitle: "Georgia, 'Cinzel Decorative', serif",
-    fontCJK: "'Noto Serif SC', serif",
-    decoDensity: 0.8, sealStyle: 'oval', textDirection: 'vertical',
-    inspiration: '暗黑佛手印 — 红黑高对比，宗教神秘感',
+    name: 'darkMystic',
+    label: '暗黑',
+    description: '深邃暗影美学，隐微紫蓝',
+    poster: {
+      width: 750,
+      height: 1200,
+      scale: 1,
+      bgColor: '#0A0A0F',
+      bgGradient: 'linear-gradient(135deg, #0A0A0F 0%, #1A1A2E 100%)',
+      noiseOpacity: 0.05,
+      frameColor: '#4A4A6A',
+      frameStyle: 'simple',
+      frameWidth: 2,
+      textColor: '#E0E0E0',
+      titleFont: "'Cinzel', serif",
+      titleSize: 34,
+      titleWeight: '500',
+      titleLineHeight: 1.5,
+      bodyFont: "'Noto Serif SC', serif",
+      bodySize: 18,
+      bodyLineHeight: 1.7,
+      accentColor: '#9D4EDD',
+      glowIntensity: 0.3,
+      sealColor: '#C8A45C',
+      sealBg: 'rgba(200, 164, 92, 0.1)',
+      sealShape: 'round',
+      sealSize: 44,
+    },
   },
   imperialGold: {
-    key: 'imperialGold', name: '皇家金', nameEn: 'Imperial Gold',
-    bgPrimary: '#0A0A00', bgSecondary: '#1A1000',
-    textPrimary: '#D4AF37', textSecondary: '#B8860B',
-    accent: '#DC143C', sealColor: '#DC143C', borderColor: '#8B6914',
-    decoColor: '#6B4226', gold: '#FFD700',
-    glow: 'rgba(212, 175, 55, 0.35)',
-    textureOpacity: 0.12, borderStyle: 'ornate', borderRadius: 8,
-    fontFamily: "Georgia, 'Cinzel', serif",
-    fontTitle: "Georgia, 'Playfair Display', serif",
-    fontCJK: "'Noto Serif SC', 'STKaiti', serif",
-    decoDensity: 0.7, sealStyle: 'square', textDirection: 'vertical',
-    inspiration: '黑底金红符咒 — 莲花线描，红金印章',
+    name: 'imperialGold',
+    label: '皇家金',
+    description: '帝王宫廷美学，金红华贵',
+    poster: {
+      width: 750,
+      height: 1200,
+      scale: 1,
+      bgColor: '#1C0F0A',
+      bgGradient: 'linear-gradient(135deg, #1C0F0A 0%, #2C1810 50%, #1C0F0A 100%)',
+      noiseOpacity: 0.04,
+      frameColor: '#C8A45C',
+      frameStyle: 'ornate',
+      frameWidth: 6,
+      textColor: '#F5E6D3',
+      titleFont: "'Cinzel', 'Playfair Display', serif",
+      titleSize: 38,
+      titleWeight: '600',
+      titleLineHeight: 1.5,
+      bodyFont: "'Noto Serif SC', serif",
+      bodySize: 20,
+      bodyLineHeight: 1.8,
+      accentColor: '#C8A45C',
+      glowIntensity: 0.4,
+      sealColor: '#8B0000',
+      sealBg: 'rgba(200, 164, 92, 0.15)',
+      sealShape: 'square',
+      sealSize: 52,
+      goldLeafOpacity: 0.2,
+    },
   },
   vintagePrint: {
-    key: 'vintagePrint', name: '复古印刷', nameEn: 'Vintage Print',
-    bgPrimary: '#E8DCC8', bgSecondary: '#D4C4A8',
-    textPrimary: '#3A3028', textSecondary: '#6B5D4F',
-    accent: '#8B0000', sealColor: '#8B0000', borderColor: '#5A4A3A',
-    decoColor: '#7A6A5A', gold: '#B8860B',
-    glow: 'rgba(90, 74, 58, 0.1)',
-    textureOpacity: 0.2, borderStyle: 'double', borderRadius: 2,
-    fontFamily: "Georgia, 'Courier New', serif",
-    fontTitle: "Georgia, 'Playfair Display', serif",
-    fontCJK: "'Noto Serif SC', 'FangSong', serif",
-    decoDensity: 0.6, sealStyle: 'rect', textDirection: 'mixed',
-    inspiration: '牛皮纸GOOD LUCK — 中西混排，活字印刷',
+    name: 'vintagePrint',
+    label: '复古',
+    description: '古旧羊皮纸美学，边缘斑驳',
+    poster: {
+      width: 750,
+      height: 1200,
+      scale: 1,
+      bgColor: '#D4C5B0',
+      bgGradient: 'linear-gradient(135deg, #D4C5B0 0%, #C9B8A0 100%)',
+      noiseOpacity: 0.06,
+      frameColor: '#5D4037',
+      frameStyle: 'ornate',
+      frameWidth: 5,
+      textColor: '#3E2723',
+      titleFont: "'Cinzel', 'EB Garamond', serif",
+      titleSize: 32,
+      titleWeight: '500',
+      titleLineHeight: 1.6,
+      bodyFont: "'Noto Serif SC', serif",
+      bodySize: 19,
+      bodyLineHeight: 1.8,
+      accentColor: '#5D4037',
+      glowIntensity: 0.05,
+      sealColor: '#8B0000',
+      sealBg: 'rgba(139, 0, 0, 0.05)',
+      sealShape: 'square',
+      sealSize: 46,
+    },
   },
   taoistYellow: {
-    key: 'taoistYellow', name: '天师黄', nameEn: 'Taoist Yellow',
-    bgPrimary: '#E6B800', bgSecondary: '#D4A800',
-    textPrimary: '#1A1A1A', textSecondary: '#3A3020',
-    accent: '#DC143C', sealColor: '#DC143C', borderColor: '#1A1A1A',
-    decoColor: '#2A2A2A', gold: '#1A1A1A',
-    glow: 'rgba(26, 26, 26, 0.15)',
-    textureOpacity: 0.05, borderStyle: 'geometric', borderRadius: 0,
-    fontFamily: "'Helvetica Neue', Arial, sans-serif",
-    fontTitle: "'Helvetica Neue', 'Arial Black', sans-serif",
-    fontCJK: "'Noto Sans SC', 'Microsoft YaHei', sans-serif",
-    decoDensity: 0.5, sealStyle: 'square', textDirection: 'horizontal',
-    inspiration: '亮黄天师符 — 几何边框，红色大印章',
+    name: 'taoistYellow',
+    label: '天师黄',
+    description: '道符黄纸美学，朱红金黄',
+    poster: {
+      width: 750,
+      height: 1200,
+      scale: 1,
+      bgColor: '#F5E6A3',
+      bgGradient: 'linear-gradient(135deg, #F5E6A3 0%, #EDE0B0 100%)',
+      noiseOpacity: 0.04,
+      frameColor: '#8B0000',
+      frameStyle: 'simple',
+      frameWidth: 3,
+      textColor: '#8B0000',
+      titleFont: "'Noto Serif SC', 'KaiTi', serif",
+      titleSize: 36,
+      titleWeight: '600',
+      titleLineHeight: 1.6,
+      bodyFont: "'Noto Serif SC', serif",
+      bodySize: 20,
+      bodyLineHeight: 1.8,
+      accentColor: '#D4AF37',
+      glowIntensity: 0.15,
+      sealColor: '#8B0000',
+      sealBg: 'rgba(212, 175, 55, 0.15)',
+      sealShape: 'square',
+      sealSize: 50,
+    },
   },
   obsidianLux: {
-    key: 'obsidianLux', name: '黑金高级', nameEn: 'Obsidian Lux',
-    bgPrimary: '#080808', bgSecondary: '#121212',
-    textPrimary: '#D4AF37', textSecondary: '#8B7355',
-    accent: '#FFD700', sealColor: '#8B0000', borderColor: '#D4AF37',
-    decoColor: '#B8860B', gold: '#FFD700',
-    glow: 'rgba(212, 175, 55, 0.4)',
-    textureOpacity: 0.18, borderStyle: 'solid', borderRadius: 12,
-    fontFamily: "Georgia, 'Cinzel', serif",
-    fontTitle: "Georgia, 'Playfair Display', serif",
-    fontCJK: "'Noto Serif SC', 'STKaiti', serif",
-    decoDensity: 0.5, sealStyle: 'circle', textDirection: 'vertical',
-    inspiration: '黑金上上签 — 金箔渐变，云纹装饰',
+    name: 'obsidianLux',
+    label: '黑金',
+    description: '现代奢华美学，哑黑金属金对比',
+    poster: {
+      width: 750,
+      height: 1200,
+      scale: 1,
+      bgColor: '#0D0D0D',
+      bgGradient: 'linear-gradient(135deg, #0D0D0D 0%, #1A1A1A 50%, #0D0D0D 100%)',
+      noiseOpacity: 0.03,
+      frameColor: '#D4AF37',
+      frameStyle: 'simple',
+      frameWidth: 2,
+      textColor: '#FFFFFF',
+      titleFont: "'Cinzel', 'Playfair Display', serif",
+      titleSize: 38,
+      titleWeight: '600',
+      titleLineHeight: 1.4,
+      bodyFont: "'Noto Serif SC', serif",
+      bodySize: 20,
+      bodyLineHeight: 1.8,
+      accentColor: '#D4AF37',
+      glowIntensity: 0.5,
+      sealColor: '#D4AF37',
+      sealBg: 'rgba(212, 175, 55, 0.1)',
+      sealShape: 'round',
+      sealSize: 48,
+      goldLeafOpacity: 0.25,
+    },
   },
-};
-
-/** 旧系统兼容：获取风格配置 */
-export const getPosterStyle = (styleKey: StyleKey): PosterStyleTheme => POSTER_STYLES_LEGACY[styleKey];
-
-/** 旧系统兼容：印章信息接口 */
-export interface SealInfo {
-  text: string;
-  textCn: string;
-  color: string;
-  shape: 'circle' | 'square' | 'oval' | 'rect';
-  size: number;
-  fontSize: number;
-}
-
-/** 旧系统兼容：获取印章信息 */
-export const getSealInfo = (score: number, style: StyleKey): SealInfo => {
-  const base = score >= 90 ? { text: 'GREAT\nFORTUNE', textCn: '上上签', fontSize: 11 }
-    : score >= 80 ? { text: 'FORTUNE', textCn: '上吉', fontSize: 12 }
-    : score >= 70 ? { text: 'GOOD', textCn: '中吉', fontSize: 13 }
-    : score >= 60 ? { text: 'FAIR', textCn: '小吉', fontSize: 12 }
-    : score >= 50 ? { text: 'NEUTRAL', textCn: '平', fontSize: 13 }
-    : { text: 'CAUTION', textCn: '需谨慎', fontSize: 11 };
-
-  const shapeMap: Record<StyleKey, SealInfo['shape']> = {
-    ink: 'square', darkMystic: 'oval', imperialGold: 'square',
-    vintagePrint: 'rect', taoistYellow: 'square', obsidianLux: 'circle',
-  };
-
-  const colorMap: Record<StyleKey, string> = {
-    ink: '#8B0000', darkMystic: '#DC143C', imperialGold: '#DC143C',
-    vintagePrint: '#8B0000', taoistYellow: '#DC143C', obsidianLux: '#8B0000',
-  };
-
-  return {
-    ...base,
-    color: colorMap[style],
-    shape: shapeMap[style],
-    size: score >= 90 ? 52 : score >= 80 ? 48 : score >= 70 ? 44 : score >= 60 ? 42 : score >= 50 ? 40 : 42,
-  };
-};
-
-/** 旧系统兼容：根据五行与风格获取颜色 */
-export const getElementColor = (element: string, style: StyleKey): string => {
-  const colorMap: Record<string, Record<StyleKey, string>> = {
-    '金': { ink: '#8B7355', darkMystic: '#B8860B', imperialGold: '#D4AF37', vintagePrint: '#B8860B', taoistYellow: '#1A1A1A', obsidianLux: '#D4AF37' },
-    '木': { ink: '#5A7A5A', darkMystic: '#4A7C59', imperialGold: '#6B9E7A', vintagePrint: '#4A6A4A', taoistYellow: '#1A1A1A', obsidianLux: '#6B9E7A' },
-    '水': { ink: '#5A7A8A', darkMystic: '#4A708A', imperialGold: '#5A9AAA', vintagePrint: '#4A6A8A', taoistYellow: '#1A1A1A', obsidianLux: '#5A9AAA' },
-    '火': { ink: '#A0522D', darkMystic: '#B22222', imperialGold: '#FF6347', vintagePrint: '#8B4513', taoistYellow: '#1A1A1A', obsidianLux: '#FF6347' },
-    '土': { ink: '#8B7355', darkMystic: '#8B7355', imperialGold: '#D4A76A', vintagePrint: '#8B7355', taoistYellow: '#1A1A1A', obsidianLux: '#D4A76A' },
-  };
-  return colorMap[element]?.[style] || colorMap['金'][style];
 };

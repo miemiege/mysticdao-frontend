@@ -1,11 +1,12 @@
 /**
- * TalismanPosterV2 — 符咒分享海报主组件（纯SVG、6种风格模板）
+ * TalismanPosterV2 — 符咒分享海报主组件（纯SVG、8种风格模板）
  *
  * 特性：
- * - 6种模板：水墨(ink)/暗黑(dark)/皇家金(royal)/复古(vintage)/天师黄(tianshi)/黑金(blackgold)
+ * - 8种模板：水墨(ink)/暗黑(dark)/皇家金(royal)/复古(vintage)/天师黄(tianshi)/黑金(blackgold)/赛博道(cybertao)/禅意园(zengarden)
  * - 纯SVG零外部图片
  * - 英文为主中文为辅
  * - html2canvas兼容（所有样式通过属性内联，避免CSS类名丢失）
+ * - 条件滤镜：CyberTao霓虹发光 + CRT扫描线 | ZenGarden苔藓光晕 + 沙质纹理
  */
 import React from 'react';
 import type { PosterStyleName } from '@/lib/posterStyles';
@@ -27,6 +28,23 @@ export interface TalismanPosterV2Props {
   className?: string;
 }
 
+/** 获取风格特定的滤镜属性 */
+function getTextFilter(style: PosterStyleName): string | undefined {
+  if (style === 'cybertao') return 'url(#poster-neon)';
+  return undefined;
+}
+
+function getDecorFilter(style: PosterStyleName): string | undefined {
+  if (style === 'zengarden') return 'url(#poster-moss)';
+  if (style === 'cybertao') return 'url(#poster-crt)';
+  return undefined;
+}
+
+function getBgFilter(style: PosterStyleName): string | undefined {
+  if (style === 'zengarden') return 'url(#poster-sand)';
+  return undefined;
+}
+
 export const TalismanPosterV2 = React.forwardRef<SVGSVGElement, TalismanPosterV2Props>(({
   gua,
   talisman,
@@ -45,6 +63,9 @@ export const TalismanPosterV2 = React.forwardRef<SVGSVGElement, TalismanPosterV2
   })();
 
   const sealText = score >= 80 ? '上吉' : score >= 60 ? '中吉' : '需谨慎';
+  const textFilter = getTextFilter(style);
+  const decorFilter = getDecorFilter(style);
+  const bgFilter = getBgFilter(style);
 
   return (
     <svg
@@ -56,7 +77,7 @@ export const TalismanPosterV2 = React.forwardRef<SVGSVGElement, TalismanPosterV2
       className={className}
       style={{ fontFamily: config.fontFamilyEn }}
       data-poster-style={style}
-      data-poster-version="2.0"
+      data-poster-version="2.1"
     >
       {showFilters && <PosterFilters />}
 
@@ -66,19 +87,52 @@ export const TalismanPosterV2 = React.forwardRef<SVGSVGElement, TalismanPosterV2
         <rect width={width} height={height} fill={config.bgGradient} opacity={0.9} />
       )}
 
+      {/* ZenGarden 沙质纹理背景层 */}
+      {bgFilter && (
+        <rect width={width} height={height} fill={config.bgColor} filter={bgFilter} opacity={0.4} />
+      )}
+
       {/* 噪点纹理层 */}
       <rect width={width} height={height} fill="transparent" filter="url(#poster-noise)" opacity={config.noiseOpacity} style={{ mixBlendMode: 'overlay' }} />
 
-      {/* 装饰层 */}
-      {showDecorations && <PosterDecorations style={style} />}
+      {/* CyberTao CRT 扫描线叠加层 */}
+      {style === 'cybertao' && (
+        <rect width={width} height={height} fill="transparent" filter="url(#poster-crt)" opacity={0.12} style={{ mixBlendMode: 'overlay', pointerEvents: 'none' }} />
+      )}
 
-      {/* 卦象符号 */}
-      <text x={width / 2} y={90} textAnchor="middle" fill={config.textColor} fontSize={56} fontFamily="'Noto Serif SC', serif" opacity={0.9}>
+      {/* 装饰层（带条件滤镜） */}
+      {showDecorations && (
+        <g filter={decorFilter}>
+          <PosterDecorations style={style} />
+        </g>
+      )}
+
+      {/* 卦象符号（CyberTao带霓虹发光） */}
+      <text
+        x={width / 2}
+        y={90}
+        textAnchor="middle"
+        fill={config.textColor}
+        fontSize={56}
+        fontFamily="'Noto Serif SC', serif"
+        opacity={0.9}
+        filter={textFilter}
+      >
         {gua.symbol}
       </text>
 
-      {/* 英文卦名 */}
-      <text x={width / 2} y={135} textAnchor="middle" fill={config.accentColor} fontSize={18} fontFamily={config.fontFamilyEn} fontWeight="600" letterSpacing="2">
+      {/* 英文卦名（CyberTao带霓虹发光） */}
+      <text
+        x={width / 2}
+        y={135}
+        textAnchor="middle"
+        fill={config.accentColor}
+        fontSize={18}
+        fontFamily={config.fontFamilyEn}
+        fontWeight="600"
+        letterSpacing="2"
+        filter={textFilter}
+      >
         {gua.nameEn.toUpperCase()}
       </text>
 
@@ -90,8 +144,18 @@ export const TalismanPosterV2 = React.forwardRef<SVGSVGElement, TalismanPosterV2
       {/* 分隔线 */}
       <line x1={width / 2 - 60} y1={185} x2={width / 2 + 60} y2={185} stroke={config.borderColor} strokeWidth="1" opacity={0.5} />
 
-      {/* 祈福主题 */}
-      <text x={width / 2} y={215} textAnchor="middle" fill={config.accentColor} fontSize={13} fontFamily={config.fontFamilyEn} letterSpacing="1" opacity={0.8}>
+      {/* 祈福主题（CyberTao带霓虹发光） */}
+      <text
+        x={width / 2}
+        y={215}
+        textAnchor="middle"
+        fill={config.accentColor}
+        fontSize={13}
+        fontFamily={config.fontFamilyEn}
+        letterSpacing="1"
+        opacity={0.8}
+        filter={textFilter}
+      >
         {talisman.blessingTheme}
       </text>
 
@@ -114,8 +178,8 @@ export const TalismanPosterV2 = React.forwardRef<SVGSVGElement, TalismanPosterV2
         </div>
       </foreignObject>
 
-      {/* 关键词 */}
-      <g transform={`translate(${width / 2}, ${height - 180})`}>
+      {/* 关键词（CyberTao带霓虹发光） */}
+      <g transform={`translate(${width / 2}, ${height - 180})`} filter={textFilter}>
         {gua.keywordsEn.slice(0, 3).map((kw, i) => (
           <text key={kw} x={(i - 1) * 70} y={0} textAnchor="middle" fill={config.accentColor} fontSize={10} fontFamily={config.fontFamilyEn} letterSpacing="1" opacity={0.7}>
             {kw.toUpperCase()}

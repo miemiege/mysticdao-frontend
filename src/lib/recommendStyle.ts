@@ -32,30 +32,32 @@ const STYLE_ELEMENTS: Record<PosterStyleName, string[]> = {
   vintage: ['土', '金'],
   tianshi: ['土', '火'],
   blackgold: ['金', '火'],
+  cybertao: ['水', '金'],
+  zengarden: ['木', '土'],
 };
 
 /** 运势 → 风格得分映射 (0~1) */
 const FORTUNE_SCORES: Record<string, Partial<Record<PosterStyleName, number>>> = {
-  '大吉': { royal: 1.0, blackgold: 1.0, ink: 0.3, vintage: 0.3 },
-  '吉': { ink: 1.0, vintage: 1.0, royal: 0.3, blackgold: 0.2 },
-  '中吉': { tianshi: 1.0, ink: 0.5, vintage: 0.3 },
-  '中平': { ink: 1.0, vintage: 1.0, tianshi: 0.5 },
-  '小凶': { dark: 1.0, tianshi: 0.3 },
-  '凶': { dark: 1.0, tianshi: 0.3 },
-  '大凶': { dark: 1.0, tianshi: 0.3, blackgold: 0.3 },
-  '转运': { tianshi: 1.0, blackgold: 1.0, dark: 0.5 },
+  '大吉': { royal: 1.0, blackgold: 1.0, ink: 0.3, vintage: 0.3, cybertao: 0.8, zengarden: 0.5 },
+  '吉': { ink: 1.0, vintage: 1.0, royal: 0.3, blackgold: 0.2, cybertao: 0.3, zengarden: 0.8 },
+  '中吉': { tianshi: 1.0, ink: 0.5, vintage: 0.3, cybertao: 0.3, zengarden: 0.8 },
+  '中平': { ink: 1.0, vintage: 1.0, tianshi: 0.5, cybertao: 0.2, zengarden: 1.0 },
+  '小凶': { dark: 1.0, tianshi: 0.3, cybertao: 0.5, zengarden: 0.5 },
+  '凶': { dark: 1.0, tianshi: 0.3, cybertao: 0.3, zengarden: 0.8 },
+  '大凶': { dark: 1.0, tianshi: 0.3, blackgold: 0.3, cybertao: 0.3, zengarden: 0.5 },
+  '转运': { tianshi: 1.0, blackgold: 1.0, dark: 0.5, cybertao: 0.8, zengarden: 0.8 },
 };
 
 /** 符咒分类 → 风格得分映射 */
 const CATEGORY_SCORES: Record<TalismanCategory, Partial<Record<PosterStyleName, number>>> = {
-  '天官赐福': { royal: 1.0, blackgold: 0.3 },
-  '地母护身': { vintage: 1.0, tianshi: 0.3 },
-  '文昌启智': { ink: 1.0, vintage: 0.3 },
-  '财运亨通': { blackgold: 1.0, royal: 0.7 },
-  '姻缘和合': { vintage: 1.0, tianshi: 0.7 },
-  '平安顺遂': { ink: 1.0, vintage: 0.7 },
-  '武运昌隆': { blackgold: 1.0, dark: 0.7 },
-  '转运破厄': { tianshi: 1.0, dark: 0.8 },
+  '天官赐福': { royal: 1.0, blackgold: 0.3, cybertao: 0.5, zengarden: 0.3 },
+  '地母护身': { vintage: 1.0, tianshi: 0.3, cybertao: 0.2, zengarden: 0.8 },
+  '文昌启智': { ink: 1.0, vintage: 0.3, cybertao: 0.8, zengarden: 0.5 },
+  '财运亨通': { blackgold: 1.0, royal: 0.7, cybertao: 0.8, zengarden: 0.2 },
+  '姻缘和合': { vintage: 1.0, tianshi: 0.7, cybertao: 0.2, zengarden: 0.8 },
+  '平安顺遂': { ink: 1.0, vintage: 0.7, cybertao: 0.2, zengarden: 1.0 },
+  '武运昌隆': { blackgold: 1.0, dark: 0.7, cybertao: 0.8, zengarden: 0.2 },
+  '转运破厄': { tianshi: 1.0, dark: 0.8, cybertao: 0.7, zengarden: 0.7 },
 };
 
 /** 英文关键词 → 目标风格映射 (用于语义匹配) */
@@ -84,6 +86,14 @@ const KEYWORD_GROUPS: { keywords: string[]; styles: PosterStyleName[] }[] = [
     keywords: ['New', 'Birth', 'Rebirth', 'Transformation', 'Renewal', 'Change', 'Hope', 'Recovery'],
     styles: ['tianshi'],
   },
+  {
+    keywords: ['Technology', 'Digital', 'Energy', 'Future', 'Electric', 'Power', 'Force', 'Network', 'Cyber', 'Modern', 'Innovation', 'Dynamic', 'Rapid', 'Fast', 'Speed'],
+    styles: ['cybertao'],
+  },
+  {
+    keywords: ['Calm', 'Peace', 'Nature', 'Stillness', 'Meditation', 'Quiet', 'Gentle', 'Soft', 'Tranquil', 'Serene', 'Flow', 'Balance', 'Harmony', 'Rest', 'Patience'],
+    styles: ['zengarden'],
+  },
 ];
 
 /** 维度权重 */
@@ -94,7 +104,7 @@ const WEIGHTS = {
   keyword: 0.10,
 };
 
-const ALL_STYLES: PosterStyleName[] = ['ink', 'dark', 'royal', 'vintage', 'tianshi', 'blackgold'];
+const ALL_STYLES: PosterStyleName[] = ['ink', 'dark', 'royal', 'vintage', 'tianshi', 'blackgold', 'cybertao', 'zengarden'];
 
 /* ------------------------------------------------------------------ */
 /* 2. 评分函数                                                        */
@@ -120,7 +130,6 @@ function scoreKeywords(style: PosterStyleName, keywordsEn: string[]): number {
       group.keywords.some(gk => kw.toLowerCase().includes(gk.toLowerCase()) || gk.toLowerCase().includes(kw.toLowerCase()))
     );
     if (hasMatch) {
-      // 主风格 1.0，次风格 0.5
       best = Math.max(best, group.styles[0] === style ? 1.0 : 0.5);
     }
   }
@@ -213,6 +222,18 @@ const REASON_TEMPLATES: Record<
     fortune: ['Black & gold commands the {fortune} fortune with bold authority', '黑金风格以 bold 权威驾驭{fortune}运势'],
     category: ['Black & gold drives the {category} blessing theme', '黑金风格驱动{category}的祈福主题'],
     keyword: ['Black & gold channels the strength and power in the keywords', '黑金风格引导关键词中的力量与权能'],
+  },
+  cybertao: {
+    element: ['Cyber Tao channels the {element} element through digital energy', '赛博道风格以数字能量传导{element}行'],
+    fortune: ['Cyber Tao illuminates the {fortune} fortune with neon clarity', '赛博道风格以霓虹光芒照亮{fortune}运势'],
+    category: ['Cyber Tao empowers the {category} blessing with tech vitality', '赛博道风格以科技活力赋能{category}'],
+    keyword: ['Cyber Tao resonates with the dynamic energy in the keywords', '赛博道风格与关键词中的动感能量共鸣'],
+  },
+  zengarden: {
+    element: ['Zen Garden reflects the {element} element in serene balance', '禅意园风格以宁静平衡映照{element}行'],
+    fortune: ['Zen Garden embraces the {fortune} fortune with mindful calm', '禅意园风格以正念平静拥抱{fortune}运势'],
+    category: ['Zen Garden nurtures the {category} blessing with natural harmony', '禅意园风格以自然和谐滋养{category}'],
+    keyword: ['Zen Garden embodies the stillness and peace in the keywords', '禅意园风格体现关键词中的宁静与和平'],
   },
 };
 
