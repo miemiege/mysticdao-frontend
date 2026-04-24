@@ -8,8 +8,10 @@
  * - SVG 内部样式全部内联（html2canvas 兼容）
  * - 外层包装使用 Tailwind CSS
  */
-import React, { useMemo } from 'react'
+import React, { useMemo, useState, useCallback } from 'react'
 import { cn } from '@/lib/utils'
+import { Button } from '@/components/ui/button'
+import { Twitter, Link, MessageCircle, Check } from 'lucide-react'
 
 import type { Gua64 } from '@/data/gua64'
 import type { HexagramTalisman } from '@/data/hexagram-talismans'
@@ -107,6 +109,60 @@ export const ShareCard = React.forwardRef<SVGSVGElement, ShareCardProps>(
       [size, width]
     )
 
+    const shareText = useMemo(() => {
+      return `Today's I Ching Hexagram: ${gua.name} (${gua.nameEn}) — ${talisman.blessingTheme} 🌟 Draw your daily oracle at MYSTIC DAO`
+    }, [gua, talisman])
+
+    const shareUrl = useMemo(() => {
+      return typeof window !== 'undefined' ? window.location.href : 'https://mysticdao.xyz'
+    }, [])
+
+    const [copied, setCopied] = useState(false)
+
+    const handleShareTwitter = useCallback(() => {
+      const text = encodeURIComponent(shareText)
+      window.open(`https://twitter.com/intent/tweet?text=${text}`, '_blank', 'noopener,noreferrer')
+    }, [shareText])
+
+    const handleCopyLink = useCallback(async () => {
+      try {
+        await navigator.clipboard.writeText(shareUrl)
+        setCopied(true)
+        setTimeout(() => setCopied(false), 2000)
+      } catch {
+        const textarea = document.createElement('textarea')
+        textarea.value = shareUrl
+        textarea.style.position = 'fixed'
+        textarea.style.opacity = '0'
+        document.body.appendChild(textarea)
+        textarea.select()
+        document.execCommand('copy')
+        document.body.removeChild(textarea)
+        setCopied(true)
+        setTimeout(() => setCopied(false), 2000)
+      }
+    }, [shareUrl])
+
+    const handleShareWhatsApp = useCallback(() => {
+      const text = encodeURIComponent(shareText)
+      window.open(`https://wa.me/?text=${text}`, '_blank', 'noopener,noreferrer')
+    }, [shareText])
+
+    const shareStyles = useMemo(
+      () => ({
+        shareBar: {
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          gap: '8px',
+          padding: '10px 16px',
+          backgroundColor: '#1a1a1a',
+          borderTop: '1px solid rgba(255,255,255,0.06)',
+        } as React.CSSProperties,
+      }),
+      []
+    )
+
     return (
       <div
         className={cn(
@@ -131,28 +187,61 @@ export const ShareCard = React.forwardRef<SVGSVGElement, ShareCardProps>(
 
         {/* Open Graph 元数据模拟层 */}
         {showMetadata && (
-          <div style={ogStyles.metadataBar} className="flex items-center gap-3">
-            <div style={ogStyles.ogImagePlaceholder}>
-              <span role="img" aria-label="talisman">
-                {gua.symbol}
-              </span>
+          <>
+            <div style={ogStyles.metadataBar} className="flex items-center gap-3">
+              <div style={ogStyles.ogImagePlaceholder}>
+                <span role="img" aria-label="talisman">
+                  {gua.symbol}
+                </span>
+              </div>
+              <div className="min-w-0 flex-1">
+                <div style={ogStyles.ogTitle}>{displayTitle}</div>
+                <div style={ogStyles.ogDesc}>{displayDesc}</div>
+              </div>
+              <div
+                style={{
+                  fontSize: '10px',
+                  opacity: 0.4,
+                  textTransform: 'uppercase' as const,
+                  letterSpacing: '1px',
+                  flexShrink: 0,
+                }}
+              >
+                MYSTIC DAO
+              </div>
             </div>
-            <div className="min-w-0 flex-1">
-              <div style={ogStyles.ogTitle}>{displayTitle}</div>
-              <div style={ogStyles.ogDesc}>{displayDesc}</div>
+
+            {/* 一键分享按钮栏 */}
+            <div style={shareStyles.shareBar}>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={handleShareTwitter}
+                className="h-7 gap-1.5 px-2.5 text-xs text-white/70 hover:bg-white/10 hover:text-white"
+              >
+                <Twitter className="size-3.5" />
+                <span>Twitter</span>
+              </Button>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={handleCopyLink}
+                className="h-7 gap-1.5 px-2.5 text-xs text-white/70 hover:bg-white/10 hover:text-white"
+              >
+                {copied ? <Check className="size-3.5 text-emerald-400" /> : <Link className="size-3.5" />}
+                <span>{copied ? 'Copied' : 'Copy Link'}</span>
+              </Button>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={handleShareWhatsApp}
+                className="h-7 gap-1.5 px-2.5 text-xs text-white/70 hover:bg-white/10 hover:text-white"
+              >
+                <MessageCircle className="size-3.5" />
+                <span>WhatsApp</span>
+              </Button>
             </div>
-            <div
-              style={{
-                fontSize: '10px',
-                opacity: 0.4,
-                textTransform: 'uppercase' as const,
-                letterSpacing: '1px',
-                flexShrink: 0,
-              }}
-            >
-              MYSTIC DAO
-            </div>
-          </div>
+          </>
         )}
       </div>
     )

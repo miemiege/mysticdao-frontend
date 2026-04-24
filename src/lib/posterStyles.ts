@@ -19,6 +19,7 @@ export interface PosterStyleConfig {
   fontFamilyEn: string;
   sealColor: string;
   sealBg: string;
+  footerColor: string;
   noiseOpacity: number;
   glowIntensity: number;
   inkWashOpacity?: number;
@@ -41,6 +42,7 @@ export const POSTER_STYLES: Record<PosterStyleName, PosterStyleConfig> = {
     fontFamilyEn: "'Cinzel', 'Noto Serif SC', serif",
     sealColor: '#8B0000',
     sealBg: 'transparent',
+    footerColor: '#2C2C2C',
     noiseOpacity: 0.03,
     glowIntensity: 0.1,
     inkWashOpacity: 0.15,
@@ -60,6 +62,7 @@ export const POSTER_STYLES: Record<PosterStyleName, PosterStyleConfig> = {
     fontFamilyEn: "'Cinzel', serif",
     sealColor: '#C8A45C',
     sealBg: 'rgba(200, 164, 92, 0.1)',
+    footerColor: '#E0E0E0',
     noiseOpacity: 0.05,
     glowIntensity: 0.3,
   },
@@ -78,6 +81,7 @@ export const POSTER_STYLES: Record<PosterStyleName, PosterStyleConfig> = {
     fontFamilyEn: "'Cinzel', 'Playfair Display', serif",
     sealColor: '#8B0000',
     sealBg: 'rgba(200, 164, 92, 0.15)',
+    footerColor: '#F5E6D3',
     noiseOpacity: 0.04,
     glowIntensity: 0.4,
     goldLeafOpacity: 0.2,
@@ -97,6 +101,7 @@ export const POSTER_STYLES: Record<PosterStyleName, PosterStyleConfig> = {
     fontFamilyEn: "'Cinzel', 'EB Garamond', serif",
     sealColor: '#8B0000',
     sealBg: 'rgba(139, 0, 0, 0.05)',
+    footerColor: '#3E2723',
     noiseOpacity: 0.06,
     glowIntensity: 0.05,
   },
@@ -115,6 +120,7 @@ export const POSTER_STYLES: Record<PosterStyleName, PosterStyleConfig> = {
     fontFamilyEn: "'Cinzel', serif",
     sealColor: '#8B0000',
     sealBg: 'rgba(212, 175, 55, 0.15)',
+    footerColor: '#8B0000',
     noiseOpacity: 0.04,
     glowIntensity: 0.15,
   },
@@ -133,6 +139,7 @@ export const POSTER_STYLES: Record<PosterStyleName, PosterStyleConfig> = {
     fontFamilyEn: "'Cinzel', 'Playfair Display', serif",
     sealColor: '#D4AF37',
     sealBg: 'rgba(212, 175, 55, 0.1)',
+    footerColor: '#FFFFFF',
     noiseOpacity: 0.03,
     glowIntensity: 0.5,
     goldLeafOpacity: 0.25,
@@ -152,6 +159,7 @@ export const POSTER_STYLES: Record<PosterStyleName, PosterStyleConfig> = {
     fontFamilyEn: "'Orbitron', 'Cinzel', monospace",
     sealColor: '#00F5FF',          // 霓虹青印章
     sealBg: 'rgba(0, 245, 255, 0.1)',
+    footerColor: '#E0E0E0',
     noiseOpacity: 0.04,
     glowIntensity: 0.8,            // 高发光强度
   },
@@ -170,6 +178,7 @@ export const POSTER_STYLES: Record<PosterStyleName, PosterStyleConfig> = {
     fontFamilyEn: "'Cinzel', 'Cormorant Garamond', serif",
     sealColor: '#8B4513',          // 赭石印章
     sealBg: 'rgba(139, 69, 19, 0.08)',
+    footerColor: '#4A4A4A',
     noiseOpacity: 0.02,            // 极低噪点
     glowIntensity: 0.05,           // 极低光晕
   },

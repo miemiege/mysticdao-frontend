@@ -25,6 +25,7 @@ export interface TalismanPosterV2Props {
   height?: number;
   showDecorations?: boolean;
   showFilters?: boolean;
+  showFooter?: boolean;
   className?: string;
 }
 
@@ -70,6 +71,7 @@ export const TalismanPosterV2 = React.forwardRef<SVGSVGElement, TalismanPosterV2
   height = 600,
   showDecorations = true,
   showFilters = true,
+  showFooter = true,
   className,
 }, ref) => {
   const config = getStyleConfig(style);
@@ -222,9 +224,25 @@ export const TalismanPosterV2 = React.forwardRef<SVGSVGElement, TalismanPosterV2
       </g>
 
       {/* 底部品牌 */}
-      <text x={width / 2} y={height - 20} textAnchor="middle" fill={config.textColor} fontSize={8} fontFamily={config.fontFamilyEn} letterSpacing="3" opacity={0.4}>
+      <text x={width / 2} y={height - 28} textAnchor="middle" fill={config.textColor} fontSize={8} fontFamily={config.fontFamilyEn} letterSpacing="3" opacity={0.4}>
         MYSTIC DAO
       </text>
+
+      {/* 社交货币 Footer */}
+      {showFooter && (
+        <text
+          x={width / 2}
+          y={height - 12}
+          textAnchor="middle"
+          fill={config.footerColor}
+          fontSize={8}
+          fontFamily={config.fontFamilyEn}
+          letterSpacing="1"
+          opacity={0.3}
+        >
+          MYSTIC DAO · 1 of 64 Hexagrams · Your Daily Oracle
+        </text>
+      )}
     </svg>
   );
 });
