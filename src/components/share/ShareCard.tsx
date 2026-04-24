@@ -2,6 +2,7 @@ import React, { useRef, useState } from 'react';
 import { motion } from 'framer-motion';
 import { X, Download, Globe, Instagram, Twitter, MessageCircle, Share2 } from 'lucide-react';
 import { PLATFORM_LIST, type PlatformKey } from '@/lib/share-platforms';
+import { getTalismanImage } from '@/data/talisman-images';
 
 interface ShareCardProps {
   hexagramName: string;
@@ -52,6 +53,7 @@ const ShareCard: React.FC<ShareCardProps> = ({
   };
 
   const activeConfig = PLATFORM_LIST.find(p => p.key === activePlatform) || PLATFORM_LIST[0];
+  const talismanBg = getTalismanImage(hexagramName, 'dark');
 
   return (
     <motion.div
@@ -95,39 +97,65 @@ const ShareCard: React.FC<ShareCardProps> = ({
           ))}
         </div>
 
-        {/* Preview Card */}
+        {/* Preview Card - 上上签海报风格 */}
         <div className="px-4 pb-4">
           <div
             ref={cardRef}
-            className="relative rounded-xl overflow-hidden border border-gold/15"
+            className="relative rounded-xl overflow-hidden border-2"
             style={{
               width: '100%',
               aspectRatio: `${activeConfig.width} / ${activeConfig.height}`,
-              background: 'linear-gradient(135deg, #0a0a0a 0%, #1a1200 50%, #0a0a0a 100%)',
+              borderColor: 'rgba(200,164,92,0.3)',
             }}
           >
-            {/* Decorative elements */}
-            <div className="absolute inset-0 opacity-20" style={{
-              background: `radial-gradient(circle at 30% 20%, ${activeConfig.textColor}20, transparent 50%), radial-gradient(circle at 70% 80%, ${activeConfig.textColor}10, transparent 50%)`
-            }} />
+            {/* AI 符咒背景图 */}
+            {talismanBg ? (
+              <>
+                <img
+                  src={talismanBg}
+                  alt=""
+                  className="absolute inset-0 w-full h-full object-cover"
+                  crossOrigin="anonymous"
+                  style={{ filter: 'brightness(0.6)' }}
+                />
+                <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-black/70" />
+              </>
+            ) : (
+              <div className="absolute inset-0" style={{ background: 'linear-gradient(180deg, #0a0800 0%, #1a1200 30%, #0a0800 100%)' }} />
+            )}
 
-            {/* Content */}
-            <div className="relative h-full flex flex-col items-center justify-center p-6 text-center">
-              <div className="text-[10px] uppercase tracking-[0.3em] text-gold/50 mb-3">Daily I Ching</div>
-              <h2 className="text-2xl font-bold text-gold mb-1" style={{ fontFamily: "'Noto Serif SC', Georgia, serif" }}>
+            {/* 云纹内边框装饰 */}
+            <div className="absolute inset-2 border border-gold/10 rounded-lg pointer-events-none" />
+
+            {/* 顶部：卦名大标题 */}
+            <div className="absolute top-6 left-0 right-0 text-center z-10">
+              <div className="text-[10px] uppercase tracking-[0.3em] text-gold/40 mb-1">Daily I Ching</div>
+              <h2 className="text-3xl font-bold text-gold" style={{ fontFamily: "'Noto Serif SC', Georgia, serif", textShadow: '0 0 20px rgba(200,164,92,0.5)' }}>
                 {hexagramName}
               </h2>
-              <div className="text-xs text-gold/60 mb-4">{blessingTheme} · {category}</div>
+              <div className="text-xs text-gold/60 mt-1" style={{ textShadow: '0 1px 3px rgba(0,0,0,0.8)' }}>{blessingTheme} · {category}</div>
+            </div>
 
-              <div className="w-16 h-16 rounded-full border-2 border-gold/30 flex items-center justify-center mb-4">
-                <span className="text-2xl font-bold text-gold">{score}</span>
+            {/* 中间：分数大数字 + 印章 */}
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-center z-10">
+              <div className="text-5xl font-bold text-gold" style={{ textShadow: '0 0 30px rgba(200,164,92,0.6)' }}>
+                {score}
               </div>
+              <div className="text-[10px] text-gold/40 tracking-wider mt-1">FORTUNE SCORE</div>
+              <img src="/seal-stamp.png" alt="" className="w-10 h-10 mx-auto mt-2 opacity-80" loading="lazy" decoding="async" />
+            </div>
 
-              <div className="text-sm text-text-secondary leading-relaxed max-w-[80%] mb-4">
+            {/* 底部：金色语录 + 日期 */}
+            <div className="absolute bottom-6 left-0 right-0 text-center px-6 z-10">
+              <div className="text-sm text-white/80 leading-relaxed italic" style={{ fontFamily: "'Noto Serif SC', Georgia, serif", textShadow: '0 1px 4px rgba(0,0,0,0.9)' }}>
                 {goldenQuote}
               </div>
+              <div className="text-[10px] text-gold/40 tracking-wider mt-3" style={{ textShadow: '0 1px 2px rgba(0,0,0,0.8)' }}>MysticDao · {new Date().toLocaleDateString()}</div>
+            </div>
 
-              <div className="text-[10px] text-gold/40 tracking-wider">MysticDao · {new Date().toLocaleDateString()}</div>
+            {/* 二维码区域占位 */}
+            <div className="absolute bottom-2 right-3 w-8 h-8 border border-gold/20 rounded flex items-center justify-center z-10">
+              <span className="text-[6px] text-gold/30">QR</span>
             </div>
           </div>
         </div>

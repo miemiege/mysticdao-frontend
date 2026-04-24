@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { getTheme, getSealInfo, FU_GALL_CHARS } from '@/lib/theme';
+import { getTalismanImage, type TalismanStyle } from '@/data/talisman-images';
 
 interface TalismanSVGProps {
   hexagramName: string;
@@ -11,7 +12,10 @@ interface TalismanSVGProps {
   width?: number;
   height?: number;
   showSeal?: boolean;
+  talismanStyle?: TalismanStyle; // NEW: 'dark' | 'vintage'
 }
+
+/* ─── Sub-components ─── */
 
 const SanqingHead: React.FC<{ color: string }> = ({ color }) => (
   <g transform="translate(0, 10)">
@@ -86,7 +90,9 @@ const BackgroundPattern: React.FC<{ color: string }> = ({ color }) => (
   </>
 );
 
-const TalismanSVG: React.FC<TalismanSVGProps> = ({
+/* ─── SVG Fallback Mode ─── */
+
+const TalismanSVGMode: React.FC<TalismanSVGProps> = ({
   hexagramName, blessingTheme, element, category, seed, score = 75, width = 360, height = 540, showSeal = true
 }) => {
   const theme = getTheme(element);
@@ -110,47 +116,111 @@ const TalismanSVG: React.FC<TalismanSVGProps> = ({
           </feMerge>
         </filter>
       </defs>
-
-      {/* Background */}
       <rect x="-150" y="-250" width="300" height="500" fill={theme.bg} rx="12" />
       <rect x="-150" y="-250" width="300" height="500" fill="url(#glow)" rx="12" />
       <BackgroundPattern color={theme.primary} />
-
-      {/* Fu Tou (符头) */}
       {headType === 0 && <SanqingHead color={theme.primary} />}
       {headType === 1 && <SantaiHead color={theme.primary} />}
       {headType === 2 && <ChilingHead color={theme.primary} />}
-
-      {/* Hexagram Name */}
-      <text x="0" y="-185" textAnchor="middle" fill={theme.primary} fontSize="16" fontWeight="bold" opacity="0.7" fontFamily="serif" letterSpacing="2">
-        {hexagramName}
-      </text>
-
-      {/* Category */}
-      <text x="0" y="-168" textAnchor="middle" fill={theme.secondary} fontSize="10" opacity="0.5" letterSpacing="1">
-        {category}
-      </text>
-
-      {/* Blessing Theme */}
-      <text x="0" y="155" textAnchor="middle" fill={theme.accent} fontSize="11" opacity="0.6" letterSpacing="1">
-        {blessingTheme}
-      </text>
-
-      {/* Hexagram Lines */}
+      <text x="0" y="-185" textAnchor="middle" fill={theme.primary} fontSize="16" fontWeight="bold" opacity="0.7" fontFamily="serif" letterSpacing="2">{hexagramName}</text>
+      <text x="0" y="-168" textAnchor="middle" fill={theme.secondary} fontSize="10" opacity="0.5" letterSpacing="1">{category}</text>
+      <text x="0" y="155" textAnchor="middle" fill={theme.accent} fontSize="11" opacity="0.6" letterSpacing="1">{blessingTheme}</text>
       <HexagramLines seed={seed} color={theme.primary} />
-
-      {/* Fu Gall (符胆) */}
       <FuGall char={fuGallChar} color={theme.primary} />
-
-      {/* Seal */}
       {showSeal && <SealStamp grade={seal.grade} color={seal.color} size={seal.size} />}
-
-      {/* Score */}
-      <text x="0" y="200" textAnchor="middle" fill={theme.primary} fontSize="14" opacity="0.5" fontFamily="serif">
-        {score}
-      </text>
+      <text x="0" y="200" textAnchor="middle" fill={theme.primary} fontSize="14" opacity="0.5" fontFamily="serif">{score}</text>
     </svg>
   );
+};
+
+/* ─── AI Image Mode ─── */
+
+const TalismanImageMode: React.FC<{ hexagramName: string; score: number; element: string; blessingTheme: string; category: string; style: TalismanStyle; width?: number; height?: number }> = ({
+  hexagramName, score, element, blessingTheme, category, style, width = 360, height = 540
+}) => {
+  const [imgLoaded, setImgLoaded] = useState(false);
+  const [imgError, setImgError] = useState(false);
+
+  const imgSrc = getTalismanImage(hexagramName, style);
+  const theme = getTheme(element);
+  const seal = getSealInfo(score);
+
+  if (!imgSrc || imgError) return null;
+
+  return (
+    <div style={{ position: 'relative', width, height, borderRadius: '12px', overflow: 'hidden' }}>
+      <img
+        src={imgSrc}
+        alt={`${hexagramName} 符咒`}
+        style={{
+          width: '100%',
+          height: '100%',
+          objectFit: 'cover',
+          opacity: imgLoaded ? 1 : 0,
+          transition: 'opacity 0.5s ease',
+        }}
+        onLoad={() => setImgLoaded(true)}
+        onError={() => setImgError(true)}
+      />
+      {!imgLoaded && (
+        <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', background: theme.bg }}>
+          <span style={{ color: theme.primary, fontSize: '14px', opacity: 0.5 }}>Loading...</span>
+        </div>
+      )}
+      <div style={{ position: 'absolute', bottom: '12px', left: '12px', right: '12px', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end' }}>
+        <span style={{ color: '#fff', fontSize: '11px', opacity: 0.7, textShadow: '0 1px 3px rgba(0,0,0,0.8)' }}>
+          {blessingTheme} · {category}
+        </span>
+        <span style={{ color: '#fff', fontSize: '14px', fontWeight: 'bold', opacity: 0.9, textShadow: '0 1px 3px rgba(0,0,0,0.8)' }}>
+          {score}
+        </span>
+      </div>
+      <div style={{ position: 'absolute', top: '8px', right: '8px' }}>
+        <span style={{
+          color: seal.color,
+          fontSize: '12px',
+          fontWeight: 'bold',
+          opacity: 0.8,
+          textShadow: '0 1px 2px rgba(0,0,0,0.8)',
+          padding: '2px 6px',
+          border: `1px solid ${seal.color}40`,
+          borderRadius: '4px',
+          background: 'rgba(0,0,0,0.3)',
+        }}>
+          {seal.grade}
+        </span>
+      </div>
+    </div>
+  );
+};
+
+/* ─── Main Component ─── */
+
+const TalismanSVG: React.FC<TalismanSVGProps> = (props) => {
+  const { hexagramName, talismanStyle = 'dark', score = 75, element, blessingTheme, category, width = 360, height = 540 } = props;
+  const imgSrc = getTalismanImage(hexagramName, talismanStyle);
+  const [useImage, setUseImage] = useState(!!imgSrc);
+
+  useEffect(() => {
+    setUseImage(!!imgSrc);
+  }, [imgSrc]);
+
+  if (useImage && imgSrc) {
+    return (
+      <TalismanImageMode
+        hexagramName={hexagramName}
+        score={score}
+        element={element}
+        blessingTheme={blessingTheme}
+        category={category}
+        style={talismanStyle}
+        width={width}
+        height={height}
+      />
+    );
+  }
+
+  return <TalismanSVGMode {...props} />;
 };
 
 export default TalismanSVG;
