@@ -14,14 +14,16 @@ import { cn } from '@/lib/utils'
 import type { Gua64 } from '@/data/gua64'
 import type { HexagramTalisman } from '@/data/hexagram-talismans'
 import type { PosterStyleName } from '@/lib/posterStyles'
+import { POSTER_STYLES } from '@/lib/posterStyles'
 import { TalismanPosterV2 } from '@/components/TalismanPosterV2'
+import { useStyleRecommendation } from '@/hooks/useStyleRecommendation'
 
 export type ShareCardSize = 'sm' | 'md' | 'lg' | 'social'
 
 export interface ShareCardProps {
   gua: Gua64
   talisman: HexagramTalisman
-  style: PosterStyleName
+  style?: PosterStyleName
   title?: string
   description?: string
   size?: ShareCardSize
@@ -55,6 +57,10 @@ export const ShareCard = React.forwardRef<SVGSVGElement, ShareCardProps>(
     const { width, height } = SIZE_PRESETS[size]
     const displayTitle = title ?? `${gua.name} · ${gua.nameEn}`
     const displayDesc = description ?? talisman.blessingTheme
+
+    const { recommendation } = useStyleRecommendation(gua, talisman)
+    const effectiveStyle: PosterStyleName = style ?? recommendation.primary
+    const styleConfig = POSTER_STYLES[effectiveStyle]
 
     const ogStyles = useMemo(
       () => ({
@@ -118,7 +124,7 @@ export const ShareCard = React.forwardRef<SVGSVGElement, ShareCardProps>(
             ref={ref}
             gua={gua}
             talisman={talisman}
-            style={style}
+            style={effectiveStyle}
             width={width}
             height={height}
             className={cn('block', className)}

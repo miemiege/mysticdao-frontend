@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect, useRef } from 'react';
+import React, { useState, useCallback, useEffect, useRef, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Sparkles, RotateCcw, Heart, Share2, Star, Volume2, VolumeX, ChevronDown, ChevronUp } from 'lucide-react';
 // import FortuneCard from '@/components/daily/FortuneCard';
@@ -8,6 +8,8 @@ import RitualDrawing from '@/components/daily/RitualDrawing';
 import SharePoster from '@/components/daily/SharePoster';
 import TalismanRenderer from '@/components/talisman/TalismanRenderer';
 import ShareCard from '@/components/share/ShareCard';
+import { TalismanPosterV2 } from '@/components/TalismanPosterV2';
+import { useStyleRecommendation } from '@/hooks/useStyleRecommendation';
 import GlobalCounter from '@/components/daily/GlobalCounter';
 import BreathingTypewriter from '@/components/BreathingTypewriter';
 import RollingNumber from '@/components/daily/RollingNumber';
@@ -173,6 +175,19 @@ const Daily: React.FC = () => {
   const [hexagramDrawn, setHexagramDrawn] = useState(false);
   const [showShareCard, setShowShareCard] = useState(false);
 
+  // 当前卦象数据（用于智能风格推荐 & 新海报系统）
+  const currentGua = useMemo(() =>
+    fortune ? GUA64_LIST.find((g) => g.name === fortune.card.name) || undefined : undefined,
+    [fortune]
+  );
+  const currentTalisman = useMemo(() =>
+    fortune ? getHexagramTalisman(fortune.card.name) : undefined,
+    [fortune]
+  );
+  const { recommendation: styleRecommendation } = useStyleRecommendation(
+    currentGua ?? GUA64_LIST[0],
+    currentTalisman
+  );
   const { muted, toggleMute } = useRitualSound();
 
   useEffect(() => {
@@ -500,7 +515,7 @@ const Daily: React.FC = () => {
                       style={{ background: `radial-gradient(circle, ${fortune.card.color}40, transparent 70%)` }}
                     />
 
-                    {/* ── 符咒 ── */}
+                    {/* ── 符咒（新版海报 + 智能风格推荐）── */}
                     <motion.div
                       initial={{ opacity: 0, y: 30 }}
                       animate={{ opacity: 1, y: 0 }}
@@ -511,16 +526,26 @@ const Daily: React.FC = () => {
                         animate={{ y: [0, -6, 0] }}
                         transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
                       >
-                        <TalismanRenderer
-                          hexagramName={fortune.card.name}
-                          blessingTheme={fortune.card.keyword}
-                          element={(() => { const gua = GUA64_LIST.find((g) => g.name === fortune.card.name); return gua?.element || '金'; })()}
-                          category={(() => { const t = getHexagramTalisman(fortune.card.name); return t.category; })()}
-                          seed={(() => { const gua = GUA64_LIST.find((g) => g.name === fortune.card.name); return gua?.number || 1; })()}
-                          score={fortune.overallScore}
-                          width={300}
-                          height={450}
-                        />
+                        {currentGua && currentTalisman ? (
+                          <TalismanPosterV2
+                            gua={currentGua}
+                            talisman={currentTalisman}
+                            style={styleRecommendation.primary}
+                            width={300}
+                            height={450}
+                          />
+                        ) : (
+                          <TalismanRenderer
+                            hexagramName={fortune.card.name}
+                            blessingTheme={fortune.card.keyword}
+                            element={(() => { const gua = GUA64_LIST.find((g) => g.name === fortune.card.name); return gua?.element || '金'; })()}
+                            category={(() => { const t = getHexagramTalisman(fortune.card.name); return t.category; })()}
+                            seed={(() => { const gua = GUA64_LIST.find((g) => g.name === fortune.card.name); return gua?.number || 1; })()}
+                            score={fortune.overallScore}
+                            width={300}
+                            height={450}
+                          />
+                        )}
                       </motion.div>
                     </motion.div>
 
