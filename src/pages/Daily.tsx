@@ -282,12 +282,16 @@ const Daily: React.FC = () => {
 
   return (
     <div className="min-h-[100dvh] relative">
-      {/* 背景图层: daily-hero-bg.png */}
+      {/* 背景层 - 与首页一致 */}
+      <div className="absolute inset-0 bg-black" />
       <div className="absolute inset-0">
-        <img src="./daily-hero-bg.png" alt="" className="w-full h-full object-cover opacity-[0.08]" aria-hidden="true" />
-        <div className="absolute inset-0 bg-black/70" />
+        <img src="./hero-ink-wash-bg.jpg" alt="" className="w-full h-full object-cover opacity-[0.12]" aria-hidden="true" />
       </div>
       <ParticleBackground />
+      <div
+        className="absolute inset-0 pointer-events-none"
+        style={{ background: 'radial-gradient(ellipse at center, transparent 30%, #000000 85%)' }}
+      />
       <section className="relative pt-32 pb-8 px-6">
         <div className="max-w-[1200px] mx-auto text-center">
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}>
@@ -369,16 +373,6 @@ const Daily: React.FC = () => {
                   className="relative max-w-[600px] mx-auto"
                   style={{ transformOrigin: 'top center' }}
                 >
-                  {/* 卷轴展开装饰: scroll-unroll.png */}
-                  <motion.div
-                    initial={{ opacity: 0, y: -30 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.2, duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-                    className="relative h-12 mb-0 flex justify-center"
-                  >
-                    <img src="./scroll-unroll.png" alt="" className="h-full w-auto object-contain opacity-[0.4]" aria-hidden="true" />
-                  </motion.div>
-
                   {/* 卷轴顶部轴头 */}
                   <div className="relative h-6 mb-1">
                     <div className="absolute inset-x-4 top-2 h-3 rounded-full" style={{ background: `linear-gradient(90deg, transparent, ${fortune.card.color}30, transparent)` }} />
@@ -386,14 +380,8 @@ const Daily: React.FC = () => {
                     <div className="absolute right-2 top-0 w-4 h-6 rounded-full border border-gold/20" style={{ background: 'linear-gradient(180deg, #2a2218, #1a1510)' }} />
                   </div>
 
-                  {/* 卷轴纸张: mountain-scroll-bg.jpg 纹理 */}
+                  {/* 卷轴纸张 */}
                   <div className="relative border-x border-gold/10 px-6 md:px-10 py-8">
-                    {/* 真实纸张纹理背景 */}
-                    <div className="absolute inset-0">
-                      <img src="./mountain-scroll-bg.jpg" alt="" className="w-full h-full object-cover opacity-[0.15]" aria-hidden="true" />
-                      <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-transparent to-black/30" />
-                    </div>
-
                     {/* 所有内容包裹在 relative z-10 中 */}
                     <div className="relative z-10">
                       {/* 中央光晕 */}
@@ -498,16 +486,6 @@ const Daily: React.FC = () => {
                         <LuckyInfo color={fortune.luckyColor} number={fortune.luckyNumber} direction={fortune.luckyDirection} />
                       </motion.div>
 
-                      {/* 红线装饰: red-thread-visual.png */}
-                      <motion.div
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        transition={{ delay: 1.3 }}
-                        className="flex justify-center mb-4 relative z-10"
-                      >
-                        <img src="./red-thread-visual.png" alt="" className="h-2 w-48 object-cover opacity-[0.3]" aria-hidden="true" />
-                      </motion.div>
-
                       {/* ── AI 解读（古卷样式） ── */}
                       {readingSegments.length > 0 && (
                         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 1.5 }} className="relative rounded-xl border border-gold/10 overflow-hidden mb-8" style={{ background: 'linear-gradient(180deg, rgba(200,164,92,0.03), rgba(0,0,0,0.3))' }}>
@@ -586,13 +564,12 @@ const Daily: React.FC = () => {
                         </motion.div>
                       )}
 
-                      {!alreadyDrawn && (
-                        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 2.0 }} className="text-center relative z-10">
-                          <button onClick={handleReset} className="inline-flex items-center gap-2 px-5 py-2.5 border border-gold/12 rounded-pill text-xs text-text-secondary hover:text-gold hover:border-gold/25 hover:bg-gold/5 transition-all">
-                            <RotateCcw size={14} /> Draw Again
-                          </button>
-                        </motion.div>
-                      )}
+                      {/* ── 再算一卦 ── */}
+                      <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 2.0 }} className="text-center relative z-10">
+                        <button onClick={handleReset} className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-gold/20 via-gold/10 to-gold/20 border border-gold/30 rounded-pill text-sm text-gold hover:text-white hover:border-gold/50 hover:bg-gold/10 transition-all">
+                          <RotateCcw size={16} /> 再算一卦
+                        </button>
+                      </motion.div>
                     </div>
                   </div>
 
