@@ -28,7 +28,7 @@ export const BorderFrame: React.FC<DecorationProps & { inset?: number }> = ({ x 
   </g>
 );
 
-export const LotusPattern: React.FC<DecorationProps> = ({ x = 200, y = 300, width = 80, height = 80, color = '#C8A45C', opacity = 0.3, filter }) => (
+export const LotusPattern: React.FC<DecorationProps> = ({ x = 200, y = 300, width: _width = 80, height: _height = 80, color = '#C8A45C', opacity = 0.3, filter }) => (
   <g transform={`translate(${x}, ${y})`} opacity={opacity} filter={filter}>
     {[0, 60, 120, 180, 240, 300].map((angle, i) => (
       <ellipse key={i} cx={Math.cos((angle * Math.PI) / 180) * 20} cy={Math.sin((angle * Math.PI) / 180) * 20} rx="12" ry="24" fill="none" stroke={color} strokeWidth="0.8" transform={`rotate(${angle})`} />
@@ -37,7 +37,7 @@ export const LotusPattern: React.FC<DecorationProps> = ({ x = 200, y = 300, widt
   </g>
 );
 
-export const CloudPattern: React.FC<DecorationProps & { count?: number }> = ({ x = 0, y = 0, width = 400, color = '#C8A45C', opacity = 0.15, count = 3, filter }) => (
+export const CloudPattern: React.FC<DecorationProps & { count?: number }> = ({ x = 0, y = 0, width: _width = 400, color = '#C8A45C', opacity = 0.15, count = 3, filter }) => (
   <g opacity={opacity} filter={filter}>
     {Array.from({ length: count }).map((_, i) => (
       <path key={i} d={`M${Number(x) + i * 120} ${Number(y)} Q${Number(x) + i * 120 + 20} ${Number(y) - 15} ${Number(x) + i * 120 + 40} ${Number(y)} Q${Number(x) + i * 120 + 60} ${Number(y) + 10} ${Number(x) + i * 120 + 80} ${Number(y)}`} fill="none" stroke={color} strokeWidth="1" />
@@ -63,7 +63,7 @@ export const SealStamp: React.FC<DecorationProps & { text?: string; size?: numbe
   </g>
 );
 
-export const DragonPattern: React.FC<DecorationProps> = ({ x = 200, y = 100, width = 200, color = '#C8A45C', opacity = 0.2, filter }) => (
+export const DragonPattern: React.FC<DecorationProps> = ({ x = 200, y = 100, width: _width = 200, color = '#C8A45C', opacity = 0.2, filter }) => (
   <g transform={`translate(${x}, ${y})`} opacity={opacity} filter={filter}>
     <path d="M-80 20 Q-40 -20 0 0 Q40 -20 80 20 Q60 40 40 30 Q20 40 0 25 Q-20 40 -40 30 Q-60 40 -80 20Z" fill="none" stroke={color} strokeWidth="1" />
     <path d="M-60 25 Q-30 -5 0 10 Q30 -5 60 25" fill="none" stroke={color} strokeWidth="0.5" opacity="0.6" />
