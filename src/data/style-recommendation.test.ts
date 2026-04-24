@@ -139,8 +139,8 @@ function runTests() {
     });
     const talisman = makeTalisman('地母护身');
     const rec = recommendStyle(gua, talisman);
-    assertPrimary(rec, ['vintage', 'zengarden'], '坤为地 (土/大吉/地母护身)');
-    assertSecondary(rec, ['tianshi', 'zengarden'], '坤为地 (土/大吉/地母护身)');
+    assertPrimary(rec, ['zengarden', 'vintage'], '坤为地 (土/大吉/地母护身)');
+    assertSecondary(rec, ['vintage', 'tianshi'], '坤为地 (土/大吉/地母护身)');
     assertConfidenceRange(rec, 0.45, 0.90, '坤为地');
   }
 
@@ -184,8 +184,8 @@ function runTests() {
     });
     const talisman = makeTalisman('财运亨通');
     const rec = recommendStyle(gua, talisman);
-    assertPrimary(rec, ['ink', 'zengarden'], '风天小畜 (木/中平/财运亨通)');
-    assertSecondary(rec, ['vintage', 'zengarden'], '风天小畜 (木/中平/财运亨通)');
+    assertPrimary(rec, ['zengarden', 'ink'], '风天小畜 (木/中平/财运亨通)');
+    assertSecondary(rec, ['ink', 'vintage'], '风天小畜 (木/中平/财运亨通)');
     assertConfidenceRange(rec, 0.50, 0.90, '风天小畜');
   }
 
@@ -200,7 +200,7 @@ function runTests() {
     const talisman = makeTalisman('转运破厄');
     const rec = recommendStyle(gua, talisman);
     assertPrimary(rec, ['dark', 'blackgold'], '天水讼 (金/小凶/转运破厄)');
-    assertSecondary(rec, ['vintage', 'blackgold'], '天水讼 (金/小凶/转运破厄)');
+    assertSecondary(rec, ['cybertao', 'vintage'], '天水讼 (金/小凶/转运破厄)');
     assertConfidenceRange(rec, 0.65, 1.0, '天水讼');
   }
 
@@ -245,7 +245,7 @@ function runTests() {
     const talisman = makeTalisman('转运破厄');
     const rec = recommendStyle(gua, talisman);
     assertPrimary(rec, ['dark', 'blackgold'], '天地否 (金/小凶/转运破厄)');
-    assertSecondary(rec, ['royal', 'blackgold'], '天地否 (金/小凶/转运破厄)');
+    assertSecondary(rec, ['cybertao', 'royal'], '天地否 (金/小凶/转运破厄)');
     assertConfidenceRange(rec, 0.65, 1.0, '天地否');
   }
 
@@ -274,8 +274,8 @@ function runTests() {
     });
     const talisman = makeTalisman('平安顺遂');
     const rec = recommendStyle(gua, talisman);
-    assertPrimary(rec, ['ink', 'zengarden'], '雷地豫 (木/中吉/平安顺遂)');
-    assertSecondary(rec, ['vintage', 'zengarden'], '雷地豫 (木/中吉/平安顺遂)');
+    assertPrimary(rec, ['zengarden', 'ink'], '雷地豫 (木/中吉/平安顺遂)');
+    assertSecondary(rec, ['ink', 'vintage'], '雷地豫 (木/中吉/平安顺遂)');
     assertConfidenceRange(rec, 0.45, 0.85, '雷地豫');
   }
 
@@ -290,7 +290,7 @@ function runTests() {
     const talisman = makeTalisman('平安顺遂');
     const rec = recommendStyle(gua, talisman);
     assertPrimary(rec, ['vintage', 'zengarden'], '天泽履 (金/中吉/平安顺遂)');
-    assertSecondary(rec, ['dark', 'zengarden'], '天泽履 (金/中吉/平安顺遂)');
+    assertSecondary(rec, ['cybertao', 'dark'], '天泽履 (金/中吉/平安顺遂)');
     assertConfidenceRange(rec, 0.45, 0.85, '天泽履');
   }
 
@@ -334,8 +334,8 @@ function runTests() {
     });
     const talisman = makeTalisman('姻缘和合');
     const rec = recommendStyle(gua, talisman);
-    assertPrimary(rec, ['vintage', 'zengarden'], '地天泰 (土/大吉/姻缘和合)');
-    assertSecondary(rec, ['tianshi', 'zengarden'], '地天泰 (土/大吉/姻缘和合)');
+    assertPrimary(rec, ['zengarden', 'vintage'], '地天泰 (土/大吉/姻缘和合)');
+    assertSecondary(rec, ['vintage', 'tianshi'], '地天泰 (土/大吉/姻缘和合)');
     assertConfidenceRange(rec, 0.45, 0.90, '地天泰');
   }
 }
