@@ -10,8 +10,9 @@ import { motion } from 'framer-motion';
 import { Download, Copy, X, Instagram, Twitter, MessageCircle, Monitor, Smartphone, Check } from 'lucide-react';
 import { toast } from 'sonner';
 import { PLATFORMS, type PlatformKey } from '../../lib/share-platforms';
-import TalismanSVG from '../talisman/TalismanSVG';
+import TalismanPoster from '../talisman/TalismanPoster';
 import { getTheme } from '../../lib/theme';
+import { GUA64_LIST } from '../../data/gua64';
 
 interface ShareCardProps {
   hexagramName: string;
@@ -34,10 +35,10 @@ const iconMap: Record<string, React.ReactNode> = {
 
 const ShareCard: React.FC<ShareCardProps> = ({
   hexagramName,
-  blessingTheme,
+  blessingTheme: _blessingTheme,
   element,
-  category,
-  seed,
+  category: _category,
+  seed: _seed,
   score,
   goldenQuote,
   onClose,
@@ -81,7 +82,8 @@ const ShareCard: React.FC<ShareCardProps> = ({
 
   const handleCopy = useCallback(async () => {
     try {
-      const text = `今日卦象：${hexagramName} · ${sealText}\n${goldenQuote}\n\nMysticDAO.app`;
+      const gua = GUA64_LIST.find((g) => g.name === hexagramName);
+      const text = `Daily I Ching: ${hexagramName} · ${gua?.nameEn || ''}\n${goldenQuote}\n\nMysticDAO.app`;
       await navigator.clipboard.writeText(text);
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
@@ -89,7 +91,7 @@ const ShareCard: React.FC<ShareCardProps> = ({
     } catch {
       toast.error('Copy failed');
     }
-  }, [hexagramName, sealText, goldenQuote]);
+  }, [hexagramName, goldenQuote]);
 
   /** 渲染分享卡内容（根据平台布局） */
   const renderCardContent = () => {
@@ -101,12 +103,8 @@ const ShareCard: React.FC<ShareCardProps> = ({
       return (
         <div className="flex w-full h-full">
           <div className="flex-shrink-0 flex items-center justify-center" style={{ width: '42%', padding: '40px' }}>
-            <TalismanSVG
+            <TalismanPoster
               hexagramName={hexagramName}
-              blessingTheme={blessingTheme}
-              element={element}
-              category={category}
-              seed={seed}
               score={score}
               width={400}
               height={560}
@@ -148,12 +146,8 @@ const ShareCard: React.FC<ShareCardProps> = ({
 
         {/* 符咒主体 */}
         <div className="flex-1 flex items-center justify-center w-full" style={{ padding: isStory ? '120px 30px 180px' : '60px 30px 40px' }}>
-          <TalismanSVG
+          <TalismanPoster
             hexagramName={hexagramName}
-            blessingTheme={blessingTheme}
-            element={element}
-            category={category}
-            seed={seed}
             score={score}
             width={isStory ? 520 : 380}
             height={isStory ? 780 : 570}
