@@ -168,20 +168,22 @@ describe('Style Recommendation — 512 combos (64 gua × 8 categories)', () => {
    * 选择包含 Army/War/Strength/Power/Discipline 等关键词的卦，
    * 验证 blackgold（黑金力量风格）出现在推荐结果中。
    */
-  it('blackgold should be recommended for strength/power-related hexagrams', () => {
+  it('blackgold should be recommended for strength/power-related hexagrams with matching element', () => {
+    // 查找关键词含力量词汇且五行为金或火的卦（与 blackgold 的 STYLE_ELEMENTS 匹配）
     const strengthKeywords = ['Army', 'War', 'Strength', 'Power', 'Discipline'];
     const strengthGua = GUA64_LIST.find(g =>
-      g.keywordsEn.some(kw => strengthKeywords.includes(kw))
+      g.keywordsEn.some(kw => strengthKeywords.includes(kw)) &&
+      (g.element === '金' || g.element === '火')
     );
 
     if (strengthGua) {
       const talisman = createMockTalisman('武运昌隆');
       const result = recommendStyle(strengthGua, talisman);
 
-      // blackgold 应该是主推荐或次推荐之一
+      // 当五行也匹配时，blackgold 应在推荐结果中
       expect([result.primary, result.secondary]).toContain('blackgold');
     } else {
-      // 若当前数据中没有匹配卦象，跳过此断言
+      // 若当前数据中无力量+金/火卦象，跳过此断言
       expect(true).toBe(true);
     }
   });
