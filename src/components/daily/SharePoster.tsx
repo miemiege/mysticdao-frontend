@@ -309,7 +309,7 @@ const SharePoster: React.FC<SharePosterProps> = ({
         transition={{ delay: 0.3 }}
         className="flex justify-center"
       >
-        <img src="/red-thread-visual.png" alt="" className="h-2 w-48 object-cover opacity-[0.3]" aria-hidden="true" />
+        <img src="./red-thread-visual.png" alt="" className="h-2 w-48 object-cover opacity-[0.3]" aria-hidden="true" />
       </motion.div>
 
       {/* Visible UI Buttons */}

@@ -284,7 +284,7 @@ const Daily: React.FC = () => {
     <div className="min-h-[100dvh] relative">
       {/* 背景图层: daily-hero-bg.png */}
       <div className="absolute inset-0">
-        <img src="/daily-hero-bg.png" alt="" className="w-full h-full object-cover opacity-[0.08]" aria-hidden="true" />
+        <img src="./daily-hero-bg.png" alt="" className="w-full h-full object-cover opacity-[0.08]" aria-hidden="true" />
         <div className="absolute inset-0 bg-black/70" />
       </div>
       <ParticleBackground />
@@ -376,7 +376,7 @@ const Daily: React.FC = () => {
                     transition={{ delay: 0.2, duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
                     className="relative h-12 mb-0 flex justify-center"
                   >
-                    <img src="/scroll-unroll.png" alt="" className="h-full w-auto object-contain opacity-[0.4]" aria-hidden="true" />
+                    <img src="./scroll-unroll.png" alt="" className="h-full w-auto object-contain opacity-[0.4]" aria-hidden="true" />
                   </motion.div>
 
                   {/* 卷轴顶部轴头 */}
@@ -390,7 +390,7 @@ const Daily: React.FC = () => {
                   <div className="relative border-x border-gold/10 px-6 md:px-10 py-8">
                     {/* 真实纸张纹理背景 */}
                     <div className="absolute inset-0">
-                      <img src="/mountain-scroll-bg.jpg" alt="" className="w-full h-full object-cover opacity-[0.15]" aria-hidden="true" />
+                      <img src="./mountain-scroll-bg.jpg" alt="" className="w-full h-full object-cover opacity-[0.15]" aria-hidden="true" />
                       <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-transparent to-black/30" />
                     </div>
 
@@ -451,7 +451,7 @@ const Daily: React.FC = () => {
                           transition={{ delay: 1.1, type: 'spring', stiffness: 150, damping: 12 }}
                           className="relative w-16 h-16"
                         >
-                          <img src="/seal-stamp.png" alt="" className="w-full h-full object-contain" style={{ filter: `drop-shadow(0 0 8px ${fortune.card.color}40)` }} />
+                          <img src="./seal-stamp.png" alt="" className="w-full h-full object-contain" style={{ filter: `drop-shadow(0 0 8px ${fortune.card.color}40)` }} />
                           <span className="absolute inset-0 flex items-center justify-center text-sm font-bold" style={{ color: fortune.card.color, textShadow: '0 1px 3px rgba(0,0,0,0.8)' }}>
                             {fortune.overallScore >= 85 ? '上' : fortune.overallScore >= 70 ? '吉' : fortune.overallScore >= 55 ? '中' : '平'}
                           </span>
@@ -505,7 +505,7 @@ const Daily: React.FC = () => {
                         transition={{ delay: 1.3 }}
                         className="flex justify-center mb-4 relative z-10"
                       >
-                        <img src="/red-thread-visual.png" alt="" className="h-2 w-48 object-cover opacity-[0.3]" aria-hidden="true" />
+                        <img src="./red-thread-visual.png" alt="" className="h-2 w-48 object-cover opacity-[0.3]" aria-hidden="true" />
                       </motion.div>
 
                       {/* ── AI 解读（古卷样式） ── */}

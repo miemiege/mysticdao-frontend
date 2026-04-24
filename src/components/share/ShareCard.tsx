@@ -142,7 +142,7 @@ const ShareCard: React.FC<ShareCardProps> = ({
                 {score}
               </div>
               <div className="text-[10px] text-gold/40 tracking-wider mt-1">FORTUNE SCORE</div>
-              <img src="/seal-stamp.png" alt="" className="w-10 h-10 mx-auto mt-2 opacity-80" loading="lazy" decoding="async" />
+              <img src="./seal-stamp.png" alt="" className="w-10 h-10 mx-auto mt-2 opacity-80" loading="lazy" decoding="async" />
             </div>
 
             {/* 底部：金色语录 + 日期 */}

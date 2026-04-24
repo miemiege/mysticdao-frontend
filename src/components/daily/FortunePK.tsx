@@ -86,7 +86,7 @@ const FortunePK: React.FC<FortunePKProps> = ({
           {/* 3D八卦装饰 */}
           <div className="flex justify-center mb-6">
             <img
-              src="/bagua-3d.png"
+              src="./bagua-3d.png"
               alt=""
               className="w-24 h-24 object-contain opacity-30"
               aria-hidden="true"

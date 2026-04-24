@@ -30,7 +30,7 @@ const CardFlip: React.FC<CardFlipProps> = ({ front, backImage = '/tarot-card-bac
         <div className="absolute inset-0 rounded-2xl overflow-hidden border-2" style={{ borderColor: rarityInfo.color + '40', backfaceVisibility: 'hidden', transform: 'rotateY(180deg)' }}>
           <img src={backImage} alt="" className="w-full h-full object-cover" />
           {/* 叠加 bagua-geometry.png 纹理（加分项P1） */}
-          <img src="/bagua-geometry.png" alt="" className="absolute inset-0 w-full h-full object-cover opacity-10 pointer-events-none" aria-hidden="true" />
+          <img src="./bagua-geometry.png" alt="" className="absolute inset-0 w-full h-full object-cover opacity-10 pointer-events-none" aria-hidden="true" />
           <div className="absolute inset-0 bg-black/20" />
           <div className="absolute inset-0 flex items-center justify-center">
             <span className="text-gold/60 text-sm tracking-wider">Tap to Reveal</span>
