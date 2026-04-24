@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState, memo } from 'react';
 import { motion, useInView, useMotionValue, useTransform } from 'framer-motion';
-import { ChevronDown, ScrollText, Compass, Sparkles, Crown, ArrowRight } from 'lucide-react';
+import { ChevronDown, Compass, Sparkles, ArrowRight } from 'lucide-react';
 import TaijiParticles from '@/components/home/TaijiParticles';
 
 
@@ -204,14 +204,6 @@ function HeroSection() {
 /* ─── Section 2: Feature Preview ─── */
 const features = [
   {
-    title: 'Bazi Destiny',
-    chinese: '\u516B\u5B57\u547D\u7406',
-    description: 'Uncover the blueprint of your life written in the stars at your birth. Your Four Pillars reveal personality, career path, relationships, and fortune cycles.',
-    href: '/#/bazi',
-    icon: ScrollText,
-    image: './service-bazi.jpg',
-  },
-  {
     title: 'Feng Shui',
     chinese: '\u98CE\u6C34\u7F57\u76D8',
     description: 'Harmonize your living and working spaces with the ancient art of energy flow. Discover how orientation, layout, and elements shape your daily fortune.',
@@ -226,14 +218,6 @@ const features = [
     href: '/#/daily',
     icon: Sparkles,
     image: './service-love.jpg',
-  },
-  {
-    title: 'Premium Access',
-    chinese: '',
-    description: 'Unlock deeper insights with AI-powered interpretations. Personalized readings, detailed analysis, and unlimited daily draws.',
-    href: '/#/pricing',
-    icon: Crown,
-    image: './service-tarot.jpg',
   },
 ];
 
@@ -255,7 +239,7 @@ function FeatureSection() {
             Our Services
           </span>
           <h2 className="font-heading text-[26px] lg:text-[36px] font-semibold text-white leading-tight mb-4">
-            Three Paths of Ancient Wisdom
+            Two Paths of Ancient Wisdom
           </h2>
           <p className="text-base text-white/60 max-w-[480px] mx-auto mb-6">
             Ancient Eastern arts, refined through timeless wisdom for your unique journey.
@@ -268,7 +252,7 @@ function FeatureSection() {
           variants={staggerContainer}
           initial="hidden"
           animate={isInView ? 'visible' : 'hidden'}
-          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6"
+          className="grid grid-cols-1 sm:grid-cols-2 gap-6 max-w-3xl mx-auto"
         >
           {features.map((f) => (
             <motion.div key={f.title} variants={staggerItem}>
@@ -683,18 +667,18 @@ function CTASection() {
         </p>
 
         <a
-          href="./#/bazi"
+          href="./#/daily"
           className="inline-flex items-center px-10 py-4 rounded-full bg-gold text-black text-sm font-medium uppercase tracking-widest hover:bg-gold-light hover:scale-[1.03] animate-glow-pulse transition-all duration-300"
         >
-          Get Your Free Reading
+          Daily Fortune
         </a>
 
         <div className="mt-6">
           <a
-            href="./#/pricing"
+            href="./#/fengshui"
             className="text-sm text-gold hover:underline transition-all duration-200"
           >
-            View Pricing Plans
+            Feng Shui Compass
           </a>
         </div>
       </motion.div>

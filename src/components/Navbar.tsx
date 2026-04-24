@@ -4,12 +4,8 @@ import { Menu, X } from 'lucide-react';
 
 const navLinks = [
   { label: 'Home', href: './#/' },
-  { label: 'Bazi', href: './#/bazi' },
   { label: 'Feng Shui', href: './#/fengshui' },
   { label: 'Daily', href: './#/daily' },
-  { label: 'Compass', href: './#/compass' },
-  { label: 'Pricing', href: './#/pricing' },
-  { label: 'Profile', href: './#/profile' },
 ];
 
 function YinYangIcon({ className }: { className?: string }) {
@@ -86,10 +82,10 @@ export default function Navbar() {
           {/* CTA + Hamburger */}
           <div className="flex items-center gap-4">
             <a
-              href="./#/bazi"
+              href="./#/daily"
               className="hidden md:inline-flex items-center px-6 py-2.5 rounded-full bg-gold text-black text-xs font-medium uppercase tracking-widest hover:bg-gold-light hover:scale-[1.03] hover:shadow-[0_0_24px_rgba(200,164,92,0.3)] transition-all duration-300"
             >
-              Begin Your Journey
+              Daily Fortune
             </a>
             <button
               className="md:hidden text-white/80 hover:text-white p-2"
@@ -152,11 +148,11 @@ export default function Navbar() {
               </div>
               <div className="mt-auto p-6">
                 <a
-                  href="./#/bazi"
+                  href="./#/daily"
                   onClick={() => setMobileOpen(false)}
                   className="block text-center px-6 py-3 rounded-full bg-gold text-black text-xs font-medium uppercase tracking-widest"
                 >
-                  Begin Your Journey
+                  Daily Fortune
                 </a>
               </div>
             </motion.div>
