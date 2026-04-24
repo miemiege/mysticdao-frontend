@@ -10,7 +10,7 @@ interface CardFlipProps {
   onClick?: () => void;
 }
 
-const CardFlip: React.FC<CardFlipProps> = ({ front, backImage = '/tarot-card-back.png', rarity, rarityInfo, onClick }) => {
+const CardFlip: React.FC<CardFlipProps> = ({ front, backImage = '/tarot-card-back.png', rarity: _rarity, rarityInfo, onClick }) => {
   const [isFlipped, setIsFlipped] = useState(false);
 
   return (

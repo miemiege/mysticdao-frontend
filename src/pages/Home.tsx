@@ -3,6 +3,7 @@ import { motion, useInView, useMotionValue, useTransform } from 'framer-motion';
 import { ChevronDown, ScrollText, Compass, Sparkles, Crown, ArrowRight } from 'lucide-react';
 import TaijiParticles from '@/components/home/TaijiParticles';
 
+
 /* ─── Easing Token ─── */
 const easeOutExpo = [0.16, 1, 0.3, 1] as [number, number, number, number];
 
@@ -77,7 +78,7 @@ function HeroSection() {
 
       {/* Layer 2: Particle field */}
       <div className="absolute inset-0 z-[1]">
-        <ParticleField count={80} />
+        <TaijiParticles count={80} />
       </div>
 
       {/* Layer 3: Mandala */}
@@ -672,7 +673,7 @@ function CTASection() {
         style={{ background: 'radial-gradient(ellipse at 50% 50%, rgba(200,164,92,0.06) 0%, transparent 60%)' }}
       />
       <div className="absolute inset-0 z-[1]">
-        <ParticleField count={40} />
+        <TaijiParticles count={40} />
       </div>
 
       <motion.div
