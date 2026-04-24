@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { getTheme, getSealInfo, FU_GALL_CHARS } from '@/lib/theme';
-import { getTalismanImage, type TalismanStyle } from '@/data/talisman-images';
+import { getTalismanImage } from '@/data/talisman-images';
 
 interface TalismanSVGProps {
   hexagramName: string;
@@ -12,7 +12,6 @@ interface TalismanSVGProps {
   width?: number;
   height?: number;
   showSeal?: boolean;
-  talismanStyle?: TalismanStyle; // NEW: 'dark' | 'vintage'
 }
 
 /* ─── Sub-components ─── */
@@ -135,13 +134,13 @@ const TalismanSVGMode: React.FC<TalismanSVGProps> = ({
 
 /* ─── AI Image Mode ─── */
 
-const TalismanImageMode: React.FC<{ hexagramName: string; score: number; element: string; blessingTheme: string; category: string; style: TalismanStyle; width?: number; height?: number }> = ({
-  hexagramName, score, element, blessingTheme, category, style, width = 360, height = 540
+const TalismanImageMode: React.FC<{ hexagramName: string; score: number; element: string; blessingTheme: string; category: string; width?: number; height?: number }> = ({
+  hexagramName, score, element, blessingTheme, category, width = 360, height = 540
 }) => {
   const [imgLoaded, setImgLoaded] = useState(false);
   const [imgError, setImgError] = useState(false);
 
-  const imgSrc = getTalismanImage(hexagramName, style);
+  const imgSrc = getTalismanImage(hexagramName);
   const theme = getTheme(element);
   const seal = getSealInfo(score);
 
@@ -197,8 +196,8 @@ const TalismanImageMode: React.FC<{ hexagramName: string; score: number; element
 /* ─── Main Component ─── */
 
 const TalismanSVG: React.FC<TalismanSVGProps> = (props) => {
-  const { hexagramName, talismanStyle = 'dark', score = 75, element, blessingTheme, category, width = 360, height = 540 } = props;
-  const imgSrc = getTalismanImage(hexagramName, talismanStyle);
+  const { hexagramName, score = 75, element, blessingTheme, category, width = 360, height = 540 } = props;
+  const imgSrc = getTalismanImage(hexagramName);
   const [useImage, setUseImage] = useState(!!imgSrc);
 
   useEffect(() => {
@@ -213,7 +212,6 @@ const TalismanSVG: React.FC<TalismanSVGProps> = (props) => {
         element={element}
         blessingTheme={blessingTheme}
         category={category}
-        style={talismanStyle}
         width={width}
         height={height}
       />

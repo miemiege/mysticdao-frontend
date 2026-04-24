@@ -25,7 +25,7 @@ const platformIcons: Record<string, React.ReactNode> = {
 };
 
 const ShareCard: React.FC<ShareCardProps> = ({
-  hexagramName, blessingTheme, category, score, goldenQuote, onClose
+  hexagramName, blessingTheme, element: _element, category, seed: _seed, score, goldenQuote, onClose
 }) => {
   const cardRef = useRef<HTMLDivElement>(null);
   const [activePlatform, setActivePlatform] = useState<PlatformKey>('web');
@@ -53,7 +53,7 @@ const ShareCard: React.FC<ShareCardProps> = ({
   };
 
   const activeConfig = PLATFORM_LIST.find(p => p.key === activePlatform) || PLATFORM_LIST[0];
-  const talismanBg = getTalismanImage(hexagramName, 'dark');
+  const talismanBg = getTalismanImage(hexagramName);
 
   return (
     <motion.div
