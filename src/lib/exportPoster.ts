@@ -163,3 +163,102 @@ export function triggerDownload(blob: Blob, filename: string): void {
   document.body.removeChild(a);
   URL.revokeObjectURL(url);
 }
+
+/* =================================================================== */
+/* 兼容导出 — 供 useExportPoster / ExportButton / ExportTester 使用     */
+/* =================================================================== */
+
+export interface ExportOptions {
+  format?: 'png' | 'jpeg' | 'webp';
+  quality?: number;
+  scale?: number;
+  width?: number;
+  height?: number;
+  ignoreFilters?: boolean;
+}
+
+export interface ExportResult {
+  url: string;
+  blob: Blob;
+  sizeBytes: number;
+  durationMs: number;
+  format: string;
+  strategy?: string;
+}
+
+/** 导出海报为图片（高级接口，供 hook 使用） */
+export async function exportPosterToImage(
+  svgEl: SVGSVGElement,
+  options: ExportOptions = {}
+): Promise<ExportResult> {
+  const start = performance.now();
+  const {
+    format = 'png',
+    quality = 0.92,
+    scale = 2,
+  } = options;
+
+  // Serialize SVG
+  const serializer = new XMLSerializer();
+  const svgStr = serializer.serializeToString(svgEl);
+  const svgBlob = new Blob([svgStr], { type: 'image/svg+xml;charset=utf-8' });
+  const url = URL.createObjectURL(svgBlob);
+
+  // Draw to canvas
+  const canvas = document.createElement('canvas');
+  const rect = svgEl.getBoundingClientRect();
+  canvas.width = (options.width || rect.width || 400) * scale;
+  canvas.height = (options.height || rect.height || 640) * scale;
+
+  const ctx = canvas.getContext('2d');
+  if (!ctx) throw new Error('Canvas 2D context unavailable');
+
+  const img = new Image();
+  await new Promise<void>((resolve, reject) => {
+    img.onload = () => resolve();
+    img.onerror = () => reject(new Error('SVG image load failed'));
+    img.src = url;
+  });
+
+  ctx.scale(scale, scale);
+  ctx.drawImage(img, 0, 0);
+  URL.revokeObjectURL(url);
+
+  // Export blob
+  const mime = format === 'jpeg' ? 'image/jpeg' : 'image/png';
+  const blob = await new Promise<Blob>((resolve, reject) => {
+    canvas.toBlob((b) => (b ? resolve(b) : reject(new Error('Canvas toBlob failed'))), mime, quality);
+  });
+
+  const resultUrl = URL.createObjectURL(blob);
+  return {
+    url: resultUrl,
+    blob,
+    sizeBytes: blob.size,
+    durationMs: Math.round(performance.now() - start),
+    format: mime,
+    strategy: 'svg-canvas',
+  };
+}
+
+/** 触发图片下载 */
+export function downloadImage(url: string, filename: string): void {
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+}
+
+/** 释放 object URL */
+export function revokeExportUrl(url: string): void {
+  URL.revokeObjectURL(url);
+}
+
+/** 格式化文件大小 */
+export function formatFileSize(bytes: number): string {
+  if (bytes < 1024) return `${bytes} B`;
+  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
+  return `${(bytes / (1024 * 1024)).toFixed(2)} MB`;
+}

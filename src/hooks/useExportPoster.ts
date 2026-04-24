@@ -17,7 +17,7 @@ import {
   type ExportResult,
 } from '@/lib/exportPoster';
 import { getRecommendedFormat } from '@/lib/exportCompatibility';
-import { trackExport, trackShare } from '@/lib/analytics';
+import { trackExport } from '@/lib/analytics';
 
 /* ─── Hook State ─── */
 
@@ -136,7 +136,7 @@ export function useExportPoster(): UseExportPosterState & UseExportPosterActions
       const res = await exportImage(svgRef, exportOpts);
       const duration = Math.round(performance.now() - start);
       if (res) {
-        trackExport(style, res.strategy, true, duration);
+        trackExport(style, (res.strategy as any) || 'unknown', true, duration);
         downloadImage(res.url, filename);
       } else {
         trackExport(style, 'unknown', false, duration, error?.message);

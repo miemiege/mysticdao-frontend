@@ -12,7 +12,7 @@
  * ============================================================
  */
 
-import type { Transition, Spring } from 'framer-motion';
+import type { Transition } from 'framer-motion';
 
 // ---------------------------------------------------------------------------
 // Type Definitions

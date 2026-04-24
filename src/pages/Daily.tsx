@@ -8,7 +8,7 @@ import RitualDrawing from '@/components/daily/RitualDrawing';
 import SharePoster from '@/components/daily/SharePoster';
 import TalismanRenderer from '@/components/talisman/TalismanRenderer';
 import ShareCard from '@/components/share/ShareCard';
-import { TalismanPosterV2 } from '@/components/TalismanPosterV2';
+import TalismanPosterLazy from '@/components/TalismanPosterLazy';
 import { useStyleRecommendation } from '@/hooks/useStyleRecommendation';
 import GlobalCounter from '@/components/daily/GlobalCounter';
 import BreathingTypewriter from '@/components/BreathingTypewriter';
@@ -527,7 +527,7 @@ const Daily: React.FC = () => {
                         transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
                       >
                         {currentGua && currentTalisman ? (
-                          <TalismanPosterV2
+                          <TalismanPosterLazy
                             gua={currentGua}
                             talisman={currentTalisman}
                             style={styleRecommendation.primary}

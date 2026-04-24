@@ -10,7 +10,7 @@ import { motion } from 'framer-motion';
 import { Download, Copy, X, Instagram, Twitter, MessageCircle, Monitor, Smartphone, Check } from 'lucide-react';
 import { toast } from 'sonner';
 import { PLATFORMS, type PlatformKey } from '../../lib/share-platforms';
-import TalismanPoster from '../talisman/TalismanPoster';
+import TalismanPoster from '../talisman/TalismanPosterLazy';
 import { getTheme } from '../../lib/theme';
 import { GUA64_LIST } from '../../data/gua64';
 

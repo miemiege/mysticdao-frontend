@@ -45,6 +45,23 @@ function getBgFilter(style: PosterStyleName): string | undefined {
   return undefined;
 }
 
+/** 将英文文本按最大字符数换行（纯 SVG 替代 foreignObject） */
+function wrapText(text: string, maxChars: number): string[] {
+  const words = text.split(' ');
+  const lines: string[] = [];
+  let current = '';
+  for (const word of words) {
+    if ((current + ' ' + word).trim().length > maxChars) {
+      if (current) lines.push(current.trim());
+      current = word;
+    } else {
+      current = current ? current + ' ' + word : word;
+    }
+  }
+  if (current) lines.push(current.trim());
+  return lines.slice(0, 5); // 最多5行，匹配原 line-clamp
+}
+
 export const TalismanPosterV2 = React.forwardRef<SVGSVGElement, TalismanPosterV2Props>(({
   gua,
   talisman,
@@ -159,24 +176,22 @@ export const TalismanPosterV2 = React.forwardRef<SVGSVGElement, TalismanPosterV2
         {talisman.blessingTheme}
       </text>
 
-      {/* 英文判词 */}
-      <foreignObject x={40} y={240} width={width - 80} height={120}>
-        {/* @ts-expect-error xmlns is valid in SVG foreignObject but not in React HTML types */}
-        <div xmlns="http://www.w3.org/1999/xhtml" style={{
-          color: config.textColor,
-          fontSize: '12px',
-          lineHeight: '1.6',
-          fontFamily: config.fontFamilyEn,
-          textAlign: 'center',
-          opacity: 0.85,
-          display: '-webkit-box',
-          WebkitLineClamp: 5,
-          WebkitBoxOrient: 'vertical',
-          overflow: 'hidden',
-        }}>
-          {gua.judgmentEn}
-        </div>
-      </foreignObject>
+      {/* 英文判词 — 纯 SVG text 替代 foreignObject，确保跨浏览器字体一致性 */}
+      <text
+        x={width / 2}
+        y={255}
+        textAnchor="middle"
+        fill={config.textColor}
+        fontSize={12}
+        fontFamily={config.fontFamilyEn}
+        opacity={0.85}
+      >
+        {wrapText(gua.judgmentEn, Math.floor((width - 80) / 6.5)).map((line, i) => (
+          <tspan key={i} x={width / 2} dy={i === 0 ? 0 : 19}>
+            {line}
+          </tspan>
+        ))}
+      </text>
 
       {/* 关键词（CyberTao带霓虹发光） */}
       <g transform={`translate(${width / 2}, ${height - 180})`} filter={textFilter}>

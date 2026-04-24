@@ -1,73 +1,29 @@
 /**
  * Style Recommendation Test Suite — 风格推荐算法测试集
  *
- * 使用简单 assert 函数，无外部测试框架依赖。
- * 覆盖不同五行、运势、分类的组合，验证推荐核心逻辑。
+ * Vitest 格式，覆盖不同五行、运势、分类的组合，验证推荐核心逻辑。
  */
 
+import { describe, it, expect } from 'vitest';
 import { recommendStyle, type StyleRecommendation } from '@/lib/recommendStyle';
 import type { Gua64 } from '@/data/gua64';
 import type { HexagramTalisman } from '@/data/hexagram-talismans';
 
 /* ------------------------------------------------------------------ */
-/* 极简 assert 工具                                                    */
+/* 辅助：校验主推荐在候选列表中                                        */
 /* ------------------------------------------------------------------ */
 
-let passCount = 0;
-let failCount = 0;
-const failures: string[] = [];
-
-function assertEqual<T>(actual: T, expected: T, message: string) {
-  if (actual === expected) {
-    passCount++;
-  } else {
-    failCount++;
-    failures.push(`FAIL: ${message}\n  expected: ${expected}\n  actual: ${actual}`);
-  }
+function expectPrimary(rec: StyleRecommendation, acceptable: string[], testName: string) {
+  expect(acceptable, `${testName} — primary should be one of [${acceptable.join(', ')}]`).toContain(rec.primary);
 }
 
-function assertPrimary(
-  rec: StyleRecommendation,
-  expectedPrimary: string | string[],
-  testName: string
-) {
-  const acceptable = Array.isArray(expectedPrimary) ? expectedPrimary : [expectedPrimary];
-  if (acceptable.includes(rec.primary)) {
-    passCount++;
-  } else {
-    failCount++;
-    failures.push(`FAIL: ${testName} — primary\n  expected: ${acceptable.join(' or ')}\n  actual: ${rec.primary}`);
-  }
+function expectSecondary(rec: StyleRecommendation, acceptable: string[], testName: string) {
+  expect(acceptable, `${testName} — secondary should be one of [${acceptable.join(', ')}]`).toContain(rec.secondary);
 }
 
-function assertSecondary(
-  rec: StyleRecommendation,
-  expectedSecondary: string | string[],
-  testName: string
-) {
-  const acceptable = Array.isArray(expectedSecondary) ? expectedSecondary : [expectedSecondary];
-  if (acceptable.includes(rec.secondary)) {
-    passCount++;
-  } else {
-    failCount++;
-    failures.push(`FAIL: ${testName} — secondary\n  expected: ${acceptable.join(' or ')}\n  actual: ${rec.secondary}`);
-  }
-}
-
-function assertConfidenceRange(
-  rec: StyleRecommendation,
-  min: number,
-  max: number,
-  testName: string
-) {
-  if (rec.confidence >= min && rec.confidence <= max) {
-    passCount++;
-  } else {
-    failCount++;
-    failures.push(
-      `FAIL: ${testName} — confidence out of range [${min}, ${max}]\n  actual: ${rec.confidence}`
-    );
-  }
+function expectConfidenceRange(rec: StyleRecommendation, min: number, max: number, testName: string) {
+  expect(rec.confidence, `${testName} — confidence should be in [${min}, ${max}]`).toBeGreaterThanOrEqual(min);
+  expect(rec.confidence, `${testName} — confidence should be in [${min}, ${max}]`).toBeLessThanOrEqual(max);
 }
 
 /* ------------------------------------------------------------------ */
@@ -110,12 +66,11 @@ function makeTalisman(category: HexagramTalisman['category']): HexagramTalisman 
 }
 
 /* ------------------------------------------------------------------ */
-/* 12 组测试用例                                                       */
+/* 15 组测试用例                                                       */
 /* ------------------------------------------------------------------ */
 
-function runTests() {
-  /* 1. 乾为天 — 金 + 大吉 + 天官赐福 → royal (三重强匹配) */
-  {
+describe('Style Recommendation', () => {
+  it('乾为天 (金/大吉/天官赐福) — primary should be royal or blackgold', () => {
     const gua = makeGua({
       name: '乾为天',
       element: '金',
@@ -124,13 +79,12 @@ function runTests() {
     });
     const talisman = makeTalisman('天官赐福');
     const rec = recommendStyle(gua, talisman);
-    assertPrimary(rec, ['royal', 'blackgold'], '乾为天 (金/大吉/天官赐福)');
-    assertSecondary(rec, ['blackgold', 'royal'], '乾为天 (金/大吉/天官赐福)');
-    assertConfidenceRange(rec, 0.70, 1.0, '乾为天');
-  }
+    expectPrimary(rec, ['royal', 'blackgold'], '乾为天 (金/大吉/天官赐福)');
+    expectSecondary(rec, ['blackgold', 'royal'], '乾为天 (金/大吉/天官赐福)');
+    expectConfidenceRange(rec, 0.70, 1.0, '乾为天');
+  });
 
-  /* 2. 坤为地 — 土 + 大吉 + 地母护身 → vintage (土+地母双强) */
-  {
+  it('坤为地 (土/大吉/地母护身) — primary should be zengarden or vintage', () => {
     const gua = makeGua({
       name: '坤为地',
       element: '土',
@@ -139,13 +93,12 @@ function runTests() {
     });
     const talisman = makeTalisman('地母护身');
     const rec = recommendStyle(gua, talisman);
-    assertPrimary(rec, ['zengarden', 'vintage'], '坤为地 (土/大吉/地母护身)');
-    assertSecondary(rec, ['vintage', 'tianshi'], '坤为地 (土/大吉/地母护身)');
-    assertConfidenceRange(rec, 0.45, 0.90, '坤为地');
-  }
+    expectPrimary(rec, ['zengarden', 'vintage'], '坤为地 (土/大吉/地母护身)');
+    expectSecondary(rec, ['vintage', 'tianshi'], '坤为地 (土/大吉/地母护身)');
+    expectConfidenceRange(rec, 0.45, 0.90, '坤为地');
+  });
 
-  /* 3. 火天大有 — 火 + 大吉 + 财运亨通 → blackgold (火+大吉+财运三重) */
-  {
+  it('火天大有 (火/大吉/财运亨通) — primary should be blackgold or royal', () => {
     const gua = makeGua({
       name: '火天大有',
       element: '火',
@@ -154,13 +107,12 @@ function runTests() {
     });
     const talisman = makeTalisman('财运亨通');
     const rec = recommendStyle(gua, talisman);
-    assertPrimary(rec, ['blackgold', 'royal'], '火天大有 (火/大吉/财运亨通)');
-    assertSecondary(rec, ['royal', 'blackgold'], '火天大有 (火/大吉/财运亨通)');
-    assertConfidenceRange(rec, 0.65, 1.0, '火天大有');
-  }
+    expectPrimary(rec, ['blackgold', 'royal'], '火天大有 (火/大吉/财运亨通)');
+    expectSecondary(rec, ['royal', 'blackgold'], '火天大有 (火/大吉/财运亨通)');
+    expectConfidenceRange(rec, 0.65, 1.0, '火天大有');
+  });
 
-  /* 4. 水雷屯 — 水 + 中吉 + 转运破厄 → dark (水+转运+Difficult关键词) */
-  {
+  it('水雷屯 (水/中吉/转运破厄) — primary should be dark or tianshi', () => {
     const gua = makeGua({
       name: '水雷屯',
       element: '水',
@@ -169,13 +121,12 @@ function runTests() {
     });
     const talisman = makeTalisman('转运破厄');
     const rec = recommendStyle(gua, talisman);
-    assertPrimary(rec, ['dark', 'tianshi'], '水雷屯 (水/中吉/转运破厄)');
-    assertSecondary(rec, ['tianshi', 'dark'], '水雷屯 (水/中吉/转运破厄)');
-    assertConfidenceRange(rec, 0.35, 0.75, '水雷屯');
-  }
+    expectPrimary(rec, ['dark', 'tianshi'], '水雷屯 (水/中吉/转运破厄)');
+    expectSecondary(rec, ['tianshi', 'dark'], '水雷屯 (水/中吉/转运破厄)');
+    expectConfidenceRange(rec, 0.35, 0.75, '水雷屯');
+  });
 
-  /* 5. 风天小畜 — 木 + 中平 + 财运亨通 → ink (木+中平+平安关键词) */
-  {
+  it('风天小畜 (木/中平/财运亨通) — primary should be zengarden or ink', () => {
     const gua = makeGua({
       name: '风天小畜',
       element: '木',
@@ -184,13 +135,12 @@ function runTests() {
     });
     const talisman = makeTalisman('财运亨通');
     const rec = recommendStyle(gua, talisman);
-    assertPrimary(rec, ['zengarden', 'ink'], '风天小畜 (木/中平/财运亨通)');
-    assertSecondary(rec, ['ink', 'vintage'], '风天小畜 (木/中平/财运亨通)');
-    assertConfidenceRange(rec, 0.50, 0.90, '风天小畜');
-  }
+    expectPrimary(rec, ['zengarden', 'ink'], '风天小畜 (木/中平/财运亨通)');
+    expectSecondary(rec, ['ink', 'vintage'], '风天小畜 (木/中平/财运亨通)');
+    expectConfidenceRange(rec, 0.50, 0.90, '风天小畜');
+  });
 
-  /* 6. 天水讼 — 金 + 小凶 + 转运破厄 → dark (金+小凶+转运+Conflict) */
-  {
+  it('天水讼 (金/小凶/转运破厄) — primary should be dark or blackgold', () => {
     const gua = makeGua({
       name: '天水讼',
       element: '金',
@@ -199,13 +149,12 @@ function runTests() {
     });
     const talisman = makeTalisman('转运破厄');
     const rec = recommendStyle(gua, talisman);
-    assertPrimary(rec, ['dark', 'blackgold'], '天水讼 (金/小凶/转运破厄)');
-    assertSecondary(rec, ['cybertao', 'vintage'], '天水讼 (金/小凶/转运破厄)');
-    assertConfidenceRange(rec, 0.65, 1.0, '天水讼');
-  }
+    expectPrimary(rec, ['dark', 'blackgold'], '天水讼 (金/小凶/转运破厄)');
+    expectSecondary(rec, ['cybertao', 'vintage'], '天水讼 (金/小凶/转运破厄)');
+    expectConfidenceRange(rec, 0.65, 1.0, '天水讼');
+  });
 
-  /* 7. 地水师 — 土 + 中吉 + 武运昌隆 → tianshi (土+中吉压过武运) */
-  {
+  it('地水师 (土/中吉/武运昌隆) — primary should be tianshi or zengarden', () => {
     const gua = makeGua({
       name: '地水师',
       element: '土',
@@ -214,13 +163,12 @@ function runTests() {
     });
     const talisman = makeTalisman('武运昌隆');
     const rec = recommendStyle(gua, talisman);
-    assertPrimary(rec, ['tianshi', 'zengarden'], '地水师 (土/中吉/武运昌隆)');
-    assertSecondary(rec, ['vintage', 'zengarden'], '地水师 (土/中吉/武运昌隆)');
-    assertConfidenceRange(rec, 0.40, 0.80, '地水师');
-  }
+    expectPrimary(rec, ['tianshi', 'zengarden'], '地水师 (土/中吉/武运昌隆)');
+    expectSecondary(rec, ['vintage', 'zengarden'], '地水师 (土/中吉/武运昌隆)');
+    expectConfidenceRange(rec, 0.40, 0.80, '地水师');
+  });
 
-  /* 8. 山水蒙 — 土 + 吉 + 文昌启智 → vintage (土+吉压过文昌) */
-  {
+  it('山水蒙 (土/吉/文昌启智) — primary should be vintage or zengarden', () => {
     const gua = makeGua({
       name: '山水蒙',
       element: '土',
@@ -229,13 +177,12 @@ function runTests() {
     });
     const talisman = makeTalisman('文昌启智');
     const rec = recommendStyle(gua, talisman);
-    assertPrimary(rec, ['vintage', 'zengarden'], '山水蒙 (土/吉/文昌启智)');
-    assertSecondary(rec, ['ink', 'zengarden'], '山水蒙 (土/吉/文昌启智)');
-    assertConfidenceRange(rec, 0.45, 0.85, '山水蒙');
-  }
+    expectPrimary(rec, ['vintage', 'zengarden'], '山水蒙 (土/吉/文昌启智)');
+    expectSecondary(rec, ['ink', 'zengarden'], '山水蒙 (土/吉/文昌启智)');
+    expectConfidenceRange(rec, 0.45, 0.85, '山水蒙');
+  });
 
-  /* 9. 天地否 — 金 + 小凶 + 转运破厄 → dark (金+小凶+转运+Stagnation) */
-  {
+  it('天地否 (金/小凶/转运破厄) — primary should be dark or blackgold', () => {
     const gua = makeGua({
       name: '天地否',
       element: '金',
@@ -244,13 +191,12 @@ function runTests() {
     });
     const talisman = makeTalisman('转运破厄');
     const rec = recommendStyle(gua, talisman);
-    assertPrimary(rec, ['dark', 'blackgold'], '天地否 (金/小凶/转运破厄)');
-    assertSecondary(rec, ['cybertao', 'royal'], '天地否 (金/小凶/转运破厄)');
-    assertConfidenceRange(rec, 0.65, 1.0, '天地否');
-  }
+    expectPrimary(rec, ['dark', 'blackgold'], '天地否 (金/小凶/转运破厄)');
+    expectSecondary(rec, ['cybertao', 'royal'], '天地否 (金/小凶/转运破厄)');
+    expectConfidenceRange(rec, 0.65, 1.0, '天地否');
+  });
 
-  /* 10. 天火同人 — 金 + 中吉 + 姻缘和合 → vintage (姻缘+Unity/Harmony关键词) */
-  {
+  it('天火同人 (金/中吉/姻缘和合) — primary should be vintage or zengarden', () => {
     const gua = makeGua({
       name: '天火同人',
       element: '金',
@@ -259,13 +205,12 @@ function runTests() {
     });
     const talisman = makeTalisman('姻缘和合');
     const rec = recommendStyle(gua, talisman);
-    assertPrimary(rec, ['vintage', 'zengarden'], '天火同人 (金/中吉/姻缘和合)');
-    assertSecondary(rec, ['tianshi', 'zengarden'], '天火同人 (金/中吉/姻缘和合)');
-    assertConfidenceRange(rec, 0.50, 0.90, '天火同人');
-  }
+    expectPrimary(rec, ['vintage', 'zengarden'], '天火同人 (金/中吉/姻缘和合)');
+    expectSecondary(rec, ['tianshi', 'zengarden'], '天火同人 (金/中吉/姻缘和合)');
+    expectConfidenceRange(rec, 0.50, 0.90, '天火同人');
+  });
 
-  /* 11. 雷地豫 — 木 + 中吉 + 平安顺遂 → ink (木+平安) */
-  {
+  it('雷地豫 (木/中吉/平安顺遂) — primary should be zengarden or ink', () => {
     const gua = makeGua({
       name: '雷地豫',
       element: '木',
@@ -274,13 +219,12 @@ function runTests() {
     });
     const talisman = makeTalisman('平安顺遂');
     const rec = recommendStyle(gua, talisman);
-    assertPrimary(rec, ['zengarden', 'ink'], '雷地豫 (木/中吉/平安顺遂)');
-    assertSecondary(rec, ['ink', 'vintage'], '雷地豫 (木/中吉/平安顺遂)');
-    assertConfidenceRange(rec, 0.45, 0.85, '雷地豫');
-  }
+    expectPrimary(rec, ['zengarden', 'ink'], '雷地豫 (木/中吉/平安顺遂)');
+    expectSecondary(rec, ['ink', 'vintage'], '雷地豫 (木/中吉/平安顺遂)');
+    expectConfidenceRange(rec, 0.45, 0.85, '雷地豫');
+  });
 
-  /* 12. 天泽履 — 金 + 中吉 + 平安顺遂 → vintage (金+平安+Caution关键词) */
-  {
+  it('天泽履 (金/中吉/平安顺遂) — primary should be vintage or zengarden', () => {
     const gua = makeGua({
       name: '天泽履',
       element: '金',
@@ -289,13 +233,12 @@ function runTests() {
     });
     const talisman = makeTalisman('平安顺遂');
     const rec = recommendStyle(gua, talisman);
-    assertPrimary(rec, ['vintage', 'zengarden'], '天泽履 (金/中吉/平安顺遂)');
-    assertSecondary(rec, ['cybertao', 'dark'], '天泽履 (金/中吉/平安顺遂)');
-    assertConfidenceRange(rec, 0.45, 0.85, '天泽履');
-  }
+    expectPrimary(rec, ['vintage', 'zengarden'], '天泽履 (金/中吉/平安顺遂)');
+    expectSecondary(rec, ['cybertao', 'dark'], '天泽履 (金/中吉/平安顺遂)');
+    expectConfidenceRange(rec, 0.45, 0.85, '天泽履');
+  });
 
-  /* 13. 额外验证：吉 + 文昌启智 + 水 → ink (文昌+水双重匹配) */
-  {
+  it('水天需 (水/吉/文昌启智) — primary should be ink or cybertao', () => {
     const gua = makeGua({
       name: '水天需',
       element: '水',
@@ -304,13 +247,12 @@ function runTests() {
     });
     const talisman = makeTalisman('文昌启智');
     const rec = recommendStyle(gua, talisman);
-    assertPrimary(rec, ['ink', 'cybertao'], '水天需 (水/吉/文昌启智)');
-    assertSecondary(rec, ['dark', 'cybertao'], '水天需 (水/吉/文昌启智)');
-    assertConfidenceRange(rec, 0.70, 1.0, '水天需');
-  }
+    expectPrimary(rec, ['ink', 'cybertao'], '水天需 (水/吉/文昌启智)');
+    expectSecondary(rec, ['dark', 'cybertao'], '水天需 (水/吉/文昌启智)');
+    expectConfidenceRange(rec, 0.70, 1.0, '水天需');
+  });
 
-  /* 14. 额外验证：火 + 武运昌隆 + 凶 → blackgold (武运强匹配) */
-  {
+  it('离为火 (火/吉/武运昌隆) — primary should be blackgold or royal', () => {
     const gua = makeGua({
       name: '离为火',
       element: '火',
@@ -319,13 +261,12 @@ function runTests() {
     });
     const talisman = makeTalisman('武运昌隆');
     const rec = recommendStyle(gua, talisman);
-    assertPrimary(rec, ['blackgold', 'royal'], '离为火 (火/吉/武运昌隆)');
-    assertSecondary(rec, ['royal', 'blackgold'], '离为火 (火/吉/武运昌隆)');
-    assertConfidenceRange(rec, 0.45, 0.85, '离为火');
-  }
+    expectPrimary(rec, ['blackgold', 'royal'], '离为火 (火/吉/武运昌隆)');
+    expectSecondary(rec, ['royal', 'blackgold'], '离为火 (火/吉/武运昌隆)');
+    expectConfidenceRange(rec, 0.45, 0.85, '离为火');
+  });
 
-  /* 15. 额外验证：土 + 吉 + 姻缘和合 → vintage (土+吉+姻缘三重) */
-  {
+  it('地天泰 (土/大吉/姻缘和合) — primary should be zengarden or vintage', () => {
     const gua = makeGua({
       name: '地天泰',
       element: '土',
@@ -334,29 +275,8 @@ function runTests() {
     });
     const talisman = makeTalisman('姻缘和合');
     const rec = recommendStyle(gua, talisman);
-    assertPrimary(rec, ['zengarden', 'vintage'], '地天泰 (土/大吉/姻缘和合)');
-    assertSecondary(rec, ['vintage', 'tianshi'], '地天泰 (土/大吉/姻缘和合)');
-    assertConfidenceRange(rec, 0.45, 0.90, '地天泰');
-  }
-}
-
-/* ------------------------------------------------------------------ */
-/* 执行 & 报告                                                         */
-/* ------------------------------------------------------------------ */
-
-runTests();
-
-console.log(`\n========================================`);
-console.log(`Style Recommendation Test Results`);
-console.log(`========================================`);
-console.log(`Passed: ${passCount}`);
-console.log(`Failed: ${failCount}`);
-console.log(`Total:  ${passCount + failCount}`);
-
-if (failures.length > 0) {
-  console.log(`\n--- Failure Details ---`);
-  failures.forEach(f => console.log(f));
-  throw new Error(`${failCount} test(s) failed`);
-} else {
-  console.log(`\nAll tests passed!`);
-}
+    expectPrimary(rec, ['zengarden', 'vintage'], '地天泰 (土/大吉/姻缘和合)');
+    expectSecondary(rec, ['vintage', 'tianshi'], '地天泰 (土/大吉/姻缘和合)');
+    expectConfidenceRange(rec, 0.45, 0.90, '地天泰');
+  });
+});

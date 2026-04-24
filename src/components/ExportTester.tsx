@@ -46,7 +46,7 @@ interface TestResult {
 
 /* ─── 常量 ─── */
 
-const STYLE_ORDER: PosterStyleName[] = ['ink', 'dark', 'royal', 'vintage', 'tianshi', 'blackgold'];
+const STYLE_ORDER: PosterStyleName[] = ['ink', 'dark', 'royal', 'vintage', 'tianshi', 'blackgold', 'cybertao', 'zengarden'];
 const TEST_GUA = GUA64_LIST[0]; // 乾为天
 const TEST_TALISMAN = HEXAGRAM_TALISMANS[TEST_GUA.name] ?? {
   hexagramName: TEST_GUA.name,
@@ -150,6 +150,8 @@ export const ExportTester: React.FC = () => {
       vintage: undefined,
       tianshi: undefined,
       blackgold: undefined,
+      cybertao: undefined,
+      zengarden: undefined,
     })
   );
   const [runningStyle, setRunningStyle] = useState<PosterStyleName | null>(null);
