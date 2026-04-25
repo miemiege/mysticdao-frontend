@@ -28,12 +28,16 @@ const staggerItem = {
 const RotatingMandala = memo(function RotatingMandala() {
   return (
     <div className="absolute inset-0 flex items-center justify-center pointer-events-none select-none">
-      <img
-        src="./hero-mandala-bg.png"
-        alt=""
-        className="w-[800px] h-[800px] lg:w-[1000px] lg:h-[1000px] object-contain opacity-[0.15] animate-spin-slow"
-        aria-hidden="true"
-      />
+      <picture>
+        <source srcSet="./hero-mandala-bg.webp" type="image/webp" />
+        <img
+          src="./hero-mandala-bg.png"
+          alt=""
+          className="w-[800px] h-[800px] lg:w-[1000px] lg:h-[1000px] object-contain opacity-[0.15] animate-spin-slow"
+          aria-hidden="true"
+          loading="lazy"
+        />
+      </picture>
     </div>
   );
 });
@@ -41,13 +45,15 @@ const RotatingMandala = memo(function RotatingMandala() {
 const MandalaMemo = RotatingMandala;
 
 /* ─── Particle Field (Canvas) ─── */
-const ParticleField = memo(function ParticleField({ count = 150 }: { count?: number }) {
+const ParticleField = memo(function ParticleField({ count = 30 }: { count?: number }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
-    const ctx = canvas.getContext('2d');
+    // 检测 prefers-reduced-motion，尊重用户设置
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    const ctx = canvas.getContext('2d', { willReadFrequently: false });
     if (!ctx) return;
 
     let animId: number;
@@ -144,17 +150,20 @@ function HeroSection() {
 
       {/* Layer 1.5: Ink Wash Background */}
       <div className="absolute inset-0 z-[0.5]">
-        <img
-          src="/hero-ink-wash-bg.jpg"
-          alt=""
-          className="w-full h-full object-cover opacity-[0.12]"
-          aria-hidden="true"
-        />
+        <picture>
+          <source srcSet="/hero-ink-wash-bg.webp" type="image/webp" />
+          <img
+            src="/hero-ink-wash-bg.jpg"
+            alt=""
+            className="w-full h-full object-cover opacity-[0.12]"
+            aria-hidden="true"
+          />
+        </picture>
       </div>
 
       {/* Layer 2: Particle field */}
       <div className="absolute inset-0 z-[1]">
-        <ParticleField count={80} />
+        <ParticleField count={20} />
       </div>
 
       {/* Layer 3: Mandala */}
@@ -165,12 +174,16 @@ function HeroSection() {
         style={{ y: fogY }}
         className="absolute inset-0 z-[3] pointer-events-none"
       >
-        <img
-          src="./hero-fog-layer.png"
-          alt=""
-          className="w-full h-full object-cover opacity-[0.08]"
-          aria-hidden="true"
-        />
+        <picture>
+          <source srcSet="./hero-fog-layer.webp" type="image/webp" />
+          <img
+            src="./hero-fog-layer.png"
+            alt=""
+            className="w-full h-full object-cover opacity-[0.08]"
+            aria-hidden="true"
+            loading="lazy"
+          />
+        </picture>
       </motion.div>
 
       {/* Layer 5: Vignette */}
@@ -757,7 +770,7 @@ function CTASection() {
         style={{ background: 'radial-gradient(ellipse at 50% 50%, rgba(200,164,92,0.06) 0%, transparent 60%)' }}
       />
       <div className="absolute inset-0 z-[1]">
-        <ParticleField count={40} />
+        <ParticleField count={12} />
       </div>
 
       <motion.div
