@@ -242,13 +242,23 @@ export async function exportPosterToImage(
 }
 
 /** 触发图片下载 */
-export function downloadImage(url: string, filename: string): void {
+export function downloadImage(url: string, filename: string, hexagramName?: string, score?: number, style?: string): void {
   const a = document.createElement('a');
   a.href = url;
   a.download = filename;
   document.body.appendChild(a);
   a.click();
   document.body.removeChild(a);
+
+  // GA4 tracking
+  if (typeof gtag === 'function' && hexagramName) {
+    gtag('event', 'poster_export', {
+      event_category: 'engagement',
+      event_label: hexagramName,
+      value: score || 0,
+      custom_parameter_1: style || 'unknown',
+    });
+  }
 }
 
 /** 释放 object URL */
