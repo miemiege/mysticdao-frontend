@@ -1,5 +1,4 @@
 import React, { useCallback, useRef, useState } from 'react';
-import html2canvas from 'html2canvas';
 import { motion } from 'framer-motion';
 import { Download, Copy } from 'lucide-react';
 import { toast } from 'sonner';
@@ -55,6 +54,7 @@ const SharePoster: React.FC<SharePosterProps> = ({
     setIsGenerating(true);
 
     try {
+      const { default: html2canvas } = await import('html2canvas');
       const canvas = await html2canvas(posterRef.current, {
         scale: 1,
         backgroundColor: '#000000',

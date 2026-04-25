@@ -5,9 +5,11 @@ import { Sparkles, RotateCcw, Heart, Share2, Star, Volume2, VolumeX, ChevronDown
 import ScoreRing from '@/components/daily/ScoreRing';
 import LuckyInfo from '@/components/daily/LuckyInfo';
 import RitualDrawing from '@/components/daily/RitualDrawing';
-import SharePoster from '@/components/daily/SharePoster';
 import TalismanRenderer from '@/components/talisman/TalismanRenderer';
-import ShareCard from '@/components/share/ShareCard';
+
+// 延迟加载导出相关组件（减少首屏 bundle）
+const SharePoster = React.lazy(() => import('@/components/daily/SharePoster'));
+const ShareCard = React.lazy(() => import('@/components/share/ShareCard'));
 import TalismanPosterLazy from '@/components/TalismanPosterLazy';
 import { useStyleRecommendation } from '@/hooks/useStyleRecommendation';
 import type { ToneType } from '@/lib/recommendStyle';
@@ -942,16 +944,18 @@ const Daily: React.FC = () => {
                 {/* ShareCard Modal */}
                 <AnimatePresence>
                   {showShareCard && fortune && (
-                    <ShareCard
-                      hexagramName={fortune.card.name}
-                      blessingTheme={fortune.card.keyword}
-                      element={(() => { const gua = GUA64_LIST.find((g) => g.name === fortune.card.name); return gua?.element || '金'; })()}
-                      category={(() => { const t = getHexagramTalisman(fortune.card.name); return t.category; })()}
-                      seed={(() => { const gua = GUA64_LIST.find((g) => g.name === fortune.card.name); return gua?.number || 1; })()}
-                      score={fortune.overallScore}
-                      goldenQuote={(() => { const gua = GUA64_LIST.find((g) => g.name === fortune.card.name); return gua?.image || `${fortune.card.name} · ${fortune.card.keyword}`; })()}
-                      onClose={() => setShowShareCard(false)}
-                    />
+                    <React.Suspense fallback={null}>
+                      <ShareCard
+                        hexagramName={fortune.card.name}
+                        blessingTheme={fortune.card.keyword}
+                        element={(() => { const gua = GUA64_LIST.find((g) => g.name === fortune.card.name); return gua?.element || '金'; })()}
+                        category={(() => { const t = getHexagramTalisman(fortune.card.name); return t.category; })()}
+                        seed={(() => { const gua = GUA64_LIST.find((g) => g.name === fortune.card.name); return gua?.number || 1; })()}
+                        score={fortune.overallScore}
+                        goldenQuote={(() => { const gua = GUA64_LIST.find((g) => g.name === fortune.card.name); return gua?.image || `${fortune.card.name} · ${fortune.card.keyword}`; })()}
+                        onClose={() => setShowShareCard(false)}
+                      />
+                    </React.Suspense>
                   )}
                 </AnimatePresence>
               </motion.div>

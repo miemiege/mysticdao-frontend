@@ -5,7 +5,6 @@
  */
 
 import React, { useRef, useState, useCallback } from 'react';
-import html2canvas from 'html2canvas';
 import { motion } from 'framer-motion';
 import { Download, Copy, X, Instagram, Twitter, MessageCircle, Monitor, Smartphone, Check } from 'lucide-react';
 import { toast } from 'sonner';
@@ -56,6 +55,7 @@ const ShareCard: React.FC<ShareCardProps> = ({
     if (!cardRef.current) return;
     setIsGenerating(true);
     try {
+      const { default: html2canvas } = await import('html2canvas');
       const canvas = await html2canvas(cardRef.current, {
         width: config.width,
         height: config.height,
