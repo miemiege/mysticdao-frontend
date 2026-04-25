@@ -104,3 +104,30 @@ export function trackShare(
     extra: { style, guaName },
   });
 }
+
+/** 卦象抽取埋点 */
+export function trackHexagramDraw(
+  hexagramName: string,
+  score: number,
+  source: 'daily' | 'manual' = 'daily'
+): void {
+  trackEvent({
+    action: 'hexagram_draw',
+    category: 'Hexagram',
+    label: hexagramName,
+    value: score,
+    extra: { hexagramName, score, source },
+  });
+}
+
+/** 每日运势页面浏览埋点 */
+export function trackPageViewDaily(
+  alreadyDrawn: boolean = false
+): void {
+  trackEvent({
+    action: 'page_view_daily',
+    category: 'PageView',
+    label: alreadyDrawn ? 'returning' : 'fresh',
+    extra: { alreadyDrawn, page: 'daily' },
+  });
+}

@@ -18,6 +18,7 @@ import type { HexagramTalisman } from '@/data/hexagram-talismans'
 import type { PosterStyleName } from '@/lib/posterStyles'
 import { TalismanPosterV2 } from '@/components/TalismanPosterV2'
 import { useStyleRecommendation } from '@/hooks/useStyleRecommendation'
+import { trackEvent } from '@/lib/analytics'
 
 export type ShareCardSize = 'sm' | 'md' | 'lg' | 'social'
 
@@ -120,11 +121,23 @@ export const ShareCard = React.forwardRef<SVGSVGElement, ShareCardProps>(
     const [copied, setCopied] = useState(false)
 
     const handleShareTwitter = useCallback(() => {
+      trackEvent({
+        action: 'share_click',
+        category: 'Social',
+        label: 'twitter',
+        extra: { platform: 'twitter', hexagram: gua.name },
+      });
       const text = encodeURIComponent(shareText)
       window.open(`https://twitter.com/intent/tweet?text=${text}`, '_blank', 'noopener,noreferrer')
-    }, [shareText])
+    }, [shareText, gua.name])
 
     const handleCopyLink = useCallback(async () => {
+      trackEvent({
+        action: 'share_click',
+        category: 'Social',
+        label: 'copy_link',
+        extra: { platform: 'copy_link', hexagram: gua.name },
+      });
       try {
         await navigator.clipboard.writeText(shareUrl)
         setCopied(true)
@@ -141,12 +154,18 @@ export const ShareCard = React.forwardRef<SVGSVGElement, ShareCardProps>(
         setCopied(true)
         setTimeout(() => setCopied(false), 2000)
       }
-    }, [shareUrl])
+    }, [shareUrl, gua.name])
 
     const handleShareWhatsApp = useCallback(() => {
+      trackEvent({
+        action: 'share_click',
+        category: 'Social',
+        label: 'whatsapp',
+        extra: { platform: 'whatsapp', hexagram: gua.name },
+      });
       const text = encodeURIComponent(shareText)
       window.open(`https://wa.me/?text=${text}`, '_blank', 'noopener,noreferrer')
-    }, [shareText])
+    }, [shareText, gua.name])
 
     const shareStyles = useMemo(
       () => ({

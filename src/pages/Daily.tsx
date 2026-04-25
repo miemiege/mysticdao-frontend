@@ -22,6 +22,7 @@ import { useRitualSound } from '@/hooks/useRitualSound';
 import { fetchAIInterpretation } from '@/services/api';
 import { getDailyState, saveDailyState, addHistory, addFavorite, isFavorite } from '@/lib/storage';
 import { toast } from 'sonner';
+import { trackEvent, trackHexagramDraw, trackPageViewDaily } from '@/lib/analytics';
 
 type Step = 'idle' | 'drawing' | 'loading' | 'result';
 
@@ -250,6 +251,9 @@ const Daily: React.FC = () => {
         setReadingSegments(splitIntoSegments(saved.reading || ''));
         setAlreadyDrawn(true);
         setStep('result');
+        trackPageViewDaily(true);
+      } else {
+        trackPageViewDaily(false);
       }
     }
   }, []);
@@ -288,6 +292,7 @@ const Daily: React.FC = () => {
     setShowFollowUpButtons(false);
     setHexagramDrawn(false);
     setStep('drawing');
+    trackHexagramDraw(f.card.name, f.overallScore, 'daily');
   }, []);
 
   const handleRitualComplete = useCallback(() => {
@@ -577,7 +582,16 @@ const Daily: React.FC = () => {
                           return (
                             <button
                               key={key}
-                              onClick={() => setSelectedStyle(key as PosterStyleName)}
+                              onClick={() => {
+                                const prevStyle = activeStyle;
+                                setSelectedStyle(key as PosterStyleName);
+                                trackEvent({
+                                  action: 'style_switch',
+                                  category: 'Poster',
+                                  label: `${prevStyle} → ${key}`,
+                                  extra: { fromStyle: prevStyle, toStyle: key, context: 'manual' },
+                                });
+                              }}
                               className={`group flex flex-col items-center gap-1 transition-all cursor-pointer ${
                                 isActive ? 'scale-110' : 'opacity-60 hover:opacity-100'
                               }`}

@@ -3,6 +3,8 @@
  * 当 html2canvas 和 SVG 序列化均失败时，使用 Canvas API 进行保底绘制
  */
 
+import { trackEvent } from './analytics';
+
 export interface PosterData {
   style: string;
   title?: string;
@@ -250,14 +252,21 @@ export function downloadImage(url: string, filename: string, hexagramName?: stri
   a.click();
   document.body.removeChild(a);
 
-  // GA4 tracking
-  const w = window as unknown as { gtag?: (...args: unknown[]) => void };
-  if (typeof w.gtag === 'function' && hexagramName) {
-    w.gtag('event', 'poster_export', {
-      event_category: 'engagement',
-      event_label: hexagramName,
+  // GA4 tracking via unified analytics
+  trackEvent({
+    action: 'poster_export',
+    category: 'engagement',
+    label: hexagramName || 'unknown',
+    value: score || 0,
+    extra: { style: style || 'unknown' },
+  });
+  if (hexagramName) {
+    trackEvent({
+      action: 'hexagram_draw',
+      category: 'Hexagram',
+      label: hexagramName,
       value: score || 0,
-      custom_parameter_1: style || 'unknown',
+      extra: { style: style || 'unknown', source: 'export' },
     });
   }
 }

@@ -27,6 +27,7 @@ import type { HexagramTalisman } from '@/data/hexagram-talismans'
 import type { PosterStyleName } from '@/lib/posterStyles'
 import { POSTER_STYLES } from '@/lib/posterStyles'
 import { ShareCard } from './ShareCard'
+import { trackStyleSwitch } from '@/lib/analytics'
 
 export interface ShareCardContainerItem {
   gua: Gua64
@@ -69,8 +70,10 @@ export const ShareCardContainer: React.FC<ShareCardContainerProps> = ({
   const [copiedMap, setCopiedMap] = useState<Record<number, boolean>>({})
 
   const handleStyleChange = useCallback((guaNumber: number, newStyle: PosterStyleName) => {
-    setStyles((prev) => ({ ...prev, [guaNumber]: newStyle }))
-  }, [])
+    const oldStyle = styles[guaNumber] ?? 'ink';
+    setStyles((prev) => ({ ...prev, [guaNumber]: newStyle }));
+    trackStyleSwitch(oldStyle, newStyle, 'manual');
+  }, [styles])
 
   const handleCopy = useCallback(
     (gua: Gua64) => {
