@@ -1,0 +1,184 @@
+/**
+ * Daily Page — 共享 CSS Animations（替代 framer-motion）
+ */
+
+/* ── 基础淡入 ── */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes fadeInDown {
+  from { opacity: 0; transform: translateY(-20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes fadeInScale {
+  from { opacity: 0; transform: scale(0.8); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+/* ── 滑入 ── */
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-30px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ── 缩放 ── */
+@keyframes scaleIn {
+  from { opacity: 0; transform: scale(0.5); }
+  to { opacity: 1; transform: scale(1); }
+}
+@keyframes scaleInSpring {
+  0% { opacity: 0; transform: scale(0.3); }
+  60% { opacity: 1; transform: scale(1.08); }
+  100% { opacity: 1; transform: scale(1); }
+}
+@keyframes scaleInLarge {
+  from { opacity: 0; transform: scale(3) rotate(-20deg); }
+  to { opacity: 1; transform: scale(1) rotate(8deg); }
+}
+
+/* ── 竹筒摇晃 ── */
+@keyframes shakeBamboo {
+  0%, 100% { transform: rotate(0deg) translateX(0); }
+  10% { transform: rotate(-6deg) translateX(-4px); }
+  25% { transform: rotate(8deg) translateX(6px); }
+  40% { transform: rotate(-10deg) translateX(-8px); }
+  55% { transform: rotate(6deg) translateX(5px); }
+  70% { transform: rotate(-5deg) translateX(-3px); }
+  85% { transform: rotate(3deg) translateX(2px); }
+}
+
+/* ── 铜钱落下 ── */
+@keyframes coinDrop {
+  0% { opacity: 0; transform: translateY(-80px) scale(0.5) rotateX(0deg); }
+  40% { opacity: 1; transform: translateY(10px) scale(1.05) rotateX(360deg); }
+  60% { transform: translateY(-5px) scale(0.98) rotateX(400deg); }
+  80% { transform: translateY(2px) scale(1.01) rotateX(440deg); }
+  100% { opacity: 1; transform: translateY(0) scale(1) rotateX(450deg); }
+}
+
+/* ── 六爻点亮 ── */
+@keyframes yaoLightUp {
+  from { opacity: 0; transform: scaleX(0.3); }
+  to { opacity: 1; transform: scaleX(1); }
+}
+
+/* ── 印章落下 ── */
+@keyframes sealStamp {
+  0% { opacity: 0; transform: scale(3) rotate(-20deg); }
+  60% { opacity: 1; transform: scale(0.9) rotate(12deg); }
+  100% { opacity: 1; transform: scale(1) rotate(8deg); }
+}
+
+/* ── 分数弹出 ── */
+@keyframes scorePop {
+  0% { opacity: 0; transform: scale(0.5); }
+  60% { opacity: 1; transform: scale(1.15); }
+  100% { opacity: 1; transform: scale(1); }
+}
+
+/* ── 数字滚动 ── */
+@keyframes rollNumber {
+  from { --num: 0; }
+}
+
+/* ── 太极旋转 ── */
+@keyframes taijiRotate {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* ── 八卦符号环绕 ── */
+@keyframes baguaAppear {
+  from { opacity: 0; transform: scale(0.5) rotate(-180deg); }
+  to { opacity: 1; transform: scale(1) rotate(0deg); }
+}
+
+/* ── 粒子浮动 ── */
+@keyframes particleFloat {
+  0% { opacity: 0; transform: translateY(0) scale(0); }
+  30% { opacity: 0.4; transform: translateY(-15px) scale(1); }
+  60% { opacity: 0.2; transform: translateY(-35px) scale(0.7); }
+  100% { opacity: 0; transform: translateY(-60px) scale(0.3); }
+}
+
+/* ── 光晕脉冲 ── */
+@keyframes glowPulse {
+  0%, 100% { opacity: 0.3; transform: scale(1); }
+  50% { opacity: 0.6; transform: scale(1.05); }
+}
+
+/* ── 加载旋转 ── */
+@keyframes spinLoader {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* ── 渐变色条动画 ── */
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+/* ── 步骤切换过渡 ── */
+.step-transition {
+  animation: fadeIn 0.4s ease-out forwards;
+}
+
+/* ── 渐进式揭示工具类 ── */
+.reveal-1 { animation: fadeInUp 0.6s ease-out 0.1s both; }
+.reveal-2 { animation: scorePop 0.6s ease-out 0.7s both; }
+.reveal-3 { animation: fadeInUp 0.6s ease-out 1.3s both; }
+.reveal-4 { animation: fadeInUp 0.6s ease-out 1.9s both; }
+.reveal-5 { animation: fadeInUp 0.6s ease-out 2.5s both; }
+.reveal-6 { animation: fadeInUp 0.5s ease-out 3.1s both; }
+
+/* ── 六爻依次点亮 ── */
+.yao-1 { animation: yaoLightUp 0.4s ease-out 1.3s both; }
+.yao-2 { animation: yaoLightUp 0.4s ease-out 1.5s both; }
+.yao-3 { animation: yaoLightUp 0.4s ease-out 1.7s both; }
+.yao-4 { animation: yaoLightUp 0.4s ease-out 1.9s both; }
+.yao-5 { animation: yaoLightUp 0.4s ease-out 2.1s both; }
+.yao-6 { animation: yaoLightUp 0.4s ease-out 2.3s both; }
+
+/* ── 竹筒摇晃 ── */
+.bamboo-shake {
+  animation: shakeBamboo 0.45s ease-in-out;
+}
+
+/* ── 铜钱落下动画工具类 ── */
+.coin-drop-1 { animation: coinDrop 0.6s ease-out 2.6s both; }
+.coin-drop-2 { animation: coinDrop 0.6s ease-out 3.0s both; }
+.coin-drop-3 { animation: coinDrop 0.6s ease-out 3.4s both; }
+.coin-drop-4 { animation: coinDrop 0.6s ease-out 3.8s both; }
+.coin-drop-5 { animation: coinDrop 0.6s ease-out 4.2s both; }
+.coin-drop-6 { animation: coinDrop 0.6s ease-out 4.6s both; }
+
+/* ── 海报悬浮 ── */
+.poster-float {
+  animation: float 4s ease-in-out infinite;
+}
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+
+/* ── prefers-reduced-motion 支持 ── */
+@media (prefers-reduced-motion: reduce) {
+  .reveal-1, .reveal-2, .reveal-3, .reveal-4, .reveal-5, .reveal-6,
+  .yao-1, .yao-2, .yao-3, .yao-4, .yao-5, .yao-6,
+  .coin-drop-1, .coin-drop-2, .coin-drop-3, .coin-drop-4, .coin-drop-5, .coin-drop-6,
+  .step-transition, .bamboo-shake, .poster-float {
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}
