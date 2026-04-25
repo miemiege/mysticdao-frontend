@@ -251,8 +251,9 @@ export function downloadImage(url: string, filename: string, hexagramName?: stri
   document.body.removeChild(a);
 
   // GA4 tracking
-  if (typeof gtag === 'function' && hexagramName) {
-    gtag('event', 'poster_export', {
+  const w = window as unknown as { gtag?: (...args: unknown[]) => void };
+  if (typeof w.gtag === 'function' && hexagramName) {
+    w.gtag('event', 'poster_export', {
       event_category: 'engagement',
       event_label: hexagramName,
       value: score || 0,
