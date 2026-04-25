@@ -3,7 +3,6 @@ import { Routes, Route } from 'react-router'
 
 const Home = lazy(() => import('./pages/Home'))
 const Daily = lazy(() => import('./pages/Daily'))
-const FengShui = lazy(() => import('./pages/FengShui'))
 
 const PageFallback = () => (
   <div className="min-h-screen bg-black flex items-center justify-center">
@@ -17,7 +16,6 @@ export default function App() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/daily" element={<Daily />} />
-        <Route path="/fengshui" element={<FengShui />} />
         <Route path="*" element={<Home />} />
       </Routes>
     </Suspense>
