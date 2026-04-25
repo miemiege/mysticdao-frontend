@@ -224,7 +224,7 @@ export const TalismanPosterV2 = React.forwardRef<SVGSVGElement, TalismanPosterV2
       </g>
 
       {/* 底部品牌 */}
-      <text x={width / 2} y={height - 28} textAnchor="middle" fill={config.textColor} fontSize={8} fontFamily={config.fontFamilyEn} letterSpacing="3" opacity={0.4}>
+      <text x={width / 2} y={height - 40} textAnchor="middle" fill={config.textColor} fontSize={8} fontFamily={config.fontFamilyEn} letterSpacing="3" opacity={0.4}>
         MYSTIC DAO
       </text>
 
@@ -232,7 +232,7 @@ export const TalismanPosterV2 = React.forwardRef<SVGSVGElement, TalismanPosterV2
       {showFooter && (
         <text
           x={width / 2}
-          y={height - 12}
+          y={height - 24}
           textAnchor="middle"
           fill={config.footerColor}
           fontSize={8}
@@ -243,6 +243,20 @@ export const TalismanPosterV2 = React.forwardRef<SVGSVGElement, TalismanPosterV2
           MYSTIC DAO · 1 of 64 Hexagrams · Your Daily Oracle
         </text>
       )}
+
+      {/* 增长闭环 CTA */}
+      <text
+        x={width / 2}
+        y={height - 6}
+        textAnchor="middle"
+        fill={config.accentColor}
+        fontSize={7}
+        fontFamily={config.fontFamilyEn}
+        letterSpacing="0.5"
+        opacity={0.45}
+      >
+        Get your own oracle at https://mysticdao.app
+      </text>
     </svg>
   );
 });
