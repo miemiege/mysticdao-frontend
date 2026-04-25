@@ -12,12 +12,28 @@ import type { PosterStyleName } from '@/lib/posterStyles';
 import type { Gua64 } from '@/data/gua64';
 import type { HexagramTalisman, TalismanCategory } from '@/data/hexagram-talismans';
 
+/** 情绪语气类型 — 8种风格对应8种情绪语气 */
+export type ToneType = 'zen' | 'mystic' | 'authoritative' | 'warm' | 'direct' | 'elite' | 'futuristic' | 'healing';
+
+/** 风格 → 情绪语气映射 */
+const STYLE_TONE_MAP: Record<PosterStyleName, ToneType> = {
+  ink: 'zen',           // 水墨 → 禅意冥想
+  dark: 'mystic',       // 暗黑 → 神秘低沉
+  royal: 'authoritative', // 皇家金 → 权威宣告
+  vintage: 'warm',      // 复古 → 温暖祝福
+  tianshi: 'direct',    // 天师黄 → 直接行动
+  blackgold: 'elite',   // 黑金 → 精英格调
+  cybertao: 'futuristic', // 赛博道 → 科技未来
+  zengarden: 'healing', // 禅意园 → 自然疗愈
+};
+
 export interface StyleRecommendation {
   primary: PosterStyleName;
   secondary: PosterStyleName;
   confidence: number;
   reason: string;
   reasonZh: string;
+  tone: ToneType;
 }
 
 /* ------------------------------------------------------------------ */
@@ -280,6 +296,7 @@ export function recommendStyle(gua: Gua64, talisman: HexagramTalisman): StyleRec
     confidence,
     reason,
     reasonZh,
+    tone: STYLE_TONE_MAP[primary.style],
   };
 }
 
@@ -292,3 +309,4 @@ export function getScoreBreakdown(gua: Gua64, talisman: HexagramTalisman): Score
 }
 
 export { ALL_STYLES };
+export { STYLE_TONE_MAP };

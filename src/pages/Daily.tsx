@@ -10,6 +10,7 @@ import TalismanRenderer from '@/components/talisman/TalismanRenderer';
 import ShareCard from '@/components/share/ShareCard';
 import TalismanPosterLazy from '@/components/TalismanPosterLazy';
 import { useStyleRecommendation } from '@/hooks/useStyleRecommendation';
+import type { ToneType } from '@/lib/recommendStyle';
 import GlobalCounter from '@/components/daily/GlobalCounter';
 import BreathingTypewriter from '@/components/BreathingTypewriter';
 import RollingNumber from '@/components/daily/RollingNumber';
@@ -50,6 +51,50 @@ const goldenQuotes: Record<string, string> = {
   '天水讼': '天与水违行，讼，君子以作事谋始',
   '地水师': '地中有水，师，君子以容民畜众',
   '水地比': '地上有水，比，先王以建万国，亲诸侯',
+};
+
+/** 情绪价值文案 — 根据 tone 映射 */
+const TONE_MESSAGES: Record<ToneType, { title: string; subtitle: string; blessing: string }> = {
+  zen: {
+    title: '静水流深',
+    subtitle: '于无声处听惊雷，于无色处见繁花',
+    blessing: '心若止水，万物自明。今日宜冥想静思，让内心回归澄澈之境。',
+  },
+  mystic: {
+    title: '暗夜启明',
+    subtitle: '深渊之下，自有光芒',
+    blessing: '神秘之力笼罩此刻，不必畏惧未知。穿越暗影，方见真我。',
+  },
+  authoritative: {
+    title: '天命所归',
+    subtitle: '乾纲独断，气吞万里',
+    blessing: '王者之气充盈，今日宜决断大事。天命在你，勇往直前。',
+  },
+  warm: {
+    title: '岁月温柔',
+    subtitle: '时光知味，岁月沉香',
+    blessing: '温暖之力环绕身旁，珍惜眼前人，感恩当下事。好运自会来敲门。',
+  },
+  direct: {
+    title: '当机立断',
+    subtitle: '天时地利，时不我待',
+    blessing: '行动是最好的符咒。莫犹豫，莫迟疑，今日之事今日毕。',
+  },
+  elite: {
+    title: '卓尔不群',
+    subtitle: '俯瞰众生，独步天下',
+    blessing: '精英之格已然觉醒。你注定与众不同，今日宜展现非凡气度。',
+  },
+  futuristic: {
+    title: '未来已来',
+    subtitle: '数字之间，大道至简',
+    blessing: '科技之光映照前路。顺应时代洪流，拥抱变化，未来可期。',
+  },
+  healing: {
+    title: '万物生长',
+    subtitle: '一花一世界，一叶一菩提',
+    blessing: '自然之力疗愈身心。走进绿意，呼吸天地灵气，今日宜亲近自然。',
+  },
 };
 
 const getGoldenQuote = (hexagramName: string): string => {
@@ -619,6 +664,29 @@ const Daily: React.FC = () => {
                         <div className="h-px w-8" style={{ background: `linear-gradient(90deg, ${fortune.card.color}50, transparent)` }} />
                       </div>
                     </motion.div>
+
+                    {/* ── 情绪价值文案（根据风格语气映射）── */}
+                    {styleRecommendation.tone && (
+                      <motion.div
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.7 }}
+                        className="text-center mb-6 relative z-10"
+                      >
+                        <div className="inline-block px-5 py-3 rounded-lg border border-gold/10 bg-gold/[0.03]">
+                          <p className="text-sm font-medium text-gold/80 tracking-wider mb-1"
+                             style={{ fontFamily: "'Noto Serif SC', Georgia, serif" }}>
+                            {TONE_MESSAGES[styleRecommendation.tone].title}
+                          </p>
+                          <p className="text-xs text-gold/50 tracking-wide mb-2">
+                            {TONE_MESSAGES[styleRecommendation.tone].subtitle}
+                          </p>
+                          <p className="text-sm text-text-secondary leading-relaxed max-w-sm mx-auto">
+                            {TONE_MESSAGES[styleRecommendation.tone].blessing}
+                          </p>
+                        </div>
+                      </motion.div>
+                    )}
 
                     {/* ── 分数 + 印章 ── */}
                     <motion.div
