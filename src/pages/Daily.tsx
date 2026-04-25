@@ -894,6 +894,38 @@ const Daily: React.FC = () => {
                         </button>
                       </motion.div>
                     )}
+
+                    {/* ── Community Insights 占位 ── */}
+                    <motion.div
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: 2.2, duration: 0.6 }}
+                      className="mt-8 mx-auto max-w-md rounded-xl border border-gold/10 bg-black/40 p-5 text-center relative z-10"
+                    >
+                      <div className="flex items-center justify-center gap-2 mb-2">
+                        <span className="text-gold/60 text-xs tracking-[0.2em] uppercase">Community Insights</span>
+                        <span className="px-1.5 py-0.5 rounded text-[9px] bg-gold/10 text-gold/50 tracking-wider">BETA</span>
+                      </div>
+                      <div className="flex items-center justify-center gap-4 text-white/30 text-xs">
+                        <div className="text-center">
+                          <div className="text-white/50 text-sm font-medium">1,247</div>
+                          <div className="text-[10px] tracking-wider">TODAY</div>
+                        </div>
+                        <div className="w-px h-6 bg-white/10" />
+                        <div className="text-center">
+                          <div className="text-white/50 text-sm font-medium">䷀</div>
+                          <div className="text-[10px] tracking-wider">TRENDING</div>
+                        </div>
+                        <div className="w-px h-6 bg-white/10" />
+                        <div className="text-center">
+                          <div className="text-white/50 text-sm font-medium">86</div>
+                          <div className="text-[10px] tracking-wider">AVG SCORE</div>
+                        </div>
+                      </div>
+                      <p className="mt-3 text-white/20 text-[10px] tracking-wide">
+                        2,847 users shared their fortune today · Join the conversation
+                      </p>
+                    </motion.div>
                   </div>
 
                   {/* 卷轴底部轴头 */}
