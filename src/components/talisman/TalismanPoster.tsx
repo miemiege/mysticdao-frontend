@@ -1,13 +1,15 @@
 /**
- * TalismanPoster v8.0 — Digital Archive Aesthetic
+ * TalismanPoster v9.0 — Digital Manuscript Aesthetic
  *
- * Research-driven redesign for Western Gen Z / Millennial spirituality market:
- * - Viral Pinterest/TikTok "Oriental Mysticism" aesthetic
- * - Co-Star inspired edgy one-liner copy
- * - "De-AI-fication" via paper defects, brush irregularities, seal imperfections
- * - Cyberpunk accents: neon glow, scan lines, chromatic fringe (desaturated)
- * - Bilingual vertical layout: Chinese calligraphy + English monospace/script
- * - html2canvas-safe SVG filters only
+ * 10-dimension research synthesis:
+ * - No readable Chinese characters (semiotics + cultural safety)
+ * - Horizontal layout only (typography research)
+ * - ≤15 words per poster (information density)
+ * - 70% talisman prototype + 30% cyber trace (aesthetic balance)
+ * - Enhanced de-AI: feibai, ink bleed, scan noise, color desaturation
+ * - Tea Wash palette: avoids pure yellow + pure black
+ * - "Student posture" copy — no "master/unlock/Oriental"
+ * - Pseudo-symbol system inspired by Xu Bing's Book from the Sky
  */
 
 import React from "react";
@@ -16,13 +18,15 @@ import {
   PALETTE,
   FONTS,
   getEdgyTagline,
+  getShortPhrase,
   getArchiveId,
   getAnnotation,
   calcLayout,
   trembleBorder,
   cornerOrnament,
-  wrapText,
+  generatePseudoSymbols,
   getElementCyberColor,
+  DE_AI,
 } from "../../lib/talisman-design";
 
 interface Props {
@@ -46,10 +50,6 @@ const TRIGRAM_LINES: Record<string, ("yang" | "yin")[]> = {
   兑: ["yang", "yang", "yin"],
 };
 
-/* ─── Cloud motif path (simplified traditional cloud pattern) ─── */
-const CLOUD_TOP_PATH =
-  "M -30 0 Q -20 -8 -10 0 Q 0 -6 10 0 Q 20 -8 30 0";
-
 const TalismanPoster: React.FC<Props> = ({
   hexagramName,
   score: _score = 75,
@@ -61,17 +61,14 @@ const TalismanPoster: React.FC<Props> = ({
   /* ─── Data lookup ─── */
   const gua = GUA64_LIST.find((g) => g.name === hexagramName);
   const upper = gua?.upper || "乾";
-  const lower = gua?.lower || "乾";
   const symbol = gua?.symbol || "䷀";
   const element = gua?.element || "金";
   const cyberColor = getElementCyberColor(element);
 
   const edgyTagline = getEdgyTagline(gua);
+  const shortPhrase = getShortPhrase(gua);
   const archiveId = getArchiveId(gua);
   const annotation = getAnnotation(gua);
-
-  const blessingText = gua?.imageEn || "The Tao that can be told is not the eternal Tao.";
-  const blessingLines = wrapText(blessingText, 28);
   const keywords = (gua?.keywordsEn || []).slice(0, 3);
 
   const lowerLines = gua?.lower
@@ -84,16 +81,17 @@ const TalismanPoster: React.FC<Props> = ({
   const { W, H, cx, m, heavenY, heavenH, humanY, humanH, earthY, earthH } =
     calcLayout(width, height);
   const uid = `sigil-${hexagramName}-${W}-${H}`;
+  const seed = gua?.number || 0;
 
   /* ─── Border paths with controlled randomness ─── */
-  const bOuter = trembleBorder(m, m, W - m * 2, H - m * 2, 1.8, gua?.number || 0);
+  const bOuter = trembleBorder(m, m, W - m * 2, H - m * 2, 1.8, seed);
   const bInner = trembleBorder(
     m + 7,
     m + 7,
     W - m * 2 - 14,
     H - m * 2 - 14,
     1.2,
-    (gua?.number || 0) + 100
+    seed + 100
   );
 
   /* ─── Deterministic corner positions (asymmetric) ─── */
@@ -105,9 +103,12 @@ const TalismanPoster: React.FC<Props> = ({
   ];
 
   /* ─── Yao line rendering ─── */
-  const yaoStartY = humanY + humanH * 0.52;
+  const yaoStartY = humanY + humanH * 0.48;
   const yaoGap = Math.min(10, humanH * 0.028);
   const yaoSeg = Math.min(40, W * 0.1);
+
+  /* ─── Pseudo-symbol paths (Xu Bing inspired dot-circle-line) ─── */
+  const pseudoPath = generatePseudoSymbols(seed, 24, cx, heavenY + heavenH * 0.45, 28);
 
   return (
     <svg
@@ -115,16 +116,16 @@ const TalismanPoster: React.FC<Props> = ({
       height={H}
       viewBox={`0 0 ${W} ${H}`}
       xmlns="http://www.w3.org/2000/svg"
-      style={{ display: "block", fontFamily: FONTS.chinese }}
+      style={{ display: "block", fontFamily: FONTS.english }}
     >
       <defs>
-        {/* ═══ Paper Texture: rice-paper fiber ═══ */}
+        {/* ═══ Paper Fiber Texture ═══ */}
         <filter id={`paper-${uid}`} x="0" y="0" width="100%" height="100%">
           <feTurbulence
             type="fractalNoise"
-            baseFrequency="0.55"
-            numOctaves="5"
-            seed={gua?.number || 0}
+            baseFrequency={DE_AI.paperTurbulence.baseFrequency}
+            numOctaves={DE_AI.paperTurbulence.numOctaves}
+            seed={seed}
             result="noise"
           />
           <feColorMatrix
@@ -146,15 +147,15 @@ const TalismanPoster: React.FC<Props> = ({
         <filter id={`brush-${uid}`}>
           <feTurbulence
             type="fractalNoise"
-            baseFrequency="0.12"
-            numOctaves="4"
-            seed={(gua?.number || 0) + 50}
+            baseFrequency={DE_AI.brushDisplacement.baseFrequency}
+            numOctaves={DE_AI.brushDisplacement.numOctaves}
+            seed={seed + 50}
             result="noise"
           />
           <feDisplacementMap
             in="SourceGraphic"
             in2="noise"
-            scale="2.5"
+            scale={DE_AI.brushDisplacement.scale}
             xChannelSelector="R"
             yChannelSelector="G"
           />
@@ -164,24 +165,58 @@ const TalismanPoster: React.FC<Props> = ({
         <filter id={`seal-${uid}`}>
           <feTurbulence
             type="turbulence"
-            baseFrequency="0.07"
-            numOctaves="5"
-            seed={(gua?.number || 0) + 200}
+            baseFrequency={DE_AI.sealTurbulence.baseFrequency}
+            numOctaves={DE_AI.sealTurbulence.numOctaves}
+            seed={seed + 200}
             result="noise"
           />
           <feDisplacementMap
             in="SourceGraphic"
             in2="noise"
-            scale="3.5"
+            scale={DE_AI.sealTurbulence.scale}
             xChannelSelector="R"
             yChannelSelector="G"
           />
         </filter>
 
-        {/* ═══ Neon Glow: cyber accent on yao lines ═══ */}
+        {/* ═══ Scan Noise Layer (v9 de-AI enhancement) ═══ */}
+        <filter id={`scan-noise-${uid}`} x="0" y="0" width="100%" height="100%">
+          <feTurbulence
+            type="turbulence"
+            baseFrequency={DE_AI.scanNoise.baseFrequency}
+            numOctaves={DE_AI.scanNoise.numOctaves}
+            seed={seed + 300}
+            result="noise"
+          />
+          <feColorMatrix
+            type="matrix"
+            values="0.5 0 0 0 0  0 0.5 0 0 0  0 0 0.5 0 0  0 0 0 0.15 0"
+            in="noise"
+            result="grayNoise"
+          />
+          <feComposite operator="in" in="grayNoise" in2="SourceGraphic" result="composite" />
+          <feBlend mode="overlay" in="composite" in2="SourceGraphic" />
+        </filter>
+
+        {/* ═══ Ink Bleed: simulated paper absorption (v9) ═══ */}
+        <filter id={`bleed-${uid}`}>
+          <feGaussianBlur stdDeviation="1.2" result="blur" />
+          <feColorMatrix
+            type="matrix"
+            values="0.8 0 0 0 0  0 0.8 0 0 0  0 0 0.9 0 0  0 0 0 0.4 0"
+            in="blur"
+            result="bleed"
+          />
+          <feMerge>
+            <feMergeNode in="bleed" />
+            <feMergeNode in="SourceGraphic" />
+          </feMerge>
+        </filter>
+
+        {/* ═══ Selective Neon Glow (subtle, single element) ═══ */}
         <filter id={`neon-${uid}`}>
-          <feGaussianBlur stdDeviation="2.5" result="blur" />
-          <feFlood floodColor={cyberColor} floodOpacity="0.6" result="color" />
+          <feGaussianBlur stdDeviation="2.2" result="blur" />
+          <feFlood floodColor={cyberColor} floodOpacity="0.5" result="color" />
           <feComposite operator="in" in="color" in2="blur" result="coloredBlur" />
           <feMerge>
             <feMergeNode in="coloredBlur" />
@@ -189,9 +224,9 @@ const TalismanPoster: React.FC<Props> = ({
           </feMerge>
         </filter>
 
-        {/* ═══ Soft Gold Glow ═══ */}
+        {/* ═══ Soft Glow ═══ */}
         <filter id={`glow-${uid}`}>
-          <feGaussianBlur stdDeviation="2" result="blur" />
+          <feGaussianBlur stdDeviation="1.8" result="blur" />
           <feMerge>
             <feMergeNode in="blur" />
             <feMergeNode in="SourceGraphic" />
@@ -205,11 +240,11 @@ const TalismanPoster: React.FC<Props> = ({
             dy="2"
             stdDeviation="2"
             floodColor={PALETTE.ink}
-            floodOpacity="0.15"
+            floodOpacity="0.12"
           />
         </filter>
 
-        {/* ═══ Scan Lines Pattern ═══ */}
+        {/* ═══ Scan Lines Pattern (v9: opacity 0.35-0.4) ═══ */}
         <pattern
           id={`scan-${uid}`}
           x="0"
@@ -218,13 +253,13 @@ const TalismanPoster: React.FC<Props> = ({
           height="4"
           patternUnits="userSpaceOnUse"
         >
-          <line x1="0" y1="2" x2="4" y2="2" stroke={PALETTE.ink} strokeWidth="0.5" opacity="0.03" />
+          <line x1="0" y1="2" x2="4" y2="2" stroke={PALETTE.ink} strokeWidth="0.5" opacity="0.035" />
         </pattern>
 
-        {/* ═══ Paper Aging Radial Gradient ═══ */}
+        {/* ═══ Paper Aging Radial Gradient (Tea Wash) ═══ */}
         <radialGradient id={`paper-grad-${uid}`} cx="50%" cy="45%" r="75%">
           <stop offset="0%" stopColor={PALETTE.paper} stopOpacity="1" />
-          <stop offset="55%" stopColor={PALETTE.paperDark} stopOpacity="1" />
+          <stop offset="50%" stopColor={PALETTE.paperDark} stopOpacity="1" />
           <stop offset="85%" stopColor={PALETTE.paperEdge} stopOpacity="1" />
           <stop offset="100%" stopColor={PALETTE.paperShadow} stopOpacity="1" />
         </radialGradient>
@@ -232,30 +267,32 @@ const TalismanPoster: React.FC<Props> = ({
         {/* ═══ Edge Darkening for vintage feel ═══ */}
         <radialGradient id={`edge-grad-${uid}`} cx="50%" cy="50%" r="70%">
           <stop offset="60%" stopColor={PALETTE.transparent} stopOpacity="0" />
-          <stop offset="100%" stopColor={PALETTE.ink} stopOpacity="0.12" />
+          <stop offset="100%" stopColor={PALETTE.ink} stopOpacity="0.1" />
         </radialGradient>
 
         {/* ═══ Vignette for focus ═══ */}
         <radialGradient id={`vignette-${uid}`} cx="50%" cy="50%" r="65%">
           <stop offset="50%" stopColor={PALETTE.transparent} stopOpacity="0" />
-          <stop offset="100%" stopColor={PALETTE.ink} stopOpacity="0.06" />
+          <stop offset="100%" stopColor={PALETTE.ink} stopOpacity="0.05" />
         </radialGradient>
       </defs>
 
       {/* ╔══════════════════════════════════════════════════════════════╗
-         ║  BACKGROUND LAYER: Aged rice paper + texture + scan lines   ║
+         ║  BACKGROUND LAYER: Tea Wash paper + texture + scan lines    ║
          ╚══════════════════════════════════════════════════════════════╝ */}
       <rect x="0" y="0" width={W} height={H} fill={PALETTE.paperShadow} />
       <rect x="0" y="0" width={W} height={H} fill={`url(#paper-grad-${uid})`} />
       {/* Paper fiber texture */}
       <rect x="0" y="0" width={W} height={H} fill={PALETTE.paper} filter={`url(#paper-${uid})`} opacity="0.5" />
-      {/* Edge darkening (vintage book feel) */}
+      {/* Scan noise layer (v9 de-AI) */}
+      <rect x="0" y="0" width={W} height={H} fill={PALETTE.paperDark} filter={`url(#scan-noise-${uid})`} opacity="0.3" />
+      {/* Edge darkening */}
       <rect x="0" y="0" width={W} height={H} fill={`url(#edge-grad-${uid})`} />
-      {/* Subtle vignette */}
+      {/* Vignette */}
       <rect x="0" y="0" width={W} height={H} fill={`url(#vignette-${uid})`} />
-      {/* Scan lines overlay */}
+      {/* Scan lines overlay (v9: reduced opacity 0.35-0.4) */}
       {cyberMode && (
-        <rect x="0" y="0" width={W} height={H} fill={`url(#scan-${uid})`} opacity="0.6" />
+        <rect x="0" y="0" width={W} height={H} fill={`url(#scan-${uid})`} opacity="0.4" />
       )}
 
       {/* ╔══════════════════════════════════════════════════════════════╗
@@ -267,7 +304,7 @@ const TalismanPoster: React.FC<Props> = ({
         fill="none"
         stroke={PALETTE.ink}
         strokeWidth="1.6"
-        strokeOpacity="0.55"
+        strokeOpacity="0.5"
         strokeLinecap="round"
         strokeLinejoin="round"
       />
@@ -277,7 +314,7 @@ const TalismanPoster: React.FC<Props> = ({
         fill="none"
         stroke={PALETTE.ink}
         strokeWidth="0.7"
-        strokeOpacity="0.25"
+        strokeOpacity="0.22"
         strokeLinecap="round"
         strokeLinejoin="round"
       />
@@ -289,136 +326,101 @@ const TalismanPoster: React.FC<Props> = ({
             fill="none"
             stroke={PALETTE.ink}
             strokeWidth="0.9"
-            strokeOpacity="0.35"
+            strokeOpacity="0.3"
             strokeLinecap="round"
             strokeLinejoin="round"
           />
         </g>
       ))}
-      {/* Optional: cyber neon border glow */}
+      {/* Cyber border glow (subtle, single layer) */}
       {cyberMode && (
         <path
           d={bOuter}
           fill="none"
           stroke={cyberColor}
           strokeWidth="0.8"
-          strokeOpacity="0.15"
+          strokeOpacity="0.12"
           filter={`url(#neon-${uid})`}
         />
       )}
 
       {/* ╔══════════════════════════════════════════════════════════════╗
-         ║  HEAVEN SECTION (~20%): Cloud motif + wax seal + trigram   ║
+         ║  HEAVEN SECTION (~18%): Pseudo-symbols + Archive ID        ║
          ╚══════════════════════════════════════════════════════════════╝ */}
-      {/* Cloud top ornament */}
-      <g transform={`translate(${cx}, ${heavenY + heavenH * 0.18})`} opacity="0.35">
-        <path d={CLOUD_TOP_PATH} fill="none" stroke={PALETTE.ink} strokeWidth="1" strokeLinecap="round" />
-        <path d="M -20 4 Q -10 0 0 4 Q 10 0 20 4" fill="none" stroke={PALETTE.ink} strokeWidth="0.6" strokeOpacity="0.5" />
+      {/* Pseudo-symbol constellation (Xu Bing inspired dot-circle-line) */}
+      <g transform={`translate(0, 0)`} opacity="0.25">
+        <path
+          d={pseudoPath}
+          fill="none"
+          stroke={PALETTE.ink}
+          strokeWidth="0.8"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
       </g>
 
-      {/* Wax seal (天官賜福) — offset slightly for imperfection */}
-      {showSeal && (
-        <g
-          transform={`translate(${cx + 1.5}, ${heavenY + heavenH * 0.42})`}
-          filter={`url(#seal-${uid})`}
-        >
-          <ellipse cx="0" cy="0" rx="30" ry="26" fill="none" stroke={PALETTE.cinnabar} strokeWidth="2.2" opacity="0.85" />
-          <ellipse cx="0" cy="0" rx="26" ry="22" fill="none" stroke={PALETTE.cinnabar} strokeWidth="0.7" opacity="0.35" />
-          <text
-            x="0"
-            y="2"
-            textAnchor="middle"
-            dominantBaseline="middle"
-            fill={PALETTE.cinnabar}
-            fontSize="9"
-            fontFamily={FONTS.chinese}
-            fontWeight="bold"
-            letterSpacing="2"
-            opacity="0.92"
-          >
-            天官賜福
-          </text>
-        </g>
-      )}
-
-      {/* Vertical trigram attributes (rotated for 竖排 feel) */}
-      <g transform={`translate(${m + 14}, ${heavenY + heavenH * 0.55})`}>
-        <text
-          transform="rotate(-90)"
-          textAnchor="middle"
-          fill={PALETTE.ink}
-          fontSize="7"
-          fontFamily={FONTS.chinese}
-          letterSpacing="3"
-          opacity="0.3"
-        >
-          {upper}·{lower}·{element}
-        </text>
-      </g>
-
-      {/* Brand mark (subtle) */}
+      {/* Archive ID (top center, monospace) */}
       <text
         x={cx}
-        y={heavenY + heavenH * 0.82}
+        y={heavenY + heavenH * 0.35}
         textAnchor="middle"
+        fill={PALETTE.ink}
+        fontSize="6.5"
+        fontFamily={FONTS.mono}
+        letterSpacing="3"
+        opacity="0.22"
+      >
+        {archiveId}
+      </text>
+
+      {/* Element label (top right, monospace) */}
+      <text
+        x={W - m - 8}
+        y={heavenY + heavenH * 0.35}
+        textAnchor="end"
         fill={PALETTE.ink}
         fontSize="6"
         fontFamily={FONTS.mono}
-        letterSpacing="4"
-        opacity="0.2"
+        letterSpacing="2"
+        opacity="0.18"
       >
-        MYSTIC DAO
+        {element.toUpperCase()}
       </text>
 
       {/* Heaven-human divider */}
       <line
-        x1={cx - 40}
-        y1={heavenY + heavenH * 0.88}
-        x2={cx + 40}
-        y2={heavenY + heavenH * 0.88}
+        x1={cx - 35}
+        y1={heavenY + heavenH * 0.82}
+        x2={cx + 35}
+        y2={heavenY + heavenH * 0.82}
         stroke={PALETTE.ink}
         strokeWidth="0.5"
-        strokeOpacity="0.15"
+        strokeOpacity="0.12"
         strokeDasharray="3,2"
       />
 
       {/* ╔══════════════════════════════════════════════════════════════╗
-         ║  HUMAN SECTION (~52%): Symbol + Name + Yao + Edgy tagline  ║
+         ║  HUMAN SECTION (~55%): Symbol + Yao + Name + Tagline       ║
          ╚══════════════════════════════════════════════════════════════╝ */}
-      {/* Hexagram symbol — large, with optional cyber glow */}
+      {/* Hexagram symbol — large Unicode glyph with subtle glow */}
       <text
         x={cx}
-        y={humanY + humanH * 0.16}
+        y={humanY + humanH * 0.18}
         textAnchor="middle"
         fill={PALETTE.ink}
-        fontSize={Math.min(48, W * 0.13)}
+        fontSize={Math.min(46, W * 0.12)}
         fontFamily={FONTS.chinese}
-        opacity="0.88"
+        opacity="0.85"
         filter={cyberMode ? `url(#neon-${uid})` : `url(#glow-${uid})`}
       >
         {symbol}
       </text>
 
-      {/* Chinese hexagram name — main calligraphy */}
-      <text
-        x={cx}
-        y={humanY + humanH * 0.38}
-        textAnchor="middle"
-        fill={PALETTE.ink}
-        fontSize={Math.min(26, W * 0.075)}
-        fontFamily={FONTS.chinese}
-        fontWeight="bold"
-        letterSpacing="5"
-        opacity="0.94"
-        filter={`url(#brush-${uid})`}
-      >
-        {hexagramName}
-      </text>
-
-      {/* Six Yao lines — with subtle cyber glow */}
+      {/* Six Yao lines — core visual identity */}
       <g transform={`translate(${cx}, ${yaoStartY})`}>
         {sixLines.map((lineType, i) => {
           const y = i * yaoGap;
+          const isGlow = cyberMode && i % 2 === 0;
           if (lineType === "yang") {
             return (
               <line
@@ -429,9 +431,9 @@ const TalismanPoster: React.FC<Props> = ({
                 y2={y}
                 stroke={PALETTE.ink}
                 strokeWidth="1.8"
-                strokeOpacity="0.6"
+                strokeOpacity="0.55"
                 strokeLinecap="round"
-                filter={cyberMode && i % 2 === 0 ? `url(#neon-${uid})` : undefined}
+                filter={isGlow ? `url(#neon-${uid})` : undefined}
               />
             );
           }
@@ -445,7 +447,7 @@ const TalismanPoster: React.FC<Props> = ({
                 y2={y}
                 stroke={PALETTE.ink}
                 strokeWidth="1.8"
-                strokeOpacity="0.5"
+                strokeOpacity="0.45"
                 strokeLinecap="round"
               />
               <line
@@ -455,7 +457,7 @@ const TalismanPoster: React.FC<Props> = ({
                 y2={y}
                 stroke={PALETTE.ink}
                 strokeWidth="1.8"
-                strokeOpacity="0.5"
+                strokeOpacity="0.45"
                 strokeLinecap="round"
               />
             </g>
@@ -463,172 +465,132 @@ const TalismanPoster: React.FC<Props> = ({
         })}
       </g>
 
-      {/* Edgy one-liner tagline (Co-Star inspired) */}
+      {/* English hexagram name — handwritten, primary */}
       <text
         x={cx}
-        y={humanY + humanH * 0.82}
+        y={humanY + humanH * 0.72}
+        textAnchor="middle"
+        fill={PALETTE.ink}
+        fontSize={gua?.nameEn && gua.nameEn.length > 18 ? 13 : 15}
+        fontFamily={FONTS.script}
+        fontWeight="600"
+        letterSpacing="1"
+        opacity="0.8"
+        filter={`url(#brush-${uid})`}
+      >
+        {gua?.nameEn || "The Unknown"}
+      </text>
+
+      {/* Edgy one-liner (Co-Star inspired) — burgundy, bold */}
+      <text
+        x={cx}
+        y={humanY + humanH * 0.84}
         textAnchor="middle"
         fill={PALETTE.cinnabar}
-        fontSize={Math.min(13, W * 0.038)}
+        fontSize={Math.min(12, W * 0.035)}
         fontFamily={FONTS.script}
         fontWeight="bold"
-        letterSpacing="1"
-        opacity="0.85"
+        letterSpacing="1.5"
+        opacity="0.82"
         filter={`url(#brush-${uid})`}
       >
         {edgyTagline}
       </text>
 
+      {/* Short phrase (secondary, smaller) */}
+      {shortPhrase && (
+        <text
+          x={cx}
+          y={humanY + humanH * 0.94}
+          textAnchor="middle"
+          fill={PALETTE.inkWash}
+          fontSize="8"
+          fontFamily={FONTS.script}
+          opacity="0.45"
+        >
+          {shortPhrase}
+        </text>
+      )}
+
       {/* Human-earth divider */}
       <line
-        x1={cx - 35}
-        y1={humanY + humanH * 0.92}
-        x2={cx + 35}
-        y2={humanY + humanH * 0.92}
+        x1={cx - 30}
+        y1={humanY + humanH * 0.97}
+        x2={cx + 30}
+        y2={humanY + humanH * 0.97}
         stroke={PALETTE.ink}
         strokeWidth="0.5"
-        strokeOpacity="0.12"
+        strokeOpacity="0.1"
       />
 
       {/* ╔══════════════════════════════════════════════════════════════╗
-         ║  EARTH SECTION (~28%): Name + Blessing + Seal + Archive    ║
+         ║  EARTH SECTION (~27%): Seal + Keywords + Annotation        ║
          ╚══════════════════════════════════════════════════════════════╝ */}
-      {/* English hexagram name — uppercase serif */}
-      <text
-        x={cx}
-        y={earthY + earthH * 0.18}
-        textAnchor="middle"
-        fill={PALETTE.ink}
-        fontSize={gua?.nameEn && gua.nameEn.length > 18 ? 11 : 13}
-        fontFamily={FONTS.english}
-        fontWeight="bold"
-        letterSpacing="2"
-        opacity="0.7"
-        filter={`url(#glow-${uid})`}
-      >
-        {(gua?.nameEn || "THE UNKNOWN").toUpperCase()}
-      </text>
-
-      {/* Blessing text (italic serif) */}
-      <g transform={`translate(${cx}, ${earthY + earthH * 0.38})`}>
-        <text
-          x="0"
-          y="-8"
-          textAnchor="middle"
-          fill={PALETTE.ink}
-          fontSize="16"
-          fontFamily={FONTS.english}
-          opacity="0.1"
-        >
-          &ldquo;
-        </text>
-        {blessingLines.slice(0, 3).map((line, i) => (
-          <text
-            key={i}
-            x="0"
-            y={i * 13}
-            textAnchor="middle"
-            fill={PALETTE.inkLight}
-            fontSize="8.5"
-            fontFamily={FONTS.english}
-            fontStyle="italic"
-            opacity="0.55"
-            letterSpacing="0.3"
-          >
-            {line}
-          </text>
-        ))}
-      </g>
-
-      {/* Corner seal (压角章) — slightly offset for authenticity */}
+      {/* Abstract seal (no readable text — cultural safety) */}
       {showSeal && (
         <g
-          transform={`translate(${W - m - 30}, ${earthY + earthH * 0.62})`}
+          transform={`translate(${W - m - 28}, ${earthY + earthH * 0.35})`}
           filter={`url(#seal-${uid})`}
         >
           <rect
-            x="-13"
-            y="-11"
-            width="26"
-            height="22"
+            x="-12"
+            y="-10"
+            width="24"
+            height="20"
             fill="none"
             stroke={PALETTE.cinnabar}
-            strokeWidth="1.4"
-            opacity="0.65"
-            rx="1.5"
+            strokeWidth="1.6"
+            opacity="0.55"
+            rx="1"
           />
-          <text
-            x="0"
-            y="2"
-            textAnchor="middle"
-            dominantBaseline="middle"
-            fill={PALETTE.cinnabar}
-            fontSize="7"
-            fontFamily={FONTS.chinese}
-            fontWeight="bold"
-            letterSpacing="1"
-            opacity="0.88"
-          >
-            開運
-          </text>
+          {/* Inner abstract texture instead of text */}
+          <line x1="-6" y1="-3" x2="6" y2="-3" stroke={PALETTE.cinnabar} strokeWidth="0.8" opacity="0.4" />
+          <line x1="-4" y1="0" x2="4" y2="0" stroke={PALETTE.cinnabar} strokeWidth="0.8" opacity="0.4" />
+          <line x1="-6" y1="3" x2="6" y2="3" stroke={PALETTE.cinnabar} strokeWidth="0.8" opacity="0.4" />
         </g>
       )}
 
-      {/* Keywords — monospace cyber feel */}
+      {/* Keywords — monospace cyber feel, limited to 3 */}
       {keywords.length > 0 && (
         <text
           x={cx}
-          y={earthY + earthH * 0.75}
+          y={earthY + earthH * 0.45}
           textAnchor="middle"
           fill={PALETTE.ink}
           fontSize="6.5"
           fontFamily={FONTS.mono}
-          letterSpacing="3"
-          opacity="0.35"
+          letterSpacing="3.5"
+          opacity="0.32"
         >
           {keywords.join(" · ").toUpperCase()}
         </text>
       )}
 
-      {/* Handwritten annotation (corner note, "used" feel) */}
+      {/* Minimal annotation (corner note, English only) */}
       {annotation && (
         <text
-          x={m + 8}
-          y={earthY + earthH * 0.78}
+          x={m + 10}
+          y={earthY + earthH * 0.55}
           fill={PALETTE.ink}
           fontSize="6"
           fontFamily={FONTS.script}
-          opacity="0.25"
-          transform={`rotate(-2, ${m + 8}, ${earthY + earthH * 0.78})`}
+          opacity="0.22"
+          transform={`rotate(-1.5, ${m + 10}, ${earthY + earthH * 0.55})`}
         >
           {annotation}
         </text>
       )}
 
-      {/* Digital archive catalog number (monospace, bottom) */}
+      {/* Date stamp (bottom right, monospace) */}
       <text
-        x={cx}
-        y={H - m - 6}
-        textAnchor="middle"
-        fill={PALETTE.ink}
-        fontSize="5.5"
-        fontFamily={FONTS.mono}
-        letterSpacing="2"
-        opacity="0.18"
-      >
-        {archiveId}
-      </text>
-
-      {/* Date stamp */}
-      <text
-        x={W - m - 6}
-        y={H - m - 6}
+        x={W - m - 8}
+        y={H - m - 8}
         textAnchor="end"
         fill={PALETTE.ink}
         fontSize="5"
         fontFamily={FONTS.mono}
-        letterSpacing="1"
-        opacity="0.15"
+        letterSpacing="1.5"
+        opacity="0.14"
       >
         {new Date()
           .toLocaleDateString("en-US", {
@@ -640,16 +602,16 @@ const TalismanPoster: React.FC<Props> = ({
       </text>
 
       {/* ╔══════════════════════════════════════════════════════════════╗
-         ║  CYBER OVERLAY: Subtle holographic edge accents             ║
+         ║  CYBER OVERLAY: Subtle edge accents (≤30% of design)       ║
          ╚══════════════════════════════════════════════════════════════╝ */}
       {cyberMode && (
         <>
-          {/* Subtle chromatic fringe on left edge */}
-          <rect x="0" y="0" width="3" height={H} fill={PALETTE.neonCyanFade} opacity="0.08" />
-          <rect x={W - 3} y="0" width="3" height={H} fill={PALETTE.neonMagenta} opacity="0.05" />
-          {/* Holographic corner glints */}
-          <circle cx={m + 10} cy={m + 10} r="2" fill={PALETTE.hologram} opacity="0.3" />
-          <circle cx={W - m - 10} cy={H - m - 10} r="1.5" fill={PALETTE.hologram} opacity="0.25" />
+          {/* Subtle chromatic fringe on edges (1-2px max, per research) */}
+          <rect x="0" y="0" width="2" height={H} fill={PALETTE.neonCyanFade} opacity="0.06" />
+          <rect x={W - 2} y="0" width="2" height={H} fill={PALETTE.neonMagenta} opacity="0.04" />
+          {/* Holographic corner glints (small area, ≤10%) */}
+          <circle cx={m + 10} cy={m + 10} r="1.5" fill={PALETTE.hologram} opacity="0.25" />
+          <circle cx={W - m - 10} cy={H - m - 10} r="1" fill={PALETTE.hologram} opacity="0.2" />
         </>
       )}
     </svg>
