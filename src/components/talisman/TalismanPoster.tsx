@@ -1,15 +1,17 @@
 /**
- * TalismanPoster v9.0 — Digital Manuscript Aesthetic
+ * TalismanPoster v9.1 — Digital Manuscript Aesthetic
  *
- * 10-dimension research synthesis:
- * - No readable Chinese characters (semiotics + cultural safety)
- * - Horizontal layout only (typography research)
- * - ≤15 words per poster (information density)
- * - 70% talisman prototype + 30% cyber trace (aesthetic balance)
- * - Enhanced de-AI: feibai, ink bleed, scan noise, color desaturation
- * - Tea Wash palette: avoids pure yellow + pure black
- * - "Student posture" copy — no "master/unlock/Oriental"
- * - Pseudo-symbol system inspired by Xu Bing's Book from the Sky
+ * Brand Visual Director's Final Ruling applied:
+ * - Warm rice paper base #F9F4ED (brand soul, never diluted)
+ * - Calligraphy black #1A1A1A (handmade ink aesthetic)
+ * - Seals PRESERVED but UNREADABLE: blur + displacement = visual texture
+ * - Vertical tremble lines RESTORED as aesthetic backbone
+ * - Cloud motif RESTORED (oriental talisman DNA)
+ * - Brand mark MANIFEST DAO restored
+ * - Pseudo-symbol system REMOVED (over-engineered)
+ * - De-AI + Cyber parameters retained from v9.0
+ * - "Student posture" copy retained
+ * - Wilhelm-Baynes academic lineage retained
  */
 
 import React from "react";
@@ -24,7 +26,6 @@ import {
   calcLayout,
   trembleBorder,
   cornerOrnament,
-  generatePseudoSymbols,
   getElementCyberColor,
   DE_AI,
 } from "../../lib/talisman-design";
@@ -107,8 +108,11 @@ const TalismanPoster: React.FC<Props> = ({
   const yaoGap = Math.min(10, humanH * 0.028);
   const yaoSeg = Math.min(40, W * 0.1);
 
-  /* ─── Pseudo-symbol paths (Xu Bing inspired dot-circle-line) ─── */
-  const pseudoPath = generatePseudoSymbols(seed, 24, cx, heavenY + heavenH * 0.45, 28);
+  /* ─── Vertical tremble lines (aesthetic backbone, not text) ─── */
+  const vLineLeftX = m + 22;
+  const vLineRightX = W - m - 22;
+  const vLineY1 = heavenY + heavenH * 0.6;
+  const vLineY2 = humanY + humanH * 0.9;
 
   return (
     <svg
@@ -233,6 +237,29 @@ const TalismanPoster: React.FC<Props> = ({
           </feMerge>
         </filter>
 
+        {/* ═══ Unreadable Seal Filter: heavy blur + displacement ═══ */}
+        <filter id={`unreadable-seal-${uid}`}>
+          <feTurbulence
+            type="turbulence"
+            baseFrequency="0.15"
+            numOctaves="4"
+            seed={seed + 400}
+            result="noise"
+          />
+          <feDisplacementMap
+            in="SourceGraphic"
+            in2="noise"
+            scale="5"
+            xChannelSelector="R"
+            yChannelSelector="G"
+            result="displaced"
+          />
+          <feGaussianBlur in="displaced" stdDeviation="1.2" result="blurred" />
+          <feMerge>
+            <feMergeNode in="blurred" />
+          </feMerge>
+        </filter>
+
         {/* ═══ Drop Shadow for physical depth ═══ */}
         <filter id={`shadow-${uid}`}>
           <feDropShadow
@@ -345,30 +372,63 @@ const TalismanPoster: React.FC<Props> = ({
       )}
 
       {/* ╔══════════════════════════════════════════════════════════════╗
-         ║  HEAVEN SECTION (~18%): Pseudo-symbols + Archive ID        ║
+         ║  HEAVEN SECTION (~18%): Cloud + Brand + Archive ID         ║
          ╚══════════════════════════════════════════════════════════════╝ */}
-      {/* Pseudo-symbol constellation (Xu Bing inspired dot-circle-line) */}
-      <g transform={`translate(0, 0)`} opacity="0.25">
-        <path
-          d={pseudoPath}
-          fill="none"
-          stroke={PALETTE.ink}
-          strokeWidth="0.8"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        />
+      {/* Cloud top ornament — restored from v8.0, oriental talisman DNA */}
+      <g transform={`translate(${cx}, ${heavenY + heavenH * 0.18})`} opacity="0.3">
+        <path d="M -30 0 Q -20 -8 -10 0 Q 0 -6 10 0 Q 20 -8 30 0" fill="none" stroke={PALETTE.ink} strokeWidth="1" strokeLinecap="round" />
+        <path d="M -20 4 Q -10 0 0 4 Q 10 0 20 4" fill="none" stroke={PALETTE.ink} strokeWidth="0.6" strokeOpacity="0.5" />
       </g>
+
+      {/* Brand mark — MANIFEST DAO, subtle archival feel */}
+      <text
+        x={cx}
+        y={heavenY + heavenH * 0.42}
+        textAnchor="middle"
+        fill={PALETTE.ink}
+        fontSize="6"
+        fontFamily={FONTS.mono}
+        letterSpacing="4"
+        opacity="0.2"
+      >
+        MANIFEST DAO
+      </text>
+
+      {/* Wax seal (天官賜福) — UNREADABLE: blur + displacement makes it visual texture only */}
+      {showSeal && (
+        <g
+          transform={`translate(${cx + 1.5}, ${heavenY + heavenH * 0.72})`}
+          filter={`url(#unreadable-seal-${uid})`}
+        >
+          <ellipse cx="0" cy="0" rx="28" ry="24" fill="none" stroke={PALETTE.cinnabar} strokeWidth="2" opacity="0.7" />
+          <ellipse cx="0" cy="0" rx="24" ry="20" fill="none" stroke={PALETTE.cinnabar} strokeWidth="0.6" opacity="0.3" />
+          <text
+            x="0"
+            y="2"
+            textAnchor="middle"
+            dominantBaseline="middle"
+            fill={PALETTE.cinnabar}
+            fontSize="9"
+            fontFamily={FONTS.chinese}
+            fontWeight="bold"
+            letterSpacing="2"
+            opacity="0.85"
+          >
+            天官賜福
+          </text>
+        </g>
+      )}
 
       {/* Archive ID (top center, monospace) */}
       <text
         x={cx}
-        y={heavenY + heavenH * 0.35}
+        y={heavenY + heavenH * 0.68}
         textAnchor="middle"
         fill={PALETTE.ink}
-        fontSize="6.5"
+        fontSize="5.5"
         fontFamily={FONTS.mono}
         letterSpacing="3"
-        opacity="0.22"
+        opacity="0.18"
       >
         {archiveId}
       </text>
@@ -415,6 +475,30 @@ const TalismanPoster: React.FC<Props> = ({
       >
         {symbol}
       </text>
+
+      {/* Vertical tremble lines — aesthetic backbone, NOT readable text */}
+      <line
+        x1={vLineLeftX}
+        y1={vLineY1}
+        x2={vLineLeftX + (seed % 3 - 1) * 0.8}
+        y2={vLineY2}
+        stroke={PALETTE.ink}
+        strokeWidth="0.6"
+        strokeOpacity="0.15"
+        strokeLinecap="round"
+        filter={`url(#brush-${uid})`}
+      />
+      <line
+        x1={vLineRightX}
+        y1={vLineY1}
+        x2={vLineRightX + (seed % 5 - 2) * 0.6}
+        y2={vLineY2}
+        stroke={PALETTE.ink}
+        strokeWidth="0.6"
+        strokeOpacity="0.15"
+        strokeLinecap="round"
+        filter={`url(#brush-${uid})`}
+      />
 
       {/* Six Yao lines — core visual identity */}
       <g transform={`translate(${cx}, ${yaoStartY})`}>
@@ -526,27 +610,37 @@ const TalismanPoster: React.FC<Props> = ({
       {/* ╔══════════════════════════════════════════════════════════════╗
          ║  EARTH SECTION (~27%): Seal + Keywords + Annotation        ║
          ╚══════════════════════════════════════════════════════════════╝ */}
-      {/* Abstract seal (no readable text — cultural safety) */}
+      {/* Corner seal (压角章 開運) — UNREADABLE: blur + displacement makes it visual texture */}
       {showSeal && (
         <g
           transform={`translate(${W - m - 28}, ${earthY + earthH * 0.35})`}
-          filter={`url(#seal-${uid})`}
+          filter={`url(#unreadable-seal-${uid})`}
         >
           <rect
-            x="-12"
-            y="-10"
-            width="24"
-            height="20"
+            x="-13"
+            y="-11"
+            width="26"
+            height="22"
             fill="none"
             stroke={PALETTE.cinnabar}
-            strokeWidth="1.6"
-            opacity="0.55"
+            strokeWidth="1.4"
+            opacity="0.6"
             rx="1"
           />
-          {/* Inner abstract texture instead of text */}
-          <line x1="-6" y1="-3" x2="6" y2="-3" stroke={PALETTE.cinnabar} strokeWidth="0.8" opacity="0.4" />
-          <line x1="-4" y1="0" x2="4" y2="0" stroke={PALETTE.cinnabar} strokeWidth="0.8" opacity="0.4" />
-          <line x1="-6" y1="3" x2="6" y2="3" stroke={PALETTE.cinnabar} strokeWidth="0.8" opacity="0.4" />
+          <text
+            x="0"
+            y="2"
+            textAnchor="middle"
+            dominantBaseline="middle"
+            fill={PALETTE.cinnabar}
+            fontSize="7"
+            fontFamily={FONTS.chinese}
+            fontWeight="bold"
+            letterSpacing="1"
+            opacity="0.8"
+          >
+            開運
+          </text>
         </g>
       )}
 

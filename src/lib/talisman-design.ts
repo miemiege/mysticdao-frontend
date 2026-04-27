@@ -1,33 +1,30 @@
 /**
- * Talisman Design System v9.0 — Digital Manuscript Aesthetic
+ * Talisman Design System v9.1 — Digital Manuscript Aesthetic
  *
- * Synthesis of 10-dimension research:
- * 1. Color Psychology      → Tea Wash palette, burgundy cinnabar
- * 2. Typography/Layout     → Horizontal only, ≤15 words, 5 info tiers
- * 3. Semiotics             → Pseudo-symbols over readable Chinese
- * 4. Copy Tone             → "Student posture", Jung/Wilhelm lineage hint
- * 5. Competitor Analysis   → Black+white viral, selective glow
- * 6. Share Motivation      → Aesthetic capital, S.C.R.I.P.T.
- * 7. Cyber-Oriental        → 70% talisman prototype + 30% cyber trace
- * 8. Cultural Appropriation→ No "Oriental", academic framing
- * 9. De-AI Techniques      → 15 anti-AI visual markers
- * 10. Talisman History     → Dot-circle-line DNA, Xu Bing pseudo-script
+ * Brand Visual Director's Final Ruling applied:
+ * - Warm rice paper #F9F4ED + Calligraphy black #1A1A1A (brand soul)
+ * - Burgundy cinnabar #9B2335 retained
+ * - Pseudo-symbol system REMOVED (over-engineered)
+ * - De-AI parameters retained and enhanced
+ * - "Student posture" copy retained
+ * - Wilhelm-Baynes academic lineage retained
+ * - 10-dimension research foundation retained
  */
 
 import type { Gua64 } from '../data/gua64';
 
 // ─── Color Tokens: Digital Manuscript Palette ───
 export const PALETTE = {
-  /* Tea Wash base — aged, muted, avoids pure yellow (funeral connotation in West) */
-  paper: '#F5F0E8',        // Parchment
-  paperDark: '#E8DCC8',    // Tea Wash
-  paperEdge: '#D4C8B0',    // Aged edge
-  paperShadow: '#B8A88C',  // Deep stain
+  /* Warm Rice Paper — brand soul, plant fiber warmth */
+  paper: '#F9F4ED',        // Warm rice paper
+  paperDark: '#F0E8D8',    // Slightly aged
+  paperEdge: '#D8CDB8',    // Aged edge
+  paperShadow: '#C4B8A0',  // Deep stain
 
-  /* Ink — deep indigo instead of pure black (avoids Western death association) */
-  ink: '#1A1A2E',          // Deep Indigo
-  inkLight: '#3A3A4E',     // Washed ink
-  inkWash: '#5A5A6E',      // Pale wash
+  /* Ink — calligraphy black, the director's mandate */
+  ink: '#1A1A1A',          // Calligraphy black
+  inkLight: '#3A3A3A',     // Washed ink
+  inkWash: '#5A5A5A',      // Pale wash
 
   /* Cinnabar — shifted to burgundy (#9B2335) per color psychology research */
   cinnabar: '#9B2335',
@@ -222,38 +219,6 @@ export const cornerOrnament = (
   ];
   const [a, b, c] = sizes[variant % 4];
   return `M ${x} ${y} L ${x + a} ${y} L ${x + a} ${y + b} L ${x + b} ${y + b} L ${x + b} ${y + c} L ${x} ${y + c} Z`;
-};
-
-// ─── Pseudo-Symbol Generator (Xu Bing inspired) ───
-/** Generate a deterministic pseudo-script pattern from dot-circle-line DNA */
-export const generatePseudoSymbols = (
-  seed: number,
-  count: number,
-  cx: number,
-  cy: number,
-  scale: number
-): string => {
-  const rng = (n: number) => {
-    const s = Math.sin(seed * 12.9898 + n * 78.233) * 43758.5453;
-    return s - Math.floor(s);
-  };
-  let paths = '';
-  for (let i = 0; i < count; i++) {
-    const type = rng(i * 3) > 0.5 ? 'dot' : rng(i * 3) > 0.25 ? 'circle' : 'line';
-    const px = cx + (rng(i * 7) - 0.5) * scale * 2;
-    const py = cy + (rng(i * 11) - 0.5) * scale;
-    if (type === 'dot') {
-      paths += `M ${px} ${py} L ${px + 0.1} ${py} `;
-    } else if (type === 'circle') {
-      const r = 1 + rng(i * 13) * 2;
-      paths += `M ${px + r} ${py} A ${r} ${r} 0 1 0 ${px - r} ${py} A ${r} ${r} 0 1 0 ${px + r} ${py} `;
-    } else {
-      const len = 3 + rng(i * 17) * 6;
-      const angle = rng(i * 19) * Math.PI;
-      paths += `M ${px} ${py} L ${px + Math.cos(angle) * len} ${py + Math.sin(angle) * len} `;
-    }
-  }
-  return paths;
 };
 
 // ─── Element-to-Cyber-Color mapping ───
