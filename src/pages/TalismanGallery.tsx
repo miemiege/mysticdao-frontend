@@ -46,8 +46,8 @@ export default function TalismanGallery() {
         <div className="max-w-7xl mx-auto px-6 py-4">
           <div className="flex items-center justify-between flex-wrap gap-4">
             <div>
-              <h1 className="text-xl font-bold text-gold tracking-wide">TALISMAN DESIGN GALLERY</h1>
-              <p className="text-xs text-gold/40 mt-1">64 Hexagram Poster Preview · UI Design Review</p>
+              <h1 className="text-xl font-bold text-gold tracking-wide">TALISMAN v8 DIGITAL ARCHIVE</h1>
+              <p className="text-xs text-gold/40 mt-1">64 Hexagrams · Digital Archive Aesthetic · Gen-Z Ready</p>
             </div>
 
             <div className="flex items-center gap-3 flex-wrap">
