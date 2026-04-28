@@ -4,6 +4,7 @@
  */
 
 import { trackEvent } from './analytics';
+import { inlineSvgImages } from './svgImageInliner';
 
 export interface PosterData {
   style: string;
@@ -200,9 +201,8 @@ export async function exportPosterToImage(
     scale = 2,
   } = options;
 
-  // Serialize SVG
-  const serializer = new XMLSerializer();
-  const svgStr = serializer.serializeToString(svgEl);
+  // Inline external images before serialization
+  const svgStr = await inlineSvgImages(svgEl);
   const svgBlob = new Blob([svgStr], { type: 'image/svg+xml;charset=utf-8' });
   const url = URL.createObjectURL(svgBlob);
 

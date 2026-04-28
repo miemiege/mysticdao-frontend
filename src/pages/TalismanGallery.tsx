@@ -5,11 +5,12 @@
  * 支持：按八卦筛选、按尺寸切换、分数模拟
  */
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useRef, useCallback } from 'react';
 import { motion } from 'framer-motion';
-import { Eye } from 'lucide-react';
+import { Eye, Download } from 'lucide-react';
 import TalismanPoster from '../components/talisman/TalismanPoster';
 import { GUA64_LIST } from '../data/gua64';
+import { exportPosterToImage, downloadImage } from '../lib/exportPoster';
 
 const TRIGRAMS = ['乾', '坤', '震', '巽', '坎', '离', '艮', '兑'] as const;
 
@@ -32,6 +33,7 @@ export default function TalismanGallery() {
   const [score, setScore] = useState(85);
   const [sizeIdx, setSizeIdx] = useState(0);
   const [showLabels, setShowLabels] = useState(true);
+  const [exporting, setExporting] = useState<string | null>(null);
   const { w, h } = SIZE_PRESETS[sizeIdx];
 
   const filtered = useMemo(() => {
@@ -132,30 +134,103 @@ export default function TalismanGallery() {
           style={{ gridTemplateColumns: `repeat(auto-fill, minmax(${w + 40}px, 1fr))` }}
         >
           {filtered.map((gua, i) => (
-            <motion.div
+            <PosterCard
               key={gua.name}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: Math.min(i * 0.02, 0.5) }}
-              className="flex flex-col items-center gap-3"
-            >
-              <div
-                className="relative rounded-lg overflow-hidden shadow-lg hover:shadow-gold-lg transition-shadow"
-                style={{ width: w, height: h, background: '#000' }}
-              >
-                <TalismanPoster hexagramName={gua.name} score={score} width={w} height={h} showSeal />
-              </div>
-              {showLabels && (
-                <div className="text-center">
-                  <div className="text-xs font-medium text-gold/70">{gua.name}</div>
-                  <div className="text-[10px] text-gold/30">{gua.nameEn}</div>
-                  <div className="text-[9px] text-gold/20 mt-0.5">{gua.upper}☰ {gua.element}</div>
-                </div>
-              )}
-            </motion.div>
+              gua={gua}
+              score={score}
+              w={w}
+              h={h}
+              showLabels={showLabels}
+              index={i}
+              exporting={exporting}
+              setExporting={setExporting}
+            />
           ))}
         </div>
       </div>
     </div>
+  );
+}
+
+/* ─── Poster Card with Export ─── */
+function PosterCard({
+  gua,
+  score,
+  w,
+  h,
+  showLabels,
+  index,
+  exporting,
+  setExporting,
+}: {
+  gua: (typeof GUA64_LIST)[0];
+  score: number;
+  w: number;
+  h: number;
+  showLabels: boolean;
+  index: number;
+  exporting: string | null;
+  setExporting: (name: string | null) => void;
+}) {
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  const handleExport = useCallback(async () => {
+    if (!containerRef.current) return;
+    const svg = containerRef.current.querySelector('svg');
+    if (!svg) return;
+
+    setExporting(gua.name);
+    try {
+      const result = await exportPosterToImage(svg as SVGSVGElement, {
+        format: 'png',
+        scale: 2,
+      });
+      const filename = `talisman_${gua.name}_${score}.png`;
+      downloadImage(result.url, filename, gua.name, score);
+      URL.revokeObjectURL(result.url);
+    } catch (err) {
+      console.error('Export failed:', err);
+      alert('导出失败，请重试');
+    } finally {
+      setExporting(null);
+    }
+  }, [gua.name, score, setExporting]);
+
+  const isExporting = exporting === gua.name;
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay: Math.min(index * 0.02, 0.5) }}
+      className="flex flex-col items-center gap-3 group"
+    >
+      <div
+        ref={containerRef}
+        className="relative rounded-lg overflow-hidden shadow-lg hover:shadow-gold-lg transition-shadow"
+        style={{ width: w, height: h, background: '#000' }}
+      >
+        <TalismanPoster hexagramName={gua.name} score={score} width={w} height={h} showSeal />
+        <button
+          onClick={handleExport}
+          disabled={isExporting}
+          className={`absolute top-2 right-2 z-10 p-1.5 rounded-md transition-all ${
+            isExporting
+              ? 'bg-gold/20 text-gold/50 cursor-wait'
+              : 'bg-black/60 text-gold/80 opacity-0 group-hover:opacity-100 hover:bg-gold/20 hover:text-gold'
+          }`}
+          title="导出 PNG"
+        >
+          <Download size={12} />
+        </button>
+      </div>
+      {showLabels && (
+        <div className="text-center">
+          <div className="text-xs font-medium text-gold/70">{gua.name}</div>
+          <div className="text-[10px] text-gold/30">{gua.nameEn}</div>
+          <div className="text-[9px] text-gold/20 mt-0.5">{gua.upper}☰ {gua.element}</div>
+        </div>
+      )}
+    </motion.div>
   );
 }
