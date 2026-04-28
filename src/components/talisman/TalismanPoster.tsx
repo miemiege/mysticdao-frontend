@@ -29,6 +29,13 @@ import {
   getElementCyberColor,
   DE_AI,
 } from "../../lib/talisman-design";
+import {
+  NEW_BASE,
+  CALLIGRAPHY_POOL,
+  PATTERN_POOL,
+  SEAL_POOL,
+  TEXTURE_POOL,
+} from "./asset-pools";
 
 interface Props {
   hexagramName: string;
@@ -103,23 +110,9 @@ const TalismanPoster: React.FC<Props> = ({
   const seed = gua?.number || 0;
 
   /* ─── Background texture selection (deterministic per hexagram) ─── */
-  const bgPool = [
-    ...Array.from({ length: 500 }, (_, i) => `/talisman-assets/processed/calligraphy_${String(i).padStart(4, '0')}.jpg`),
-    ...Array.from({ length: 200 }, (_, i) => `/talisman-assets/processed/charm_${String(i).padStart(4, '0')}.jpg`),
-  ];
+  const bgPool = TEXTURE_POOL;
   const bgIndex = seed % bgPool.length;
   const bgTexture = bgPool[bgIndex];
-
-  /* ─── New Curated Asset Pool (自己整理z素材库) ─── */
-  const NEW_BASE = '/talisman-assets/自己整理z素材库';
-  const CALLIGRAPHY_POOL = [
-    'calligraphy/calligraphy_0000.jpg','calligraphy/calligraphy_0003.jpg','calligraphy/calligraphy_0005.jpg','calligraphy/calligraphy_0007.jpg','calligraphy/calligraphy_0008.jpg','calligraphy/calligraphy_0009.jpg','calligraphy/calligraphy_0011.jpg','calligraphy/calligraphy_0012.jpg','calligraphy/calligraphy_0016.jpg','calligraphy/calligraphy_0019.jpg','calligraphy/calligraphy_0020.jpg','calligraphy/calligraphy_0022.jpg','calligraphy/calligraphy_0027.jpg','calligraphy/calligraphy_0029.jpg','calligraphy/calligraphy_0031.jpg','calligraphy/calligraphy_0032.jpg','calligraphy/calligraphy_0034.jpg','calligraphy/calligraphy_0037.jpg','calligraphy/calligraphy_0039.jpg','calligraphy/calligraphy_0041.jpg','calligraphy/calligraphy_0042.jpg','calligraphy/calligraphy_0045.jpg','calligraphy/calligraphy_0046.jpg','calligraphy/calligraphy_0048.jpg',
-  ];
-  const PATTERN_POOL = [
-    'pattern/pattern_0056.png','pattern/pattern_0058.png','pattern/pattern_0059.png','pattern/pattern_0060.png','pattern/pattern_0061.png','pattern/pattern_0064.png','pattern/pattern_0065.png','pattern/pattern_0067.png','pattern/pattern_0068.png','pattern/pattern_0069.png','pattern/pattern_0070.png','pattern/pattern_0071.png','pattern/pattern_0072.png','pattern/pattern_0073.png','pattern/pattern_0074.png','pattern/pattern_0075.png','pattern/pattern_0081.png','pattern/pattern_0082.png',
-  ];
-  const SEAL_POOL = ['seal/seal_0050.png','seal/seal_0051.png'];
-  const TEXTURE_POOL = ['texture/texture_0053.jpg'];
 
   const ELEMENT_PATTERN_MAP: Record<string, number[]> = {
     '金': [0,1,2,3],
@@ -129,19 +122,19 @@ const TalismanPoster: React.FC<Props> = ({
     '土': [16,5,6,0],
   };
 
-  const newTextureAsset = useNewAssets ? `${NEW_BASE}/${TEXTURE_POOL[0]}` : null;
+  const newTextureAsset = useNewAssets ? TEXTURE_POOL[seed % TEXTURE_POOL.length] : null;
   const patternPrefs = ELEMENT_PATTERN_MAP[element] || [0];
   const newPatternAsset = useNewAssets
-    ? `${NEW_BASE}/${PATTERN_POOL[patternPrefs[seed % patternPrefs.length]]}`
+    ? PATTERN_POOL[patternPrefs[seed % patternPrefs.length]]
     : null;
   const newCalligraphyAsset = useNewAssets
-    ? `${NEW_BASE}/${CALLIGRAPHY_POOL[seed % CALLIGRAPHY_POOL.length]}`
+    ? CALLIGRAPHY_POOL[seed % CALLIGRAPHY_POOL.length]
     : null;
   const newSealHeaven = useNewAssets
-    ? `${NEW_BASE}/${SEAL_POOL[seed % SEAL_POOL.length]}`
+    ? SEAL_POOL[seed % SEAL_POOL.length]
     : null;
   const newSealEarth = useNewAssets
-    ? `${NEW_BASE}/${SEAL_POOL[(seed + 1) % SEAL_POOL.length]}`
+    ? SEAL_POOL[(seed + 1) % SEAL_POOL.length]
     : null;
 
   /* ─── Border paths with controlled randomness ─── */

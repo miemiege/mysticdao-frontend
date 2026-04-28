@@ -1,0 +1,91 @@
+{
+  "batch_dir": "raw_assets/references/agent_batch_1",
+  "total": 15,
+  "pass": 15,
+  "fail": 0,
+  "pass_rate": 1.0,
+  "details": {
+    "reference": {
+      "pass": 15,
+      "fail": 0,
+      "items": [
+        {
+          "file": "reference_agent_000.jpg",
+          "ok": true,
+          "msg": "清晰度852 对比度0.95 合格"
+        },
+        {
+          "file": "reference_agent_001.jpg",
+          "ok": true,
+          "msg": "清晰度1277 对比度0.92 合格"
+        },
+        {
+          "file": "reference_agent_002.jpg",
+          "ok": true,
+          "msg": "清晰度4456 对比度0.86 合格"
+        },
+        {
+          "file": "reference_agent_003.jpg",
+          "ok": true,
+          "msg": "清晰度1234 对比度0.93 合格"
+        },
+        {
+          "file": "reference_agent_004.jpg",
+          "ok": true,
+          "msg": "清晰度679 对比度0.92 合格"
+        },
+        {
+          "file": "reference_agent_005.jpg",
+          "ok": true,
+          "msg": "清晰度844 对比度0.96 合格"
+        },
+        {
+          "file": "reference_agent_006.jpg",
+          "ok": true,
+          "msg": "清晰度1275 对比度0.91 合格"
+        },
+        {
+          "file": "reference_agent_007.jpg",
+          "ok": true,
+          "msg": "清晰度4459 对比度0.87 合格"
+        },
+        {
+          "file": "reference_agent_008.jpg",
+          "ok": true,
+          "msg": "清晰度1350 对比度0.93 合格"
+        },
+        {
+          "file": "reference_agent_009.jpg",
+          "ok": true,
+          "msg": "清晰度703 对比度0.91 合格"
+        },
+        {
+          "file": "reference_agent_010.jpg",
+          "ok": true,
+          "msg": "清晰度847 对比度0.95 合格"
+        },
+        {
+          "file": "reference_agent_011.jpg",
+          "ok": true,
+          "msg": "清晰度1276 对比度0.91 合格"
+        },
+        {
+          "file": "reference_agent_012.jpg",
+          "ok": true,
+          "msg": "清晰度4455 对比度0.87 合格"
+        },
+        {
+          "file": "reference_agent_013.jpg",
+          "ok": true,
+          "msg": "清晰度980 对比度0.93 合格"
+        },
+        {
+          "file": "reference_agent_014.jpg",
+          "ok": true,
+          "msg": "清晰度608 对比度0.92 合格"
+        }
+      ]
+    }
+  },
+  "failures": []
+}

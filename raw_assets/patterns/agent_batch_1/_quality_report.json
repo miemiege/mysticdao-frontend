@@ -1,0 +1,222 @@
+{
+  "batch_dir": "raw_assets/patterns/agent_batch_1",
+  "total": 40,
+  "pass": 40,
+  "fail": 0,
+  "pass_rate": 1.0,
+  "details": {
+    "unknown": {
+      "pass": 20,
+      "fail": 0,
+      "items": [
+        {
+          "file": "01_bagua_array.png",
+          "ok": true,
+          "msg": "未分类，跳过"
+        },
+        {
+          "file": "02_tortoise_shell.png",
+          "ok": true,
+          "msg": "未分类，跳过"
+        },
+        {
+          "file": "03_cloud_spiral.png",
+          "ok": true,
+          "msg": "未分类，跳过"
+        },
+        {
+          "file": "04_wanzi.png",
+          "ok": true,
+          "msg": "未分类，跳过"
+        },
+        {
+          "file": "05_huiwen_border.png",
+          "ok": true,
+          "msg": "未分类，跳过"
+        },
+        {
+          "file": "06_dragon_scale.png",
+          "ok": true,
+          "msg": "未分类，跳过"
+        },
+        {
+          "file": "07_lotus_scroll.png",
+          "ok": true,
+          "msg": "未分类，跳过"
+        },
+        {
+          "file": "08_flame_radiate.png",
+          "ok": true,
+          "msg": "未分类，跳过"
+        },
+        {
+          "file": "09_ruyi_cloud.png",
+          "ok": true,
+          "msg": "未分类，跳过"
+        },
+        {
+          "file": "10_panchang_knot.png",
+          "ok": true,
+          "msg": "未分类，跳过"
+        },
+        {
+          "file": "11_diamond_chain.png",
+          "ok": true,
+          "msg": "未分类，跳过"
+        },
+        {
+          "file": "12_star_constellation.png",
+          "ok": true,
+          "msg": "未分类，跳过"
+        },
+        {
+          "file": "13_scroll_wave.png",
+          "ok": true,
+          "msg": "未分类，跳过"
+        },
+        {
+          "file": "14_water_ripple.png",
+          "ok": true,
+          "msg": "未分类，跳过"
+        },
+        {
+          "file": "15_mountain.png",
+          "ok": true,
+          "msg": "未分类，跳过"
+        },
+        {
+          "file": "16_bead_chain.png",
+          "ok": true,
+          "msg": "未分类，跳过"
+        },
+        {
+          "file": "17_cash_coin.png",
+          "ok": true,
+          "msg": "未分类，跳过"
+        },
+        {
+          "file": "18_auspicious_cloud.png",
+          "ok": true,
+          "msg": "未分类，跳过"
+        },
+        {
+          "file": "19_taiji_bagua.png",
+          "ok": true,
+          "msg": "未分类，跳过"
+        },
+        {
+          "file": "20_thunder_fangsheng.png",
+          "ok": true,
+          "msg": "未分类，跳过"
+        }
+      ]
+    },
+    "pattern": {
+      "pass": 20,
+      "fail": 0,
+      "items": [
+        {
+          "file": "pattern_agent_000.png",
+          "ok": true,
+          "msg": "清晰度123 图案占比100.0% 无Alpha 合格"
+        },
+        {
+          "file": "pattern_agent_001.png",
+          "ok": true,
+          "msg": "清晰度129 图案占比100.0% 无Alpha 合格"
+        },
+        {
+          "file": "pattern_agent_002.png",
+          "ok": true,
+          "msg": "清晰度63 图案占比100.0% 无Alpha 合格"
+        },
+        {
+          "file": "pattern_agent_003.png",
+          "ok": true,
+          "msg": "清晰度45 图案占比100.0% 无Alpha 合格"
+        },
+        {
+          "file": "pattern_agent_004.png",
+          "ok": true,
+          "msg": "清晰度145 图案占比100.0% 无Alpha 合格"
+        },
+        {
+          "file": "pattern_agent_005.png",
+          "ok": true,
+          "msg": "清晰度284 图案占比100.0% 无Alpha 合格"
+        },
+        {
+          "file": "pattern_agent_006.png",
+          "ok": true,
+          "msg": "清晰度303 图案占比100.0% 无Alpha 合格"
+        },
+        {
+          "file": "pattern_agent_007.png",
+          "ok": true,
+          "msg": "清晰度151 图案占比100.0% 无Alpha 合格"
+        },
+        {
+          "file": "pattern_agent_008.png",
+          "ok": true,
+          "msg": "清晰度123 图案占比100.0% 无Alpha 合格"
+        },
+        {
+          "file": "pattern_agent_009.png",
+          "ok": true,
+          "msg": "清晰度128 图案占比100.0% 无Alpha 合格"
+        },
+        {
+          "file": "pattern_agent_010.png",
+          "ok": true,
+          "msg": "清晰度63 图案占比100.0% 无Alpha 合格"
+        },
+        {
+          "file": "pattern_agent_011.png",
+          "ok": true,
+          "msg": "清晰度45 图案占比100.0% 无Alpha 合格"
+        },
+        {
+          "file": "pattern_agent_012.png",
+          "ok": true,
+          "msg": "清晰度145 图案占比100.0% 无Alpha 合格"
+        },
+        {
+          "file": "pattern_agent_013.png",
+          "ok": true,
+          "msg": "清晰度284 图案占比100.0% 无Alpha 合格"
+        },
+        {
+          "file": "pattern_agent_014.png",
+          "ok": true,
+          "msg": "清晰度303 图案占比100.0% 无Alpha 合格"
+        },
+        {
+          "file": "pattern_agent_015.png",
+          "ok": true,
+          "msg": "清晰度151 图案占比100.0% 无Alpha 合格"
+        },
+        {
+          "file": "pattern_agent_016.png",
+          "ok": true,
+          "msg": "清晰度123 图案占比100.0% 无Alpha 合格"
+        },
+        {
+          "file": "pattern_agent_017.png",
+          "ok": true,
+          "msg": "清晰度130 图案占比100.0% 无Alpha 合格"
+        },
+        {
+          "file": "pattern_agent_018.png",
+          "ok": true,
+          "msg": "清晰度63 图案占比100.0% 无Alpha 合格"
+        },
+        {
+          "file": "pattern_agent_019.png",
+          "ok": true,
+          "msg": "清晰度45 图案占比100.0% 无Alpha 合格"
+        }
+      ]
+    }
+  },
+  "failures": []
+}

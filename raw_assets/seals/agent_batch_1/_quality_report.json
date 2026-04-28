@@ -1,0 +1,141 @@
+{
+  "batch_dir": "raw_assets/seals/agent_batch_1",
+  "total": 25,
+  "pass": 25,
+  "fail": 0,
+  "pass_rate": 1.0,
+  "details": {
+    "seal": {
+      "pass": 25,
+      "fail": 0,
+      "items": [
+        {
+          "file": "seal_agent_000.png",
+          "ok": true,
+          "msg": "红色占比100.0% 合格"
+        },
+        {
+          "file": "seal_agent_001.png",
+          "ok": true,
+          "msg": "红色占比100.0% 合格"
+        },
+        {
+          "file": "seal_agent_002.png",
+          "ok": true,
+          "msg": "红色占比100.0% 合格"
+        },
+        {
+          "file": "seal_agent_003.png",
+          "ok": true,
+          "msg": "红色占比100.0% 合格"
+        },
+        {
+          "file": "seal_agent_004.png",
+          "ok": true,
+          "msg": "红色占比100.0% 合格"
+        },
+        {
+          "file": "seal_agent_005.png",
+          "ok": true,
+          "msg": "红色占比100.0% 合格"
+        },
+        {
+          "file": "seal_agent_006.png",
+          "ok": true,
+          "msg": "红色占比100.0% 合格"
+        },
+        {
+          "file": "seal_agent_007.png",
+          "ok": true,
+          "msg": "红色占比100.0% 合格"
+        },
+        {
+          "file": "seal_agent_008.png",
+          "ok": true,
+          "msg": "红色占比100.0% 合格"
+        },
+        {
+          "file": "seal_agent_009.png",
+          "ok": true,
+          "msg": "红色占比100.0% 合格"
+        },
+        {
+          "file": "seal_agent_010.png",
+          "ok": true,
+          "msg": "红色占比100.0% 合格"
+        },
+        {
+          "file": "seal_agent_011.png",
+          "ok": true,
+          "msg": "红色占比100.0% 合格"
+        },
+        {
+          "file": "seal_agent_012.png",
+          "ok": true,
+          "msg": "红色占比100.0% 合格"
+        },
+        {
+          "file": "seal_agent_013.png",
+          "ok": true,
+          "msg": "红色占比100.0% 合格"
+        },
+        {
+          "file": "seal_agent_014.png",
+          "ok": true,
+          "msg": "红色占比100.0% 合格"
+        },
+        {
+          "file": "seal_agent_015.png",
+          "ok": true,
+          "msg": "红色占比100.0% 合格"
+        },
+        {
+          "file": "seal_agent_016.png",
+          "ok": true,
+          "msg": "红色占比100.0% 合格"
+        },
+        {
+          "file": "seal_agent_017.png",
+          "ok": true,
+          "msg": "红色占比100.0% 合格"
+        },
+        {
+          "file": "seal_agent_018.png",
+          "ok": true,
+          "msg": "红色占比100.0% 合格"
+        },
+        {
+          "file": "seal_agent_019.png",
+          "ok": true,
+          "msg": "红色占比100.0% 合格"
+        },
+        {
+          "file": "seal_circle_01_玄道.png",
+          "ok": true,
+          "msg": "红色占比98.6% 合格"
+        },
+        {
+          "file": "seal_circle_02_灵符.png",
+          "ok": true,
+          "msg": "红色占比98.7% 合格"
+        },
+        {
+          "file": "seal_circle_03_天机.png",
+          "ok": true,
+          "msg": "红色占比98.7% 合格"
+        },
+        {
+          "file": "seal_circle_04_阴阳.png",
+          "ok": true,
+          "msg": "红色占比98.9% 合格"
+        },
+        {
+          "file": "seal_circle_05_五行.png",
+          "ok": true,
+          "msg": "红色占比98.0% 合格"
+        }
+      ]
+    }
+  },
+  "failures": []
+}

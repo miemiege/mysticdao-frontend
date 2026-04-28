@@ -1,0 +1,116 @@
+{
+  "batch_dir": "raw_assets/calligraphy/agent_batch_1",
+  "total": 20,
+  "pass": 20,
+  "fail": 0,
+  "pass_rate": 1.0,
+  "details": {
+    "calligraphy": {
+      "pass": 20,
+      "fail": 0,
+      "items": [
+        {
+          "file": "calligraphy_agent_000.jpg",
+          "ok": true,
+          "msg": "清晰度840 对比度0.96 合格"
+        },
+        {
+          "file": "calligraphy_agent_001.jpg",
+          "ok": true,
+          "msg": "清晰度859 对比度0.96 合格"
+        },
+        {
+          "file": "calligraphy_agent_002.jpg",
+          "ok": true,
+          "msg": "清晰度918 对比度0.96 合格"
+        },
+        {
+          "file": "calligraphy_agent_003.jpg",
+          "ok": true,
+          "msg": "清晰度927 对比度0.96 合格"
+        },
+        {
+          "file": "calligraphy_agent_004.jpg",
+          "ok": true,
+          "msg": "清晰度888 对比度0.96 合格"
+        },
+        {
+          "file": "calligraphy_agent_005.jpg",
+          "ok": true,
+          "msg": "清晰度833 对比度0.96 合格"
+        },
+        {
+          "file": "calligraphy_agent_006.jpg",
+          "ok": true,
+          "msg": "清晰度888 对比度0.96 合格"
+        },
+        {
+          "file": "calligraphy_agent_007.jpg",
+          "ok": true,
+          "msg": "清晰度878 对比度0.96 合格"
+        },
+        {
+          "file": "calligraphy_agent_008.jpg",
+          "ok": true,
+          "msg": "清晰度901 对比度0.97 合格"
+        },
+        {
+          "file": "calligraphy_agent_009.jpg",
+          "ok": true,
+          "msg": "清晰度843 对比度0.97 合格"
+        },
+        {
+          "file": "calligraphy_agent_010.jpg",
+          "ok": true,
+          "msg": "清晰度908 对比度0.96 合格"
+        },
+        {
+          "file": "calligraphy_agent_011.jpg",
+          "ok": true,
+          "msg": "清晰度835 对比度0.96 合格"
+        },
+        {
+          "file": "calligraphy_agent_012.jpg",
+          "ok": true,
+          "msg": "清晰度811 对比度0.97 合格"
+        },
+        {
+          "file": "calligraphy_agent_013.jpg",
+          "ok": true,
+          "msg": "清晰度875 对比度0.96 合格"
+        },
+        {
+          "file": "calligraphy_agent_014.jpg",
+          "ok": true,
+          "msg": "清晰度954 对比度0.96 合格"
+        },
+        {
+          "file": "calligraphy_agent_015.jpg",
+          "ok": true,
+          "msg": "清晰度902 对比度0.96 合格"
+        },
+        {
+          "file": "calligraphy_agent_016.jpg",
+          "ok": true,
+          "msg": "清晰度915 对比度0.96 合格"
+        },
+        {
+          "file": "calligraphy_agent_017.jpg",
+          "ok": true,
+          "msg": "清晰度866 对比度0.96 合格"
+        },
+        {
+          "file": "calligraphy_agent_018.jpg",
+          "ok": true,
+          "msg": "清晰度845 对比度0.97 合格"
+        },
+        {
+          "file": "calligraphy_agent_019.jpg",
+          "ok": true,
+          "msg": "清晰度843 对比度0.97 合格"
+        }
+      ]
+    }
+  },
+  "failures": []
+}
