@@ -1,9 +1,11 @@
 import { lazy, Suspense, useEffect } from 'react'
 import { Routes, Route, useSearchParams } from 'react-router'
 import { trackEvent } from '@/lib/analytics'
+import SamplePage from './pages/SamplePage'
 
 const Home = lazy(() => import('./pages/Home'))
 const Daily = lazy(() => import('./pages/Daily'))
+const LanternCore = lazy(() => import('./pages/LanternCore'))
 
 const PageFallback = () => (
   <div className="min-h-screen bg-black flex items-center justify-center">
@@ -45,6 +47,8 @@ export default function App() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/daily" element={<Daily />} />
+        <Route path="/lantern-core" element={<LanternCore />} />
+        <Route path="/samples" element={<SamplePage />} />
         <Route path="*" element={<Home />} />
       </Routes>
     </Suspense>

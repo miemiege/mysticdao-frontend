@@ -1,0 +1,242 @@
+[
+  {
+    "id": 44,
+    "category": "calligraphy",
+    "file": "calligraphy/calligraphy_0044.jpg",
+    "reason": "未居中(0.66)"
+  },
+  {
+    "id": 58,
+    "category": "calligraphy",
+    "file": "calligraphy/calligraphy_0058.jpg",
+    "reason": "未居中(0.59)"
+  },
+  {
+    "id": 102,
+    "category": "seal",
+    "file": "seal/seal_0102.png",
+    "reason": "红色占比7.8%<30%"
+  },
+  {
+    "id": 103,
+    "category": "seal",
+    "file": "seal/seal_0103.png",
+    "reason": "红色占比10.6%<30%"
+  },
+  {
+    "id": 104,
+    "category": "seal",
+    "file": "seal/seal_0104.png",
+    "reason": "红色占比8.2%<30%"
+  },
+  {
+    "id": 105,
+    "category": "seal",
+    "file": "seal/seal_0105.png",
+    "reason": "红色占比12.1%<30%"
+  },
+  {
+    "id": 106,
+    "category": "seal",
+    "file": "seal/seal_0106.png",
+    "reason": "红色占比4.2%<30%"
+  },
+  {
+    "id": 107,
+    "category": "seal",
+    "file": "seal/seal_0107.png",
+    "reason": "红色占比9.9%<30%"
+  },
+  {
+    "id": 109,
+    "category": "seal",
+    "file": "seal/seal_0109.png",
+    "reason": "红色占比7.9%<30%"
+  },
+  {
+    "id": 110,
+    "category": "seal",
+    "file": "seal/seal_0110.png",
+    "reason": "红色占比6.2%<30%"
+  },
+  {
+    "id": 112,
+    "category": "seal",
+    "file": "seal/seal_0112.png",
+    "reason": "红色占比5.1%<30%"
+  },
+  {
+    "id": 113,
+    "category": "seal",
+    "file": "seal/seal_0113.png",
+    "reason": "红色占比5.9%<30%"
+  },
+  {
+    "id": 114,
+    "category": "seal",
+    "file": "seal/seal_0114.png",
+    "reason": "红色占比4.0%<30%"
+  },
+  {
+    "id": 115,
+    "category": "seal",
+    "file": "seal/seal_0115.png",
+    "reason": "红色占比11.4%<30%"
+  },
+  {
+    "id": 116,
+    "category": "seal",
+    "file": "seal/seal_0116.png",
+    "reason": "红色占比7.3%<30%"
+  },
+  {
+    "id": 118,
+    "category": "seal",
+    "file": "seal/seal_0118.png",
+    "reason": "红色占比8.4%<30%"
+  },
+  {
+    "id": 119,
+    "category": "seal",
+    "file": "seal/seal_0119.png",
+    "reason": "红色占比8.8%<30%"
+  },
+  {
+    "id": 120,
+    "category": "seal",
+    "file": "seal/seal_0120.png",
+    "reason": "红色占比5.2%<30%"
+  },
+  {
+    "id": 121,
+    "category": "seal",
+    "file": "seal/seal_0121.png",
+    "reason": "红色占比6.2%<30%"
+  },
+  {
+    "id": 122,
+    "category": "seal",
+    "file": "seal/seal_0122.png",
+    "reason": "红色占比11.7%<30%"
+  },
+  {
+    "id": 123,
+    "category": "seal",
+    "file": "seal/seal_0123.png",
+    "reason": "红色占比16.6%<30%"
+  },
+  {
+    "id": 127,
+    "category": "seal",
+    "file": "seal/seal_0127.png",
+    "reason": "红色占比13.3%<30%"
+  },
+  {
+    "id": 128,
+    "category": "seal",
+    "file": "seal/seal_0128.png",
+    "reason": "红色占比13.5%<30%"
+  },
+  {
+    "id": 132,
+    "category": "seal",
+    "file": "seal/seal_0132.png",
+    "reason": "红色占比5.6%<30%"
+  },
+  {
+    "id": 133,
+    "category": "seal",
+    "file": "seal/seal_0133.png",
+    "reason": "红色占比18.7%<30%"
+  },
+  {
+    "id": 134,
+    "category": "seal",
+    "file": "seal/seal_0134.png",
+    "reason": "红色占比27.9%<30%"
+  },
+  {
+    "id": 137,
+    "category": "seal",
+    "file": "seal/seal_0137.png",
+    "reason": "红色占比7.1%<30%"
+  },
+  {
+    "id": 139,
+    "category": "seal",
+    "file": "seal/seal_0139.png",
+    "reason": "红色占比5.9%<30%"
+  },
+  {
+    "id": 140,
+    "category": "seal",
+    "file": "seal/seal_0140.png",
+    "reason": "红色占比2.4%<30%"
+  },
+  {
+    "id": 141,
+    "category": "texture",
+    "file": "texture/texture_0141.jpg",
+    "reason": "ΔE=124.1>50 严重偏色"
+  },
+  {
+    "id": 142,
+    "category": "texture",
+    "file": "texture/texture_0142.jpg",
+    "reason": "ΔE=50.0>50 严重偏色"
+  },
+  {
+    "id": 143,
+    "category": "texture",
+    "file": "texture/texture_0143.jpg",
+    "reason": "ΔE=94.1>50 严重偏色"
+  },
+  {
+    "id": 144,
+    "category": "texture",
+    "file": "texture/texture_0144.jpg",
+    "reason": "ΔE=78.1>50 严重偏色"
+  },
+  {
+    "id": 145,
+    "category": "texture",
+    "file": "texture/texture_0145.jpg",
+    "reason": "ΔE=40.2>30 轻度偏色(需校正)"
+  },
+  {
+    "id": 152,
+    "category": "texture",
+    "file": "texture/texture_0152.jpg",
+    "reason": "ΔE=104.7>50 严重偏色"
+  },
+  {
+    "id": 154,
+    "category": "texture",
+    "file": "texture/texture_0154.jpg",
+    "reason": "ΔE=35.8>30 轻度偏色(需校正)"
+  },
+  {
+    "id": 156,
+    "category": "texture",
+    "file": "texture/texture_0156.jpg",
+    "reason": "ΔE=86.2>50 严重偏色"
+  },
+  {
+    "id": 157,
+    "category": "texture",
+    "file": "texture/texture_0157.jpg",
+    "reason": "ΔE=89.0>50 严重偏色"
+  },
+  {
+    "id": 158,
+    "category": "texture",
+    "file": "texture/texture_0158.jpg",
+    "reason": "ΔE=87.6>50 严重偏色"
+  },
+  {
+    "id": 159,
+    "category": "texture",
+    "file": "texture/texture_0159.jpg",
+    "reason": "ΔE=125.9>50 严重偏色"
+  }
+]

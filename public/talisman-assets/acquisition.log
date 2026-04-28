@@ -1,0 +1,76 @@
+🚀 三路并行素材获取启动
+   字体: 0 款
+
+📡 Wave 1: Met Museum 批量下载
+
+✍️ Wave 2: 真实字体渲染书法字卡
+   渲染单字...
+   ✅ 单字 10/52
+   ✅ 单字 20/52
+   ✅ 单字 30/52
+   ✅ 单字 40/52
+   ✅ 单字 50/52
+   渲染两字词组...
+
+🌐 Wave 3: Wikimedia Commons 单线程慢速下载
+   Chinese calligraphy: 20 个结果
+   bird flower China: 找到 3377 个, 新 100 个
+   figure painting China: 找到 8572 个, 新 97 个
+   China: 找到 56 个, 新 44 个
+   Chinese: 找到 67 个, 新 9 个
+   Chinese painting: 找到 34 个, 新 10 个
+   Chinese scroll: 找到 25 个, 新 0 个
+   Buddha: 找到 44 个, 新 0 个
+   Bodhisattva: 找到 39 个, 新 1 个
+   Mandala: 找到 38 个, 新 0 个
+   Sutra: 找到 41 个, 新 0 个
+   Japan: 找到 49 个, 新 3 个
+   Japanese painting: 找到 19 个, 新 1 个
+   Korea: 找到 39 个, 新 0 个
+   silk: 找到 56 个, 新 2 个
+   landscape China: 找到 22 个, 新 1 个
+   Chinese calligraphy: 找到 15 个, 新 0 个
+   Chinese Buddhist: 找到 16 个, 新 0 个
+   Tang dynasty: 找到 6 个, 新 0 个
+   Song dynasty: 找到 13 个, 新 0 个
+   Ming dynasty: 找到 8 个, 新 0 个
+   Qing dynasty: 找到 9 个, 新 0 个
+   总计待下载: 268 个
+   ✅ 10
+   Wang Xizhi: 20 个结果
+   ✅ 20/268
+   Yan Zhenqing: 20 个结果
+   ✅ 40/268
+   Su Shi: 20 个结果
+   ✅ 60/268
+   Mi Fu: 20 个结果
+   ✅ 80/268
+   Chinese seal: 20 个结果
+   Chinese painting Tang: 20 个结果
+   ✅ 100/268
+   Chinese scroll: 20 个结果
+   ✅ 120/268
+   Dunhuang manuscript: 20 个结果
+   ✅ 140/268
+   ✅ 160/268
+   Chinese Buddhist art: 20 个结果
+   ✅ 180/268
+   🏁 Wikimedia 完成: 19 张
+   ✅ 200/268
+   🏁 Met Museum 完成: 210 张
+Traceback (most recent call last):
+  File "/mnt/c/Users/咩咩哥/mysticdao-frontend/scripts/bulk_acquisition.py", line 356, in <module>
+    results["fonts"] = f2.result()
+                       ^^^^^^^^^^^
+  File "/usr/lib/python3.12/concurrent/futures/_base.py", line 449, in result
+    return self.__get_result()
+           ^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/concurrent/futures/_base.py", line 401, in __get_result
+    raise self._exception
+  File "/usr/lib/python3.12/concurrent/futures/thread.py", line 58, in run
+    result = self.fn(*self.args, **self.kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/mnt/c/Users/咩咩哥/mysticdao-frontend/scripts/bulk_acquisition.py", line 227, in wave2_fonts
+    font_path = FONTS[i % len(FONTS)]
+                      ~~^~~~~~~~~~~~
+ZeroDivisionError: integer modulo by zero

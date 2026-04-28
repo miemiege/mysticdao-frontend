@@ -1,0 +1,53 @@
+
+> my-app@0.0.0 dev
+> vite --host 0.0.0.0 --port 5173
+
+
+  VITE v7.3.2  ready in 727 ms
+
+  ➜  Local:   http://localhost:5173/
+  ➜  Network: http://10.255.255.254:5173/
+  ➜  Network: http://172.29.129.195:5173/
+  ➜  Network: http://100.67.37.28:5173/
+(!) %VITE_GA4_MEASUREMENT_ID% is not defined in env variables found in /index.html. Is the variable mistyped?
+(!) %VITE_GA4_MEASUREMENT_ID% is not defined in env variables found in /index.html. Is the variable mistyped?
+(!) %VITE_GA4_MEASUREMENT_ID% is not defined in env variables found in /index.html. Is the variable mistyped?
+(!) %VITE_GA4_MEASUREMENT_ID% is not defined in env variables found in /index.html. Is the variable mistyped?
+(!) %VITE_GA4_MEASUREMENT_ID% is not defined in env variables found in /index.html. Is the variable mistyped?
+(!) %VITE_GA4_MEASUREMENT_ID% is not defined in env variables found in /index.html. Is the variable mistyped?
+(!) %VITE_GA4_MEASUREMENT_ID% is not defined in env variables found in /index.html. Is the variable mistyped?
+(!) %VITE_GA4_MEASUREMENT_ID% is not defined in env variables found in /index.html. Is the variable mistyped?
+(!) %VITE_GA4_MEASUREMENT_ID% is not defined in env variables found in /index.html. Is the variable mistyped?
+(!) %VITE_GA4_MEASUREMENT_ID% is not defined in env variables found in /index.html. Is the variable mistyped?
+(!) %VITE_GA4_MEASUREMENT_ID% is not defined in env variables found in /index.html. Is the variable mistyped?
+(!) %VITE_GA4_MEASUREMENT_ID% is not defined in env variables found in /index.html. Is the variable mistyped?
+(!) %VITE_GA4_MEASUREMENT_ID% is not defined in env variables found in /index.html. Is the variable mistyped?
+(!) %VITE_GA4_MEASUREMENT_ID% is not defined in env variables found in /index.html. Is the variable mistyped?
+(!) %VITE_GA4_MEASUREMENT_ID% is not defined in env variables found in /index.html. Is the variable mistyped?
+(!) %VITE_GA4_MEASUREMENT_ID% is not defined in env variables found in /index.html. Is the variable mistyped?
+(!) %VITE_GA4_MEASUREMENT_ID% is not defined in env variables found in /index.html. Is the variable mistyped?
+(!) %VITE_GA4_MEASUREMENT_ID% is not defined in env variables found in /index.html. Is the variable mistyped?
+(!) %VITE_GA4_MEASUREMENT_ID% is not defined in env variables found in /index.html. Is the variable mistyped?
+(!) %VITE_GA4_MEASUREMENT_ID% is not defined in env variables found in /index.html. Is the variable mistyped?
+(!) %VITE_GA4_MEASUREMENT_ID% is not defined in env variables found in /index.html. Is the variable mistyped?
+(!) %VITE_GA4_MEASUREMENT_ID% is not defined in env variables found in /index.html. Is the variable mistyped?
+(!) %VITE_GA4_MEASUREMENT_ID% is not defined in env variables found in /index.html. Is the variable mistyped?
+(!) %VITE_GA4_MEASUREMENT_ID% is not defined in env variables found in /index.html. Is the variable mistyped?
+(!) %VITE_GA4_MEASUREMENT_ID% is not defined in env variables found in /index.html. Is the variable mistyped?
+(!) %VITE_GA4_MEASUREMENT_ID% is not defined in env variables found in /index.html. Is the variable mistyped?
+(!) %VITE_GA4_MEASUREMENT_ID% is not defined in env variables found in /index.html. Is the variable mistyped?
+(!) %VITE_GA4_MEASUREMENT_ID% is not defined in env variables found in /index.html. Is the variable mistyped?
+(!) %VITE_GA4_MEASUREMENT_ID% is not defined in env variables found in /index.html. Is the variable mistyped?
+(!) %VITE_GA4_MEASUREMENT_ID% is not defined in env variables found in /index.html. Is the variable mistyped?
+(!) %VITE_GA4_MEASUREMENT_ID% is not defined in env variables found in /index.html. Is the variable mistyped?
+(!) %VITE_GA4_MEASUREMENT_ID% is not defined in env variables found in /index.html. Is the variable mistyped?
+(!) %VITE_GA4_MEASUREMENT_ID% is not defined in env variables found in /index.html. Is the variable mistyped?
+(!) %VITE_GA4_MEASUREMENT_ID% is not defined in env variables found in /index.html. Is the variable mistyped?
+(!) %VITE_GA4_MEASUREMENT_ID% is not defined in env variables found in /index.html. Is the variable mistyped?
+(!) %VITE_GA4_MEASUREMENT_ID% is not defined in env variables found in /index.html. Is the variable mistyped?
+(!) %VITE_GA4_MEASUREMENT_ID% is not defined in env variables found in /index.html. Is the variable mistyped?
+(!) %VITE_GA4_MEASUREMENT_ID% is not defined in env variables found in /index.html. Is the variable mistyped?
+(!) %VITE_GA4_MEASUREMENT_ID% is not defined in env variables found in /index.html. Is the variable mistyped?
+(!) %VITE_GA4_MEASUREMENT_ID% is not defined in env variables found in /index.html. Is the variable mistyped?
+(!) %VITE_GA4_MEASUREMENT_ID% is not defined in env variables found in /index.html. Is the variable mistyped?
+(!) %VITE_GA4_MEASUREMENT_ID% is not defined in env variables found in /index.html. Is the variable mistyped?
