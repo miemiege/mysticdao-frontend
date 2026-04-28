@@ -16,6 +16,12 @@ import { PosterDecorations } from './PosterDecorations';
 import type { Gua64 } from '@/data/gua64';
 import type { HexagramTalisman } from '@/data/hexagram-talismans';
 import { getTheme } from '@/lib/theme';
+import {
+  TEXTURE_POOL,
+  PATTERN_POOL,
+  SEAL_POOL,
+  CALLIGRAPHY_POOL,
+} from './talisman/asset-pools';
 
 export interface TalismanPosterV2Props {
   gua: Gua64;
@@ -27,6 +33,8 @@ export interface TalismanPosterV2Props {
   showFilters?: boolean;
   showFooter?: boolean;
   className?: string;
+  /** Use curated asset library (自己整理z素材库) for textures / patterns / seals / calligraphy */
+  useAssetLibrary?: boolean;
 }
 
 /** 获取风格特定的滤镜属性 */
@@ -73,9 +81,17 @@ export const TalismanPosterV2 = React.forwardRef<SVGSVGElement, TalismanPosterV2
   showFilters = true,
   showFooter = true,
   className,
+  useAssetLibrary = false,
 }, ref) => {
   const config = getStyleConfig(style);
   const theme = getTheme(gua.element);
+
+  /* ─── Deterministic asset selection (seeded by gua number) ─── */
+  const seed = gua.number || 0;
+  const textureAsset = useAssetLibrary ? TEXTURE_POOL[seed % TEXTURE_POOL.length] : null;
+  const patternAsset = useAssetLibrary ? PATTERN_POOL[seed % PATTERN_POOL.length] : null;
+  const sealAsset = useAssetLibrary ? SEAL_POOL[seed % SEAL_POOL.length] : null;
+  const calligraphyAsset = useAssetLibrary ? CALLIGRAPHY_POOL[seed % CALLIGRAPHY_POOL.length] : null;
   const score = (() => {
     const map: Record<string, number> = { '大吉': 95, '吉': 80, '中吉': 70, '中平': 55, '小凶': 40, '凶': 25, '大凶': 10 };
     return map[gua.fortune] || 50;
@@ -117,6 +133,44 @@ export const TalismanPosterV2 = React.forwardRef<SVGSVGElement, TalismanPosterV2
       {/* CyberTao CRT 扫描线叠加层 */}
       {style === 'cybertao' && (
         <rect width={width} height={height} fill="transparent" filter="url(#poster-crt)" opacity={0.12} style={{ mixBlendMode: 'overlay', pointerEvents: 'none' }} />
+      )}
+
+      {/* ═══ Asset Library Layers (自己整理z素材库) ═══ */}
+      {textureAsset && (
+        <image
+          href={textureAsset}
+          x="0"
+          y="0"
+          width={width}
+          height={height}
+          preserveAspectRatio="xMidYMid slice"
+          opacity={0.12}
+          style={{ mixBlendMode: 'overlay', pointerEvents: 'none' }}
+        />
+      )}
+      {patternAsset && (
+        <image
+          href={patternAsset}
+          x="0"
+          y="0"
+          width={width}
+          height={height}
+          preserveAspectRatio="xMidYMid slice"
+          opacity={0.05}
+          style={{ pointerEvents: 'none' }}
+        />
+      )}
+      {calligraphyAsset && (
+        <image
+          href={calligraphyAsset}
+          x={width * 0.15}
+          y={height * 0.22}
+          width={width * 0.7}
+          height={height * 0.38}
+          preserveAspectRatio="xMidYMid meet"
+          opacity={0.08}
+          style={{ mixBlendMode: 'overlay', pointerEvents: 'none' }}
+        />
       )}
 
       {/* 装饰层（带条件滤镜） */}
@@ -217,6 +271,18 @@ export const TalismanPosterV2 = React.forwardRef<SVGSVGElement, TalismanPosterV2
 
       {/* 印章 */}
       <g transform={`translate(${width - 70}, ${height - 70})`}>
+        {sealAsset && (
+          <image
+            href={sealAsset}
+            x="-30"
+            y="-30"
+            width="60"
+            height="60"
+            preserveAspectRatio="xMidYMid meet"
+            opacity={0.5}
+            style={{ pointerEvents: 'none' }}
+          />
+        )}
         <rect x={-28} y={-28} width={56} height={56} fill={config.sealBg} stroke={config.sealColor} strokeWidth="2" rx="3" />
         <text x="0" y="4" textAnchor="middle" dominantBaseline="middle" fill={config.sealColor} fontSize={18} fontFamily="'Noto Serif SC', serif" fontWeight="bold">
           {sealText}

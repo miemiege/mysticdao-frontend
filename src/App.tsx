@@ -6,6 +6,8 @@ import SamplePage from './pages/SamplePage'
 const Home = lazy(() => import('./pages/Home'))
 const Daily = lazy(() => import('./pages/Daily'))
 const LanternCore = lazy(() => import('./pages/LanternCore'))
+const BatchExport = lazy(() => import('./pages/BatchExport'))
+const TalismanGallery = lazy(() => import('./pages/TalismanGallery'))
 
 const PageFallback = () => (
   <div className="min-h-screen bg-black flex items-center justify-center">
@@ -49,6 +51,8 @@ export default function App() {
         <Route path="/daily" element={<Daily />} />
         <Route path="/lantern-core" element={<LanternCore />} />
         <Route path="/samples" element={<SamplePage />} />
+        <Route path="/batch-export" element={<BatchExport />} />
+        <Route path="/talisman-gallery" element={<TalismanGallery />} />
         <Route path="*" element={<Home />} />
       </Routes>
     </Suspense>

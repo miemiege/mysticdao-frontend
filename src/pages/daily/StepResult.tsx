@@ -509,6 +509,7 @@ const StepResult: React.FC<StepResultProps> = ({
                 style={activeStyle}
                 width={320}
                 height={480}
+                useAssetLibrary
               />
             </div>
 
