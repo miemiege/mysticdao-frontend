@@ -1,0 +1,39 @@
+{
+  "collection_date": "2026-04-24",
+  "collector": "纹理采集员B",
+  "target_directory": "/mnt/c/Users/咩咩哥/mysticdao-frontend/raw_assets/textures/",
+  "total_count": 15,
+  "all_meet_requirement": true,
+  "min_resolution": "1024x1024",
+  "max_resolution": "5616x4272",
+  "avg_resolution": "2962x2376",
+  "sources": {
+    "Unsplash": 2,
+    "ISO Republic": 4,
+    "FreeImages": 6,
+    "Wikimedia Commons": 3
+  },
+  "files": [
+    {"index": 1, "filename": "texture_unsplash_001.jpg", "resolution": "5616x3744", "source": "Wikimedia Commons", "description": "Wrinkled paper texture"},
+    {"index": 2, "filename": "texture_unsplash_002.jpg", "resolution": "2848x4272", "source": "Wikimedia Commons", "description": "Dark vintage paper page texture"},
+    {"index": 3, "filename": "texture_unsplash_003.jpg", "resolution": "2848x4272", "source": "Wikimedia Commons", "description": "Dark crumpled paper texture"},
+    {"index": 4, "filename": "texture_unsplash_004.jpg", "resolution": "1600x1199", "source": "FreeImages", "description": "Paper texture"},
+    {"index": 5, "filename": "texture_unsplash_005.jpg", "resolution": "1600x1200", "source": "FreeImages", "description": "Paper texture"},
+    {"index": 6, "filename": "texture_unsplash_006.jpg", "resolution": "1024x1024", "source": "FreeImages", "description": "Paper texture"},
+    {"index": 7, "filename": "texture_unsplash_007.jpg", "resolution": "1600x1199", "source": "FreeImages", "description": "Wrinkled crumpled paper"},
+    {"index": 8, "filename": "texture_unsplash_008.jpg", "resolution": "1600x1200", "source": "FreeImages", "description": "Crinkly paper"},
+    {"index": 9, "filename": "texture_unsplash_009.jpg", "resolution": "1024x1024", "source": "FreeImages", "description": "Vintage paper texture"},
+    {"index": 10, "filename": "texture_unsplash_010.jpg", "resolution": "5472x3648", "source": "ISO Republic", "description": "Letterpress paper texture"},
+    {"index": 11, "filename": "texture_unsplash_011.jpg", "resolution": "4000x2667", "source": "ISO Republic", "description": "Torn paper texture"},
+    {"index": 12, "filename": "texture_unsplash_012.jpg", "resolution": "5472x3648", "source": "ISO Republic", "description": "Grid paper close-up"},
+    {"index": 13, "filename": "texture_unsplash_013.jpg", "resolution": "4928x3264", "source": "ISO Republic", "description": "Colored paper shapes"},
+    {"index": 14, "filename": "texture_unsplash_014.jpg", "resolution": "2400x1680", "source": "Unsplash", "description": "Abstract texture"},
+    {"index": 15, "filename": "texture_unsplash_015.jpg", "resolution": "2400x1600", "source": "Unsplash", "description": "Abstract texture"}
+  ],
+  "notes": [
+    "Unsplash and Pexels search pages were blocked by bot protection (Anubis/Cloudflare).",
+    "Unsplash images were obtained via direct CDN URLs (images.unsplash.com).",
+    "All images are free for commercial use under CC0 or equivalent licenses.",
+    "Images are saved as high-quality JPEG (quality=90)."
+  ]
+}
