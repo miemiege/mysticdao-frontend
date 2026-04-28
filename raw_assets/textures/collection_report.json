@@ -1,0 +1,102 @@
+{
+  "collection_date": "2026-04-24",
+  "target_directory": "/mnt/c/Users/咩咩哥/mysticdao-frontend/raw_assets/textures/",
+  "total_count": 15,
+  "real_textures": 5,
+  "procedural_textures": 10,
+  "min_resolution": "1024x1024",
+  "max_resolution": "5792x8688",
+  "all_meet_requirement": true,
+  "files": [
+    {
+      "index": 1,
+      "filename": "texture_web_001.jpg",
+      "description": "Paper mill texture (real)",
+      "source": "Wikimedia Commons"
+    },
+    {
+      "index": 2,
+      "filename": "texture_web_002.jpg",
+      "description": "Ancient Egypt writing paper (real)",
+      "source": "Wikimedia Commons"
+    },
+    {
+      "index": 3,
+      "filename": "texture_web_003.jpg",
+      "description": "Blue paper spot texture (real)",
+      "source": "Wikimedia Commons"
+    },
+    {
+      "index": 4,
+      "filename": "texture_web_004.jpg",
+      "description": "Blue paper texture with stamp (real)",
+      "source": "Wikimedia Commons"
+    },
+    {
+      "index": 5,
+      "filename": "texture_web_005.jpg",
+      "description": "Butterflies on rice paper (real)",
+      "source": "Wikimedia Commons"
+    },
+    {
+      "index": 6,
+      "filename": "texture_web_006.jpg",
+      "description": "Fine silk-screen xuan paper (procedural)",
+      "source": "Procedural (Pillow)"
+    },
+    {
+      "index": 7,
+      "filename": "texture_web_007.jpg",
+      "description": "Tea-stained paper (procedural)",
+      "source": "Procedural (Pillow)"
+    },
+    {
+      "index": 8,
+      "filename": "texture_web_008.jpg",
+      "description": "Basic xuan paper with fibers (procedural)",
+      "source": "Procedural (Pillow)"
+    },
+    {
+      "index": 9,
+      "filename": "texture_web_009.jpg",
+      "description": "Aged paper with stains (procedural)",
+      "source": "Procedural (Pillow)"
+    },
+    {
+      "index": 10,
+      "filename": "texture_web_010.jpg",
+      "description": "Gold-flecked xuan paper (procedural)",
+      "source": "Procedural (Pillow)"
+    },
+    {
+      "index": 11,
+      "filename": "texture_web_011.jpg",
+      "description": "Rough handmade paper (procedural)",
+      "source": "Procedural (Pillow)"
+    },
+    {
+      "index": 12,
+      "filename": "texture_web_012.jpg",
+      "description": "Mica paper (procedural)",
+      "source": "Procedural (Pillow)"
+    },
+    {
+      "index": 13,
+      "filename": "texture_web_013.jpg",
+      "description": "Bamboo paper (procedural)",
+      "source": "Procedural (Pillow)"
+    },
+    {
+      "index": 14,
+      "filename": "texture_web_014.jpg",
+      "description": "Watermark paper (procedural)",
+      "source": "Procedural (Pillow)"
+    },
+    {
+      "index": 15,
+      "filename": "texture_web_015.jpg",
+      "description": "Crumpled aged paper (procedural)",
+      "source": "Procedural (Pillow)"
+    }
+  ]
+}
