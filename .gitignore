@@ -9,3 +9,10 @@ public/talisman-posters/
 public/talisman-posters-material/
 public/talisman-posters-v2/
 public/talisman-posters-v3/
+
+# wrangler files
+.wrangler
+.dev.vars*
+!.dev.vars.example
+.env*
+!.env.example
