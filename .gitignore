@@ -4,3 +4,8 @@ dist
 
 # Batch rendered poster outputs
 public/talisman-posters/
+
+# Large rendered poster outputs (not for git)
+public/talisman-posters-material/
+public/talisman-posters-v2/
+public/talisman-posters-v3/

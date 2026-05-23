@@ -1,5 +1,6 @@
 import React, { useRef, useState, useCallback } from 'react';
 import html2canvas from 'html2canvas';
+import { drawWatermark } from '@/lib/watermark';
 import { motion } from 'framer-motion';
 import { Download } from 'lucide-react';
 import { toast } from 'sonner';
@@ -43,6 +44,10 @@ const CardShare: React.FC<CardShareProps> = ({ card, goldenQuote, onClose }) => 
         useCORS: true,
         logging: false,
       });
+
+      // AI 生成内容合规水印
+      drawWatermark(canvas);
+
       const dataUrl = canvas.toDataURL('image/png');
       const link = document.createElement('a');
       link.href = dataUrl;

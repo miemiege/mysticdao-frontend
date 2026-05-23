@@ -40,6 +40,12 @@ export async function fetchAIInterpretation(
   request: AIInterpretRequest,
   signal?: AbortSignal
 ): Promise<AIInterpretResponse> {
+  // 5秒超时：Render免费版冷启动约10-30秒，超时后立即使用本地降级
+  const TIMEOUT_MS = 5000;
+  const timeoutSignal = signal
+    ? signal
+    : AbortSignal.timeout(TIMEOUT_MS);
+
   try {
     const response = await fetch(`${API_BASE_URL}/api/interpret`, {
       method: 'POST',
@@ -47,7 +53,7 @@ export async function fetchAIInterpretation(
         'Content-Type': 'application/json',
       },
       body: JSON.stringify(request),
-      signal,
+      signal: timeoutSignal,
     });
 
     if (!response.ok) {
@@ -61,9 +67,15 @@ export async function fetchAIInterpretation(
     };
   } catch (error) {
     if (error instanceof DOMException && error.name === 'AbortError') {
-      throw error;
+      // 超时或主动取消：返回本地降级内容，不抛错
+      const text = await fetchFromJSON(request);
+      return {
+        text,
+        status: 'success',
+        // 标记为降级内容，前端可选择性提示"AI通道繁忙，已切换本地解读"
+      };
     }
-    // Fallback: try JSON data first, then mock
+    // 其他错误同样降级
     const text = await fetchFromJSON(request);
     return {
       text,

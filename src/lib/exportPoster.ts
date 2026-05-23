@@ -127,6 +127,17 @@ export function drawSimplifiedPoster(
   ctx.lineTo(width * 0.7, height * 0.92);
   ctx.stroke();
 
+  // AI 生成内容合规水印（右下角，≤5%画面）
+  ctx.save();
+  ctx.globalAlpha = 0.4;
+  ctx.fillStyle = colors.accent;
+  const wmFontSize = Math.max(8, Math.floor(Math.min(width, height) * 0.02));
+  ctx.font = `${wmFontSize}px "Noto Sans SC", sans-serif`;
+  ctx.textAlign = 'right';
+  ctx.textBaseline = 'bottom';
+  ctx.fillText('AI Generated · MysticDao', width - 12, height - 8);
+  ctx.restore();
+
   return canvas;
 }
 

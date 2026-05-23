@@ -8,6 +8,12 @@ const Daily = lazy(() => import('./pages/Daily'))
 const LanternCore = lazy(() => import('./pages/LanternCore'))
 const BatchExport = lazy(() => import('./pages/BatchExport'))
 const TalismanGallery = lazy(() => import('./pages/TalismanGallery'))
+const PosterRender = lazy(() => import('./pages/PosterRender'))
+const Bazi = lazy(() => import('./pages/Bazi'))
+const FengShui = lazy(() => import('./pages/FengShui'))
+const CompassPage = lazy(() => import('./pages/CompassPage'))
+const Pricing = lazy(() => import('./pages/Pricing'))
+const UserProfile = lazy(() => import('./pages/UserProfile'))
 
 const PageFallback = () => (
   <div className="min-h-screen bg-black flex items-center justify-center">
@@ -49,10 +55,16 @@ export default function App() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/daily" element={<Daily />} />
+        <Route path="/bazi" element={<Bazi />} />
+        <Route path="/fengshui" element={<FengShui />} />
+        <Route path="/compass" element={<CompassPage />} />
+        <Route path="/pricing" element={<Pricing />} />
+        <Route path="/profile" element={<UserProfile />} />
         <Route path="/lantern-core" element={<LanternCore />} />
         <Route path="/samples" element={<SamplePage />} />
         <Route path="/batch-export" element={<BatchExport />} />
         <Route path="/talisman-gallery" element={<TalismanGallery />} />
+        <Route path="/render/:guaName" element={<PosterRender />} />
         <Route path="*" element={<Home />} />
       </Routes>
     </Suspense>

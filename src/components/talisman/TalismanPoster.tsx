@@ -30,7 +30,6 @@ import {
   DE_AI,
 } from "../../lib/talisman-design";
 import {
-  NEW_BASE,
   CALLIGRAPHY_POOL,
   PATTERN_POOL,
   SEAL_POOL,

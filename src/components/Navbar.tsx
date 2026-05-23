@@ -3,12 +3,13 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Menu, X } from 'lucide-react';
 
 const navLinks = [
-  { label: 'Home', href: './#/' },
-  { label: 'Bazi', href: './#/bazi' },
-  { label: 'Feng Shui', href: './#/fengshui' },
-  { label: 'Daily', href: './#/daily' },
-  { label: 'Compass', href: './#/compass' },
-  { label: 'Pricing', href: './#/pricing' },
+  { label: 'Home', href: '/' },
+  { label: 'Bazi', href: '/bazi' },
+  { label: 'Feng Shui', href: '/fengshui' },
+  { label: 'Daily', href: '/daily' },
+  { label: 'Compass', href: '/compass' },
+  { label: 'Pricing', href: '/pricing' },
+  { label: 'Profile', href: '/profile' },
 ];
 
 function YinYangIcon({ className }: { className?: string }) {
@@ -32,19 +33,18 @@ export default function Navbar() {
   const [activePath, setActivePath] = useState('/');
 
   useEffect(() => {
-    const path = window.location.hash.replace('#', '') || '/';
+    const path = window.location.pathname || '/';
     setActivePath(path);
-    const handleHashChange = () => {
-      const p = window.location.hash.replace('#', '') || '/';
+    const handlePopState = () => {
+      const p = window.location.pathname || '/';
       setActivePath(p);
     };
-    window.addEventListener('hashchange', handleHashChange);
-    return () => window.removeEventListener('hashchange', handleHashChange);
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
   }, []);
 
   const isActive = (href: string) => {
-    const path = href.replace('./#', '') || '/';
-    return activePath === path;
+    return activePath === href;
   };
 
   return (
@@ -52,7 +52,7 @@ export default function Navbar() {
       <nav className="fixed top-0 left-0 right-0 z-50 h-[72px] backdrop-blur-xl bg-black/70 border-b border-[#c8a45c]/20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-full flex items-center justify-between">
           {/* Brand */}
-          <a href="./#/" className="flex items-center gap-2 text-gold">
+          <a href="/" className="flex items-center gap-2 text-gold">
             <YinYangIcon className="w-6 h-6" />
             <span className="font-heading text-xl font-bold tracking-tight">MysticDao</span>
           </a>

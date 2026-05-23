@@ -62,6 +62,10 @@ const SharePoster: React.FC<SharePosterProps> = ({
         logging: false,
       });
 
+      // AI 生成内容合规水印
+      const { drawWatermark: drawWM } = await import('@/lib/watermark');
+      drawWM(canvas);
+
       const dataUrl = canvas.toDataURL('image/png');
       const link = document.createElement('a');
       link.href = dataUrl;
